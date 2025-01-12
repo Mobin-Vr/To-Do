@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Template from './_components/Template';
-import useTaskStore from './store';
+import useTaskStore from '../store';
+import Template from '../_components/Template';
 import { BG_COLORS } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 
