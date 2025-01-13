@@ -1,45 +1,29 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import MenuButton from './MenuButton';
-import Sidebar from './Sidebar';
-import useTaskStore from '../store';
+import React from 'react';
+import SidebarLink from './SidebarLink';
+import { HomeIcon, InfinityIcon, SettingsIcon, SunIcon } from '@/public/icons';
 
-const SidebarNav = () => {
-   const { isSidebarOpen, toggleSidebar } = useTaskStore();
-
-   const sidebarRef = useRef(null);
-   const menuButtonRef = useRef(null);
-
-   // Handle clicks outside of the sidebar and menu button
-   useEffect(() => {
-      function handleClickOutside(event) {
-         if (
-            isSidebarOpen &&
-            sidebarRef.current &&
-            !sidebarRef.current.contains(event.target) &&
-            menuButtonRef.current &&
-            !menuButtonRef.current.contains(event.target)
-         )
-            toggleSidebar();
-      }
-
-      document.addEventListener('mousedown', handleClickOutside);
-
-      return () => {
-         document.removeEventListener('mousedown', handleClickOutside);
-      };
-   }, [isSidebarOpen, toggleSidebar]);
-
+export default function SidebarNav() {
    return (
-      <>
-         {/* Button to toggle sidebar */}
-         <MenuButton menuButtonRef={menuButtonRef} />
+      <nav>
+         <ul className='flex flex-col gap-1'>
+            <SidebarLink href='/' title='My Day'>
+               <SunIcon />
+            </SidebarLink>
 
-         {/* Sidebar */}
-         <Sidebar sidebarRef={sidebarRef} />
-      </>
+            <SidebarLink href='/all' title='All'>
+               <InfinityIcon />
+            </SidebarLink>
+
+            <SidebarLink href='/tasks' title='Tasks'>
+               <HomeIcon />
+            </SidebarLink>
+
+            <SidebarLink href='/settings' title='Settings'>
+               <SettingsIcon />
+            </SidebarLink>
+         </ul>
+      </nav>
    );
-};
-
-export default SidebarNav;
+}

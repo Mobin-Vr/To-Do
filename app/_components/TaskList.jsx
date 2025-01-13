@@ -3,7 +3,7 @@ import TaskGroup from './TaskGroup';
 import CompletedToggle from './CompletedToggle';
 import useTaskStore from '../store';
 
-export default function TaskList({ listRef }) {
+export default function TaskList({ listRef, bgColor }) {
    const [isCompletedVisible, setCompletedVisible] = useState(false);
    const taskList = useTaskStore((state) => state.taskList);
 
@@ -22,7 +22,11 @@ export default function TaskList({ listRef }) {
 
    return (
       <>
-         <TaskGroup tasks={sortedUncompletedTasks} listRef={listRef} />
+         <TaskGroup
+            tasks={sortedUncompletedTasks}
+            listRef={listRef}
+            bgColor={bgColor}
+         />
 
          {completedTasks.length > 0 && (
             <>
@@ -33,7 +37,11 @@ export default function TaskList({ listRef }) {
                />
 
                {isCompletedVisible && (
-                  <TaskGroup tasks={sortedCompletedTasks} listRef={listRef} />
+                  <TaskGroup
+                     tasks={sortedCompletedTasks}
+                     listRef={listRef}
+                     bgColor={bgColor}
+                  />
                )}
             </>
          )}

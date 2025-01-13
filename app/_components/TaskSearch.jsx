@@ -1,8 +1,8 @@
-import { MagniferIcon, XIcon } from '@/public/icons';
+import { MagnifierIcon, XIcon } from '@/public/icons';
 
 const { useState } = require('react');
 
-export function TaskSearch() {
+export default function TaskSearch() {
    const [searchInput, setSearchInput] = useState('');
    const [isTyping, setIsTyping] = useState(false);
 
@@ -35,7 +35,7 @@ export function TaskSearch() {
                </button>
 
                <button className='rounded-md h-4 w-4 flex items-center justify-center hover:bg-gray-200'>
-                  <MagniferIcon />
+                  <MagnifierIcon />
                </button>
             </div>
 

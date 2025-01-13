@@ -1,11 +1,11 @@
-// components/UserMenu.js
 import { ClerkLoaded, SignInButton, UserButton } from '@clerk/nextjs';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import ProfileModal from './ProfileModal';
-import { ChevronIcon } from '@/public/icons';
+import UserStatus from './UserStatus';
 
-function UserMenu({ user, createClerkPasskey }) {
+function UserMenu({ user, createClerkPasskey, className }) {
    const [isModalOpen, setIsModalOpen] = useState(false);
+   const userMenuBtnRef = useRef(null);
 
    const userButtonAppearance = {
       elements: {
@@ -20,24 +20,28 @@ function UserMenu({ user, createClerkPasskey }) {
    return (
       <ClerkLoaded>
          {user ? (
-            <div className='flex items-center space-x-3 relative'>
+            <div
+               className={`flex items-center space-x-3 relative ${className}`}
+            >
+               {/* NOTE Actually it is user profile */}
                <UserButton appearance={userButtonAppearance} />
 
-               <button className='flex flex-col' onClick={toggleModal}>
+               <button
+                  className='flex flex-col overflow-hidden'
+                  onClick={toggleModal}
+                  ref={userMenuBtnRef}
+               >
                   <p className='leading-tight text-sm font-normal'>
                      {user.fullName}
                   </p>
 
-                  <p className='text-gray-600 leading-tight text-[0.715rem] font-extralight flex gap-1 items-center justify-center'>
-                     {user?.primaryEmailAddress?.emailAddress}
-                     <ChevronIcon />
-                  </p>
+                  <UserStatus user={user} />
                </button>
 
-               {/* Pass the necessary props to the Modal component */}
                <ProfileModal
                   isModalOpen={isModalOpen}
                   toggleModal={toggleModal}
+                  userMenuBtnRef={userMenuBtnRef}
                   user={user}
                />
             </div>

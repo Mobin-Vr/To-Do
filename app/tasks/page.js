@@ -3,12 +3,19 @@
 import { useEffect, useRef } from 'react';
 import useTaskStore from '../store';
 import Template from '../_components/Template';
-import { BG_COLORS } from '@/lib/utils';
+import { BG_COLORS } from '@/app/_lib/utils';
 import { usePathname } from 'next/navigation';
+import { HomeIcon } from '@/public/icons';
 
 export default function Page() {
    const pathname = usePathname();
    const bgColor = BG_COLORS[pathname];
+
+   const listConfig = {
+      bgColor,
+      listName: 'Tasks',
+      listIcon: <HomeIcon size='24px' color={bgColor[3]} />,
+   };
 
    const taskList = useTaskStore((state) => state.taskList);
    const listRef = useRef(null);
@@ -19,5 +26,5 @@ export default function Page() {
       }
    }, [taskList.length]);
 
-   return <Template listRef={listRef} bgColor={bgColor} />;
+   return <Template listRef={listRef} listConfig={listConfig} />;
 }

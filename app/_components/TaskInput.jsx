@@ -4,7 +4,7 @@ import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
 import useTaskStore from '../store';
 
-export default function TaskInput({ bgColor }) {
+export default function TaskInput({ bgColor, className }) {
    const addtask = useTaskStore((state) => state.addTask);
 
    const [taskInput, setTaskInput] = useState('');
@@ -36,10 +36,7 @@ export default function TaskInput({ bgColor }) {
    }
 
    return (
-      <div
-         className={`px-6 z-10 h-[5.5rem] w-full sticky bottom-0 bg-${bgColor}`}
-         style={{ backgroundColor: bgColor }}
-      >
+      <div className={`${className}`} style={{ backgroundColor: bgColor[0] }}>
          <form
             className='flex items-center relative h-[2.65rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
             onSubmit={handleSubmit}
