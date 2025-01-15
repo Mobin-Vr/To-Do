@@ -1,13 +1,20 @@
 import { clsx } from 'clsx';
 import { formatDistanceToNow } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
+import { v4 as uuidv4 } from 'uuid';
 
 export function cn(...inputs) {
    return twMerge(clsx(inputs));
 }
 
 export function getTimeAgo(fromDate) {
-   return formatDistanceToNow(new Date(fromDate), { addSuffix: true });
+   return formatDistanceToNow(new Date(fromDate).toISOString(), {
+      addSuffix: true,
+   });
+}
+
+export function generateNewUuid() {
+   return uuidv4();
 }
 
 // Route background color settings

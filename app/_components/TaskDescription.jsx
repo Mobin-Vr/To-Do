@@ -7,7 +7,7 @@ export default function TaskDescription({ task }) {
                : ''
          }`}
       >
-         {task.description}
+         {task.title}
       </span>
    );
 }

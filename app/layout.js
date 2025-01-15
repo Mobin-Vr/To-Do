@@ -2,6 +2,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { Roboto } from 'next/font/google';
 import './_styles/globals.css';
 import Sidebar from './_components/Sidebar';
+import HealthStatusSync from './_components/HealthStatusSync';
+import UserSignupHandler from './_components/UserSignupHandler';
 
 const roboto = Roboto({
    subsets: ['latin'],
@@ -22,7 +24,14 @@ export default function RootLayout({ children }) {
             <body
                className={`${roboto.className} relative flex flex-col sm:flex-row h-screen z-50`}
             >
+               {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}
+               <HealthStatusSync />
+
+               {/* This component handles checking and creating a new user in the database upon sign-in */}
+               <UserSignupHandler />
+
                <Sidebar />
+
                <main className='h-full overflow-y-hidden sm:flex-1'>
                   {children}
                </main>

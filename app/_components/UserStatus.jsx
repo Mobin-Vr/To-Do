@@ -1,18 +1,22 @@
-import React from 'react';
 import { ChevronIcon } from '@/public/icons';
 import { getTimeAgo } from '../_lib/utils';
-import useDBHealth from '../_lib/hooks/useDBHealth';
+import useTaskStore from '../store';
 
 export default function UserStatus({ user }) {
-   const { isOnline, lastOnline, isConnected } = useDBHealth();
+   const { isConnected, isOnline, lastOnline } = useTaskStore(
+      (state) => state.conectionStatus
+   );
+
+   console.log(isConnected, isOnline, lastOnline);
    const timeAgo = `Synced ${getTimeAgo(lastOnline)} ...`;
 
-   const statusIndicator = isOnline ? 'bg-green-400' : 'bg-orange-400';
+   const statusIndicator =
+      isConnected && isOnline ? 'bg-green-400' : 'bg-orange-400';
 
-   const statusText = isOnline
-      ? user?.primaryEmailAddress?.emailAddress
-      : isConnected
-      ? timeAgo
+   const statusText = isConnected
+      ? isOnline
+         ? user?.primaryEmailAddress?.emailAddress
+         : timeAgo
       : "You're offline ...";
 
    return (

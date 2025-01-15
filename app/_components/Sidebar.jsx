@@ -8,34 +8,19 @@ import useTaskStore from '../store';
 import MenuButton from './MenuButton';
 import UserMenu from './UserMenu';
 import SidebarNav from './SidebarNav';
-import { createUser, getUser } from '../_lib/data-services';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function Sidebar() {
    const { user } = useUser();
-   const { isSidebarOpen, toggleSidebar } = useTaskStore();
+   const { isSidebarOpen, toggleSidebar } = useTaskStore(
+      useShallow((state) => ({
+         isSidebarOpen: state.isSidebarOpen,
+         toggleSidebar: state.toggleSidebar,
+      }))
+   );
 
    const sidebarRef = useRef(null);
    const menuButtonRef = useRef(null);
-
-   useEffect(() => {
-      async function handleSignIn() {
-         if (user) {
-            try {
-               const existingUser = await getUser(user.emailAddress);
-               if (!existingUser)
-                  await createUser({
-                     name: user.fullName,
-                     email: user.emailAddresses[0].emailAddress,
-                     clerk_id: user.id,
-                  });
-            } catch (error) {
-               console.error('Error handling conect user to data-base:', error);
-            }
-         }
-      }
-
-      handleSignIn();
-   }, [user]);
 
    // Handle clicks outside of the sidebar and menu button
    useEffect(() => {

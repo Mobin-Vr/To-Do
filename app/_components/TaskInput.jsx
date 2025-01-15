@@ -3,9 +3,10 @@
 import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
 import useTaskStore from '../store';
+import { generateNewUuid } from '../_lib/utils';
 
 export default function TaskInput({ bgColor, className }) {
-   const addtask = useTaskStore((state) => state.addTask);
+   const addTaskToStore = useTaskStore((state) => state.addTaskToStore);
 
    const [taskInput, setTaskInput] = useState('');
    const [isTyping, setIsTyping] = useState(false);
@@ -14,16 +15,23 @@ export default function TaskInput({ bgColor, className }) {
       e.preventDefault();
       if (taskInput.trim() === '') return;
 
-      const id = Date.now();
+      const createdAt = new Date().toISOString();
 
       const newItem = {
-         id,
-         description: taskInput,
+         id: generateNewUuid(),
+         title: taskInput,
+         description: null,
          isCompleted: false,
          isStarred: false,
+         categoryId: null,
+         dueDate: null,
+         createdAt,
+         updatedAt: null,
+         parentTaskId: null,
+         assignedTo: null,
       };
 
-      addtask(newItem);
+      addTaskToStore(newItem);
       setTaskInput('');
    }
 

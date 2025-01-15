@@ -5,7 +5,7 @@ import React from 'react';
 import useTaskStore from '../store';
 
 function MenuButton({ menuButtonRef, color, className }) {
-   const { toggleSidebar } = useTaskStore();
+   const toggleSidebar = useTaskStore((state) => state.toggleSidebar);
 
    return (
       <button
