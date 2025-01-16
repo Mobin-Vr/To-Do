@@ -36,6 +36,7 @@ export default function HealthStatusSync() {
       clearLog,
       isSyncing,
       toggleIsSyncing,
+      syncLcWithDb,
    } = useTaskStore(
       useShallow((state) => ({
          updateConnectionStatus: state.updateConnectionStatus,
@@ -44,13 +45,20 @@ export default function HealthStatusSync() {
          clearLog: state.clearLog,
          isSyncing: state.isSyncing,
          toggleIsSyncing: state.toggleIsSyncing,
+         syncLcWithDb: state.syncLcWithDb,
       }))
    );
 
    // Sync local changes (changeLog) with the database
-   const syncWithDB = useCallback(async () => {
-      // Exit if no changes or already syncing
-      if (!changeLog.length || isSyncing) return;
+   const syncData = useCallback(async () => {
+      // Exit if already syncing
+      if (isSyncing) return;
+
+      // If ther is no log first get the data from cloud and replace that data in lc and then EXIT
+      if (!changeLog.length) {
+         await syncLcWithDb();
+         return;
+      }
 
       toggleIsSyncing(true); // Mark syncing as in progress
 
@@ -122,9 +130,9 @@ export default function HealthStatusSync() {
 
       if (result.online) {
          setLastOnline(new Date().toISOString()); // Update last online time
-         await syncWithDB(); // Start syncing log with the database
+         await syncData(); // Start syncing log with the database
       }
-   }, [syncWithDB]);
+   }, [syncData]);
 
    // Update connection status in the store when local states change
    useEffect(() => {

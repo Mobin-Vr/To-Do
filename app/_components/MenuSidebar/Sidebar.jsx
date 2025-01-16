@@ -4,11 +4,11 @@ import React, { useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 
 import TaskSearch from './TaskSearch';
-import useTaskStore from '../store';
 import MenuButton from './MenuButton';
 import UserMenu from './UserMenu';
 import SidebarNav from './SidebarNav';
 import { useShallow } from 'zustand/react/shallow';
+import useTaskStore from '@/app/store';
 
 export default function Sidebar() {
    const { user } = useUser();
@@ -37,9 +37,8 @@ export default function Sidebar() {
 
       document.addEventListener('mousedown', handleClickOutside);
 
-      return () => {
+      return () =>
          document.removeEventListener('mousedown', handleClickOutside);
-      };
    }, [isSidebarOpen, toggleSidebar]);
 
    async function createClerkPasskey() {
@@ -53,7 +52,7 @@ export default function Sidebar() {
    return (
       <div
          ref={sidebarRef}
-         className={`fixed top-0 left-0 bottom-0 w-3/5 bg-gray-50 text-black py-6 px-4 transform transition-transform ease-in-out duration-300 flex-col sm:translate-x-0 sm:static md:max-w-72 sm:max-w-64 z-20 h-dvh ${
+         className={`fixed top-0 left-0 bottom-0 w-3/5 bg-gray-50 text-black py-6 px-4 transform transition-transform ease-in-out duration-300 flex-col sm:translate-x-0 sm:static md:max-w-72 sm:max-w-64 z-20 h-full ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
          }`}
       >

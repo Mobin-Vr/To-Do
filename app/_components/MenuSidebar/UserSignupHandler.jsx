@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { createUser, getUser } from '../_lib/data-services';
-import useTaskStore from '../store';
+
+import { createUser, getUser } from '@/app/_lib/data-services';
+import useTaskStore from '@/app/store';
 
 export default function UserSignupHandler() {
    const { user } = useUser();

@@ -1,5 +1,5 @@
 import { DotIcon } from '@/public/icons';
-import MenuButton from './MenuButton';
+import MenuButton from './MenuSidebar/MenuButton';
 
 export default function AppHeader({ listConfig, className }) {
    const { bgColor, listName, listIcon } = listConfig;

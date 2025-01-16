@@ -2,7 +2,7 @@
 
 import { MenuIcon } from '@/public/icons';
 import React from 'react';
-import useTaskStore from '../store';
+import useTaskStore from '../../store';
 
 function MenuButton({ menuButtonRef, color, className }) {
    const toggleSidebar = useTaskStore((state) => state.toggleSidebar);

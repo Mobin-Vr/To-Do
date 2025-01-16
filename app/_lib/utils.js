@@ -17,6 +17,11 @@ export function generateNewUuid() {
    return uuidv4();
 }
 
+// Produce a delay
+export function delay(ms) {
+   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 // Route background color settings
 // [ 0  , 1   ,  2     , 3   , 4  ]
 // [bg1, bg2, bg-hover, txt1, txt2]
@@ -27,5 +32,9 @@ export const BG_COLORS = {
    '/all': ['#c4514c', '#f6f6f6', '#6b7280', '#fff', '#fff'],
 };
 
+export const DEFAULT_COLOR = {
+   blue: '#6b8bf6',
+};
+
 // Timer interval (in seconds) for checking the database connection health
-export const HEALTH_CHECK_TIMER = 30;
+export const HEALTH_CHECK_TIMER = 300;

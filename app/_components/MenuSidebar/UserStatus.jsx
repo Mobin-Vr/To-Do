@@ -1,13 +1,12 @@
 import { ChevronIcon } from '@/public/icons';
-import { getTimeAgo } from '../_lib/utils';
-import useTaskStore from '../store';
+import { getTimeAgo } from '@/app/_lib/utils';
+import useTaskStore from '@/app/store';
 
 export default function UserStatus({ user }) {
    const { isConnected, isOnline, lastOnline } = useTaskStore(
       (state) => state.conectionStatus
    );
 
-   console.log(isConnected, isOnline, lastOnline);
    const timeAgo = `Synced ${getTimeAgo(lastOnline)} ...`;
 
    const statusIndicator =

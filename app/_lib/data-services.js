@@ -12,11 +12,8 @@ export async function getUser(userEmail) {
    return data;
 }
 
-let x = 0;
 // Add one or many tasks
 export async function addTask(task) {
-   x += 1;
-   console.log('>>> api task', 'x=', x, task);
    const { data, error } = await supabase.from('tasks').insert(task);
 
    if (error) {

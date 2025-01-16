@@ -1,9 +1,10 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { Roboto } from 'next/font/google';
 import './_styles/globals.css';
-import Sidebar from './_components/Sidebar';
 import HealthStatusSync from './_components/HealthStatusSync';
-import UserSignupHandler from './_components/UserSignupHandler';
+
+import Sidebar from './_components/MenuSidebar/Sidebar';
+import UserSignupHandler from './_components/MenuSidebar/UserSignupHandler';
 
 const roboto = Roboto({
    subsets: ['latin'],

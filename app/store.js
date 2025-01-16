@@ -10,12 +10,14 @@ import {
 
 const initialState = {
    isSidebarOpen: false,
+   isEditSidebarOpen: false,
    offlineLogMode: false,
    conectionStatus: {}, // {isConected, isOnline, lastOnline}
    userInfo: {},
    taskList: [],
    changeLog: [],
    isSyncing: false,
+   activeTaskId: null,
 };
 
 const useTaskStore = create(
@@ -23,16 +25,28 @@ const useTaskStore = create(
       persist(
          (set, get) => ({
             isSidebarOpen: initialState.isSidebarOpen,
+            isEditSidebarOpen: initialState.isEditSidebarOpen,
             conectionStatus: initialState.conectionStatus,
             userInfo: initialState.userInfo,
             taskList: initialState.taskList,
             changeLog: initialState.changeLog,
+            isSyncing: initialState.isSyncing,
+            activeTaskId: initialState.activeTaskId,
 
-            // 1. Toggle sidebar
+            // 0. Toggle sidebar
             toggleSidebar: () => {
                set(
                   produce((state) => {
                      state.isSidebarOpen = !state.isSidebarOpen;
+                  })
+               );
+            },
+
+            // 1. Toggle Edit sidebar
+            toggleEditSidebar: () => {
+               set(
+                  produce((state) => {
+                     state.isEditSidebarOpen = !state.isEditSidebarOpen;
                   })
                );
             },
@@ -199,18 +213,12 @@ const useTaskStore = create(
             },
 
             // 6. Fetching tasks from DB and Synchronizing localeStorage with the database
-            // LATER is it needed?
-            syncLCFromDB: async () => {
-               const { data, error } = await getTasks();
-
-               if (error) {
-                  console.error(error);
-                  throw new Error('Failed to fetch tasks');
-               }
+            syncLcWithDb: async () => {
+               const tasks = await getTasks();
 
                set(
                   produce((state) => {
-                     state.taskList = data;
+                     state.taskList = tasks;
                   })
                );
             },
@@ -257,6 +265,15 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      state.isSyncing = bool;
+                  })
+               );
+            },
+
+            // 12. Setting active task id
+            setActiveTaskId: (id) => {
+               set(
+                  produce((state) => {
+                     state.activeTaskId = id;
                   })
                );
             },
