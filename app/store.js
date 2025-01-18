@@ -7,16 +7,17 @@ import {
    getTasks,
    updateTask,
 } from './_lib/data-services';
+import { getDateNowIso } from './_lib/utils';
 
 const initialState = {
    isSidebarOpen: false,
    isEditSidebarOpen: false,
+   isSyncing: false,
    offlineLogMode: false,
    conectionStatus: {}, // {isConected, isOnline, lastOnline}
    userInfo: {},
    taskList: [],
    changeLog: [],
-   isSyncing: false,
    activeTaskId: null,
 };
 
@@ -26,11 +27,11 @@ const useTaskStore = create(
          (set, get) => ({
             isSidebarOpen: initialState.isSidebarOpen,
             isEditSidebarOpen: initialState.isEditSidebarOpen,
+            isSyncing: initialState.isSyncing,
             conectionStatus: initialState.conectionStatus,
             userInfo: initialState.userInfo,
             taskList: initialState.taskList,
             changeLog: initialState.changeLog,
-            isSyncing: initialState.isSyncing,
             activeTaskId: initialState.activeTaskId,
 
             // 0. Toggle sidebar
@@ -109,7 +110,7 @@ const useTaskStore = create(
                         state.changeLog.push({
                            type: 'delete',
                            id: taskToDelete.id,
-                           logTime: new Date().toISOString(),
+                           logTime: getDateNowIso(),
                            task: taskToDelete,
                         });
                      }
@@ -126,12 +127,14 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      const task = state.taskList.find((item) => item.id === id);
-                     const updateTime = new Date().toISOString();
+                     const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
                         task.isCompleted = !task.isCompleted;
                         task.updatedAt = updateTime;
+                        if (task.isCompleted) task.completedAt = updateTime;
+                        if (!task.isCompleted) task.completedAt = null;
                      }
 
                      // Add to change log only if offline.
@@ -139,7 +142,10 @@ const useTaskStore = create(
                         // Remove if exist a record in log with the same ID and TYPE
                         state.changeLog = state.changeLog.filter(
                            (log) =>
-                              !(log.type === 'update' && log.id === task.id)
+                              !(
+                                 log.type === 'update-isCompleted' &&
+                                 log.id === task.id
+                              )
                         );
 
                         // Save the chenges log
@@ -162,6 +168,7 @@ const useTaskStore = create(
                      {
                         isCompleted: task.isCompleted,
                         updatedAt: task.updatedAt,
+                        completedAt: task.completedAt,
                      },
                      task.id
                   );
@@ -173,7 +180,7 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      const task = state.taskList.find((item) => item.id === id);
-                     const updateTime = new Date().toISOString();
+                     const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
@@ -186,7 +193,10 @@ const useTaskStore = create(
                         // Remove if exist a record in log with the same ID and TYPE
                         state.changeLog = state.changeLog.filter(
                            (log) =>
-                              !(log.type === 'update' && log.id === task.id)
+                              !(
+                                 log.type === 'update-isStarred' &&
+                                 log.id === task.id
+                              )
                         );
 
                         // Save the chenges log
@@ -207,6 +217,194 @@ const useTaskStore = create(
                if (onlineStatus) {
                   await updateTask(
                      { isStarred: task.isStarred, updatedAt: task.updatedAt },
+                     task.id
+                  );
+               }
+            },
+
+            // 6. Update task note
+            updateNote: async (id, note) => {
+               set(
+                  produce((state) => {
+                     const task = state.taskList.find((item) => item.id === id);
+                     const updateTime = getDateNowIso();
+
+                     // Update the task from LC
+                     if (task) {
+                        task.note = note;
+                        task.updatedAt = updateTime;
+                     }
+
+                     // Add to change log only if offline.
+                     if (state.offlineLogMode) {
+                        // Remove if exist a record in log with the same ID and TYPE
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'update-note' &&
+                                 log.id === task.id
+                              )
+                        );
+
+                        // Save the chenges log
+                        state.changeLog.push({
+                           type: 'update-note',
+                           id: task.id,
+                           logTime: updateTime,
+                           task,
+                        });
+                     }
+                  })
+               );
+
+               // Synchronizing with the database
+               const task = get().taskList.find((item) => item.id === id);
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await updateTask(
+                     { note: task.note, updatedAt: task.updatedAt },
+                     task.id
+                  );
+               }
+            },
+
+            // 7. Update task reminder
+            updateReminder: async (id, reminder) => {
+               set(
+                  produce((state) => {
+                     const task = state.taskList.find((item) => item.id === id);
+                     const updateTime = getDateNowIso();
+
+                     // Update the task reminder
+                     if (task) {
+                        task.reminder = reminder;
+                        task.updatedAt = updateTime;
+                     }
+
+                     // Add to change log only if offline.
+                     if (state.offlineLogMode) {
+                        // Remove if exist a record in log with the same ID and TYPE
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'update-reminder' &&
+                                 log.id === task.id
+                              )
+                        );
+
+                        // Save the changes log
+                        state.changeLog.push({
+                           type: 'update-reminder',
+                           id: task.id,
+                           logTime: updateTime,
+                           task,
+                        });
+                     }
+                  })
+               );
+
+               // Synchronizing with the database
+               const task = get().taskList.find((item) => item.id === id);
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await updateTask(
+                     { reminder: task.reminder, updatedAt: task.updatedAt },
+                     task.id
+                  );
+               }
+            },
+
+            // 8. Update task dueDate
+            updateDueDate: async (id, dueDate) => {
+               set(
+                  produce((state) => {
+                     const task = state.taskList.find((item) => item.id === id);
+                     const updateTime = getDateNowIso();
+
+                     // Update the task dueDate
+                     if (task) {
+                        task.dueDate = dueDate;
+                        task.updatedAt = updateTime;
+                     }
+
+                     // Add to change log only if offline.
+                     if (state.offlineLogMode) {
+                        // Remove if exist a record in log with the same ID and TYPE
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'update-dueDate' &&
+                                 log.id === task.id
+                              )
+                        );
+
+                        // Save the changes log
+                        state.changeLog.push({
+                           type: 'update-dueDate',
+                           id: task.id,
+                           logTime: updateTime,
+                           task,
+                        });
+                     }
+                  })
+               );
+
+               // Synchronizing with the database
+               const task = get().taskList.find((item) => item.id === id);
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await updateTask(
+                     { dueDate: task.dueDate, updatedAt: task.updatedAt },
+                     task.id
+                  );
+               }
+            },
+
+            // 9. Update task repeat
+            updateRepeat: async (id, repeat) => {
+               set(
+                  produce((state) => {
+                     const task = state.taskList.find((item) => item.id === id);
+                     const updateTime = getDateNowIso();
+
+                     // Update the task repeat
+                     if (task) {
+                        task.repeat = repeat;
+                        task.updatedAt = updateTime;
+                     }
+
+                     // Add to change log only if offline.
+                     if (state.offlineLogMode) {
+                        // Remove if exist a record in log with the same ID and TYPE
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'update-repeat' &&
+                                 log.id === task.id
+                              )
+                        );
+
+                        // Save the changes log
+                        state.changeLog.push({
+                           type: 'update-repeat',
+                           id: task.id,
+                           logTime: updateTime,
+                           task,
+                        });
+                     }
+                  })
+               );
+
+               // Synchronizing with the database
+               const task = get().taskList.find((item) => item.id === id);
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await updateTask(
+                     { repeat: task.repeat, updatedAt: task.updatedAt },
                      task.id
                   );
                }

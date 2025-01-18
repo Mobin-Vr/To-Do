@@ -20,7 +20,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { addTask, deleteTask, updateManyTask } from '../_lib/data-services';
 import { checkDatabaseHealth } from '../_lib/healthCheck';
-import { HEALTH_CHECK_TIMER } from '../_lib/utils';
+import { getDateNowIso, HEALTH_CHECK_TIMER } from '../_lib/utils';
 import useTaskStore from '../store';
 
 export default function HealthStatusSync() {
@@ -77,6 +77,7 @@ export default function HealthStatusSync() {
             task: {
                isCompleted: log.task.isCompleted,
                updatedAt: log.task.updatedAt,
+               completedAt: log.task.completedAt,
             },
             id: log.task.id,
          }));
@@ -90,6 +91,8 @@ export default function HealthStatusSync() {
             },
             id: log.task.id,
          }));
+
+      // LATER add update Reminder - note - due - reapet - category - steps
 
       // Perform database operations
       try {
@@ -129,7 +132,7 @@ export default function HealthStatusSync() {
       setIsOnline(result.online);
 
       if (result.online) {
-         setLastOnline(new Date().toISOString()); // Update last online time
+         setLastOnline(getDateNowIso()); // Update last online time
          await syncData(); // Start syncing log with the database
       }
    }, [syncData]);

@@ -1,13 +1,15 @@
-import { PaperClipIcon } from '@/public/icons';
+import BoxBtn from './BoxBtn';
 import BoxTemplate from './BoxTemplate';
-import DetailsBtn from './DetailsBtn';
 
 function AddFile() {
    return (
-      <BoxTemplate className='flex gap-4 items-center w-full  hover:bg-accent-50 transition-all duration-300'>
-         <DetailsBtn text='Add file'>
-            <PaperClipIcon size='16px' />
-         </DetailsBtn>
+      <BoxTemplate>
+         {/* LATER Complete add file feature */}
+         <BoxBtn
+            disabled={true}
+            icon='PaperClipIcon'
+            text='Add file / Coming soon ...'
+         />
       </BoxTemplate>
    );
 }

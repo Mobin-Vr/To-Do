@@ -3,7 +3,7 @@
 import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
 import useTaskStore from '../store';
-import { generateNewUuid } from '../_lib/utils';
+import { generateNewUuid, getDateNowIso } from '../_lib/utils';
 
 export default function TaskInput({ bgColor, className }) {
    const addTaskToStore = useTaskStore((state) => state.addTaskToStore);
@@ -15,18 +15,21 @@ export default function TaskInput({ bgColor, className }) {
       e.preventDefault();
       if (taskInput.trim() === '') return;
 
-      const createdAt = new Date().toISOString();
+      const createdAt = getDateNowIso();
 
       const newItem = {
          id: generateNewUuid(),
          title: taskInput,
-         description: null,
          isCompleted: false,
          isStarred: false,
+         note: '',
          categoryId: null,
-         dueDate: null,
-         createdAt,
          updatedAt: null,
+         completedAt: null,
+         createdAt: getDateNowIso(),
+         dueDate: null,
+         reminder: null,
+         repeat: null,
          parentTaskId: null,
          assignedTo: null,
       };

@@ -2,19 +2,20 @@ import { ClerkLoaded, SignInButton, UserButton } from '@clerk/nextjs';
 import React, { useRef, useState } from 'react';
 import ProfileModal from './ProfileModal';
 import UserStatus from './UserStatus';
+import ModalTemplate from '../ModalTemplate';
 
 function UserMenu({ user, createClerkPasskey, className }) {
-   const [isModalOpen, setIsModalOpen] = useState(false);
    const userMenuBtnRef = useRef(null);
+   const [isModalOpen, setIsModalOpen] = useState(false);
+
+   const toggleModal = () => {
+      setIsModalOpen(!isModalOpen);
+   };
 
    const userButtonAppearance = {
       elements: {
          userButtonAvatarBox: 'w-[2.625rem] h-[2.625rem]',
       },
-   };
-
-   const toggleModal = () => {
-      setIsModalOpen(!isModalOpen);
    };
 
    return (
@@ -38,12 +39,14 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   <UserStatus user={user} />
                </button>
 
-               <ProfileModal
+               <ModalTemplate
+                  parentRef={userMenuBtnRef}
                   isModalOpen={isModalOpen}
                   toggleModal={toggleModal}
-                  userMenuBtnRef={userMenuBtnRef}
-                  user={user}
-               />
+                  className='top-12 left-0 w-52 -translate-x-3 text-xs font-normal'
+               >
+                  <ProfileModal />
+               </ModalTemplate>
             </div>
          ) : (
             <SignInButton mode='modal' />

@@ -1,8 +1,8 @@
 import CompleteButton from '../CompleteButton';
 import StarButton from '../StarButton';
 import TaskDescription from '../TaskDescription';
+import AddStep from './AddStep';
 import BoxTemplate from './BoxTemplate';
-import Step from './Step';
 
 function TaskOverView({ task }) {
    return (
@@ -17,8 +17,8 @@ function TaskOverView({ task }) {
             {/* Added classes to identify the buttons for click handling */}
             <StarButton task={task} className='star-btn' />
          </div>
-         {/* ADD step */}
-         <Step className='px-1' />
+
+         <AddStep className='px-1' />
       </BoxTemplate>
    );
 }
