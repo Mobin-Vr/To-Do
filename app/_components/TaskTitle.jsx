@@ -1,7 +1,7 @@
-export default function TaskDescription({ task }) {
+export default function TaskTitle({ task, className }) {
    return (
       <span
-         className={`ml-2 text-sm font-normal ${
+         className={`${className} ${
             task.isCompleted
                ? 'line-through text-gray-800 decoration-gray-500 decoration-slice decoration-1'
                : ''

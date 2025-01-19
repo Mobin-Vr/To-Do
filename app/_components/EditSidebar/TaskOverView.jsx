@@ -1,24 +1,27 @@
 import CompleteButton from '../CompleteButton';
 import StarButton from '../StarButton';
-import TaskDescription from '../TaskDescription';
-import AddStep from './AddStep';
+import AddStep from './Step/AddStep';
 import BoxTemplate from './BoxTemplate';
+import StepsList from './Step/StepsList';
+import TaskTitleEditor from './TaskTitleEditor';
 
 function TaskOverView({ task }) {
    return (
-      <BoxTemplate className='p-3'>
-         <div className='flex justify-between items-center mb-2'>
-            <div className='flex items-center'>
-               {/* Added classes to identify the buttons for click handling */}
-               <CompleteButton task={task} className='complete-btn' />
-               <TaskDescription task={task} />
-            </div>
+      <BoxTemplate className='flex flex-col p-3 py-0'>
+         <div className='flex justify-between items-start'>
+            <CompleteButton task={task} className='mt-3' />
 
-            {/* Added classes to identify the buttons for click handling */}
-            <StarButton task={task} className='star-btn' />
+            <TaskTitleEditor
+               task={task}
+               className='text-xl flex flex-col justify-center flex-1 font-medium whitespace-pre-wrap break-words h-fit overflow-hidden w-[95%]'
+            />
+
+            <StarButton task={task} className='mt-3' />
          </div>
 
-         <AddStep className='px-1' />
+         <StepsList task={task} />
+
+         <AddStep className='p-1' taskId={task.id} />
       </BoxTemplate>
    );
 }

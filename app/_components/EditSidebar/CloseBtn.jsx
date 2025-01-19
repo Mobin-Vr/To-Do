@@ -20,7 +20,7 @@ export default function CloseBtn() {
 
    return (
       <div className='w-full flex justify-end '>
-         <button ref={closeRef} onClick={handleClose} className='p-2 pb-4'>
+         <button ref={closeRef} onClick={handleClose} className='p-1 pb-3'>
             <XIcon />
          </button>
       </div>

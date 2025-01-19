@@ -34,8 +34,8 @@ export default function AddRepeat({ task }) {
          <BoxBtn
             text='Repeat'
             activeText={activeText}
-            icon='RepeatIcon'
-            size='16px'
+            icon='RefreshCw'
+            size='18px'
             toggleModal={toggleModal}
             clearDate={removeRepeat}
             isDateSet={hasRepeat}

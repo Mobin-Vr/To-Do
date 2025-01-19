@@ -34,7 +34,6 @@ function AddNote({ boxRef, updateNote, task }) {
             onInput={handleInput} // Triggered in real-time whenever the content changes (e.g., typing, pasting, etc.)
             onChange={(e) => handleNote(e.target.value)} // Triggered when the user finalizes their input (e.g., when the input loses focus)
             placeholder='Add note'
-            rows='0'
             maxLength={500}
             className='w-full bg-inherit placeholder:text-gray-700 outline-none resize-none'
          />

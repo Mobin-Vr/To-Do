@@ -4,8 +4,9 @@ import useTaskStore from '../store';
 import CompleteButton from './CompleteButton';
 import EditSidebar from './EditSidebar/EditSidebar';
 import StarButton from './StarButton';
-import TaskDescription from './TaskDescription';
+import TaskTitle from './TaskTitle';
 import { delay } from '../_lib/utils';
+import TaskDetails from './TaskDetails';
 
 /* 
    We used 'closest' instead of 'ref' because 'ref' can sometimes fail to detect clicks, especially if React hasn't updated the DOM yet. 
@@ -35,20 +36,20 @@ export default function TaskItem({ task, listRef, bgColor }) {
    const {
       toggleEditSidebar,
       isEditSidebarOpen,
-      taskList,
+      TasksList,
       activeTaskId,
       setActiveTaskId,
    } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
          isEditSidebarOpen: state.isEditSidebarOpen,
-         taskList: state.taskList,
+         TasksList: state.TasksList,
          activeTaskId: state.activeTaskId,
          setActiveTaskId: state.setActiveTaskId,
       }))
    );
 
-   const activeTask = taskList.find((task) => task.id === activeTaskId);
+   const activeTask = TasksList.find((task) => task.id === activeTaskId);
 
    /* Handle sidebar toggle when clicking on the task item. (NOT CompleteButton and StarButton) */
    async function handleToggleSidebar(e) {
@@ -103,25 +104,27 @@ export default function TaskItem({ task, listRef, bgColor }) {
          <li
             ref={listRef}
             onClick={handleToggleSidebar}
-            className='task-item' // for click handeling
+            className='task-item min-h-fit' // for click handeling
             style={{
                '--default-bg-color': bgColor[1],
                '--hover-bg-color': bgColor[2],
             }}
          >
-            <div className='flex justify-between items-center'>
-               <div className='flex items-center'>
-                  {/* Added classes to identify the buttons for click handling */}
-                  <CompleteButton task={task} className='complete-btn' />
-                  <TaskDescription task={task} />
+            <div className='flex justify-between items-start px-2'>
+               <CompleteButton task={task} className='complete-btn mt-1' />
+
+               <div className='flex flex-col justify-center overflow-hidden flex-1 px-2'>
+                  {/* Added class to identify the buttons for click handling */}
+                  <TaskTitle
+                     task={task}
+                     className='text-sm font-normal whitespace-pre-wrap break-words h-fit overflow-hidden w-[95%]'
+                  />
+
+                  <TaskDetails task={task} />
                </div>
 
-               {/* Added classes to identify the buttons for click handling */}
-               <StarButton task={task} className='star-btn' />
-            </div>
-
-            <div className='font-light text-[0.65rem] text-gray-800 ml-7'>
-               Tasks
+               {/* Added class to identify the buttons for click handling */}
+               <StarButton task={task} className='star-btn mt-1' />
             </div>
 
             {/* Include the styles */}

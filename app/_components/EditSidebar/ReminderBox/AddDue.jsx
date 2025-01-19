@@ -28,7 +28,7 @@ export default function AddDue({ task }) {
             text='Add due date'
             activeText={activeText}
             icon='CalendarIcon'
-            size='16px'
+            size='18px'
             isDateSet={hasDueDate}
             toggleModal={toggleModal}
             clearDate={removeDueDate}

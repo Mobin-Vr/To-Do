@@ -27,7 +27,7 @@ export default function AddReminder({ task }) {
             text='Remind me'
             activeText={activeText}
             icon='ClockIcon'
-            size='16px'
+            size='18px'
             weekday={weekday}
             isDateSet={hasReminder}
             toggleModal={toggleModal}

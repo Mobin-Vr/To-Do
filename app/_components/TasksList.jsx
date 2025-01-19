@@ -3,14 +3,14 @@ import TaskGroup from './TaskGroup';
 import CompletedToggle from './CompletedToggle';
 import useTaskStore from '../store';
 
-export default function TaskList({ listRef, bgColor }) {
+export default function TasksList({ listRef, bgColor }) {
    const [isCompletedVisible, setCompletedVisible] = useState(false);
-   const taskList = useTaskStore((state) => state.taskList);
+   const TasksList = useTaskStore((state) => state.TasksList);
 
-   if (taskList.length === 0) return null;
+   if (TasksList.length === 0) return null;
 
-   const uncompletedTasks = taskList.filter((task) => !task.isCompleted);
-   const completedTasks = taskList.filter((task) => task.isCompleted);
+   const uncompletedTasks = TasksList.filter((task) => !task.isCompleted);
+   const completedTasks = TasksList.filter((task) => task.isCompleted);
 
    const sortedCompletedTasks = completedTasks.sort(
       (a, b) => b.isStarred - a.isStarred

@@ -16,14 +16,14 @@ export default function Page() {
       listIcon: '',
    };
 
-   const taskList = useTaskStore((state) => state.taskList);
+   const TasksList = useTaskStore((state) => state.TasksList);
    const listRef = useRef(null);
 
    useEffect(() => {
       if (listRef.current) {
          listRef.current.scrollIntoView({ behavior: 'smooth' });
       }
-   }, [taskList.length]);
+   }, [TasksList.length]);
 
    return <Template listRef={listRef} listConfig={listConfig} />;
 }

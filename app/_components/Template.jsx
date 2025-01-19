@@ -1,6 +1,6 @@
 import AppHeader from './AppHeader';
 import TaskInput from './TaskInput';
-import TaskList from './TaskList';
+import TasksList from './TasksList';
 
 export default function Template({ listRef, listConfig }) {
    return (
@@ -14,11 +14,11 @@ export default function Template({ listRef, listConfig }) {
          />
 
          <div className='px-6 sm:px-10 my-2 h-full flex-grow overflow-auto'>
-            <TaskList listRef={listRef} bgColor={listConfig.bgColor} />
+            <TasksList listRef={listRef} bgColor={listConfig.bgColor} />
          </div>
 
          <TaskInput
-            className='px-6 sm:px-10 z-10 h-[5.5rem] w-full sticky bottom-0'
+            className='px-6 sm:px-10 z-10 h-[7rem] w-full sticky bottom-0'
             bgColor={listConfig.bgColor}
          />
       </div>

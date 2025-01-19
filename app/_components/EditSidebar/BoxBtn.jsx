@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
    CalendarIcon,
    PaperClipIcon,
-   RepeatIcon,
+   RefreshCw,
    XIcon,
    ClockIcon,
    SunIcon,
@@ -13,7 +13,7 @@ const iconsMap = {
    ClockIcon,
    SunIcon,
    CalendarIcon,
-   RepeatIcon,
+   RefreshCw,
    PaperClipIcon,
 };
 
@@ -34,7 +34,7 @@ export default function BoxBtn({
    const textColor = isDateSet ? 'text-blue-700' : '';
 
    return (
-      <div className='flex font-normal justify-between items-center text-gray-600 relative'>
+      <div className='flex justify-between items-center relative'>
          <button
             disabled={disabled}
             onClick={toggleModal}
@@ -48,11 +48,11 @@ export default function BoxBtn({
                </span>
             )}
             <div className='flex flex-col mt-1 h-10 justify-center leading-tight'>
-               <span className={`${textColor} text-[0.78rem] font-normal cap`}>
+               <span className={`${textColor} capitalize`}>
                   {isDateSet ? activeText : text}
                </span>
                {isDateSet && (
-                  <span className='text-start text-[0.72rem] text-gray-500'>
+                  <span className='text-start text-xs text-gray-500 capitalize'>
                      {weekday}
                   </span>
                )}

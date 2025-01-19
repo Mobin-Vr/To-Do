@@ -28,8 +28,8 @@ export default function ActionFooter({
    }
 
    return (
-      <div className='flex items-center gap-4 h-9 border border-t-1 border-gray-200 text-gray-700 p-3 font-light justify-between relative'>
-         <span className='w-full text-center text-xs'>{ActionFooterText}</span>
+      <div className='flex items-center gap-4 h-12 border border-t-1 border-gray-200 text-gray-700 p-3 font-light justify-between relative'>
+         <span className='w-full text-center'>{ActionFooterText}</span>
 
          <button
             onClick={handleDelete}

@@ -15,8 +15,6 @@ export default function TaskInput({ bgColor, className }) {
       e.preventDefault();
       if (taskInput.trim() === '') return;
 
-      const createdAt = getDateNowIso();
-
       const newItem = {
          id: generateNewUuid(),
          title: taskInput,
@@ -24,6 +22,7 @@ export default function TaskInput({ bgColor, className }) {
          isStarred: false,
          note: '',
          categoryId: null,
+         isAddedToMyDay: false,
          updatedAt: null,
          completedAt: null,
          createdAt: getDateNowIso(),
@@ -32,6 +31,7 @@ export default function TaskInput({ bgColor, className }) {
          repeat: null,
          parentTaskId: null,
          assignedTo: null,
+         steps: [],
       };
 
       addTaskToStore(newItem);
@@ -49,7 +49,7 @@ export default function TaskInput({ bgColor, className }) {
    return (
       <div className={`${className}`} style={{ backgroundColor: bgColor[0] }}>
          <form
-            className='flex items-center relative h-[2.65rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
+            className='flex items-center relative h-[2.9rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
             onSubmit={handleSubmit}
          >
             <button className='absolute left-2 cursor-pointer'>
