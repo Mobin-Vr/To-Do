@@ -12,6 +12,7 @@ import { getDateNowIso } from './_lib/utils';
 const initialState = {
    isSidebarOpen: false,
    isEditSidebarOpen: false,
+   activeTask: {},
    isSyncing: false,
    offlineLogMode: false,
    conectionStatus: {}, // {isConected, isOnline, lastOnline}
@@ -26,7 +27,9 @@ const useTaskStore = create(
          (set, get) => ({
             isSidebarOpen: initialState.isSidebarOpen,
             isEditSidebarOpen: initialState.isEditSidebarOpen,
+            activeTask: initialState.activeTask,
             isSyncing: initialState.isSyncing,
+            offlineLogMode: initialState.offlineLogMode,
             conectionStatus: initialState.conectionStatus,
             userInfo: initialState.userInfo,
             tasksList: initialState.tasksList,
@@ -56,6 +59,7 @@ const useTaskStore = create(
                   produce((state) => {
                      // Add the task to LC
                      state.tasksList.push(task);
+                     state.activeTask = task;
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -725,6 +729,15 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      state.isSyncing = bool;
+                  })
+               );
+            },
+
+            //12. Set active task (To show in the EditSidebar)
+            setActiveTask: (task) => {
+               set(
+                  produce((state) => {
+                     state.activeTask = task;
                   })
                );
             },

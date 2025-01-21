@@ -7,16 +7,24 @@ import useTaskStore from '../store';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function TasksList({ listRef, bgColor }) {
-   const { toggleEditSidebar, isEditSidebarOpen, tasksList } = useTaskStore(
+   const {
+      toggleEditSidebar,
+      isEditSidebarOpen,
+      tasksList,
+      activeTask,
+      setActiveTask,
+   } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
          isEditSidebarOpen: state.isEditSidebarOpen,
          tasksList: state.tasksList,
+         activeTask: state.activeTask,
+         setActiveTask: state.setActiveTask,
       }))
    );
 
    const [isCompletedVisible, setCompletedVisible] = useState(false);
-   const [activeTask, setActiveTask] = useState(tasksList[0]);
+   console.log('>>>', activeTask);
    // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
 
    /**
@@ -25,8 +33,10 @@ export default function TasksList({ listRef, bgColor }) {
     * This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state.
     */
    useEffect(() => {
-      setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
-   }, [tasksList, activeTask.id]);
+      if (activeTask === undefined) setActiveTask(tasksList[0]);
+      else setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
+      console.log('efect:', activeTask);
+   }, [tasksList, activeTask, setActiveTask]);
 
    // Handle outside clicks
    useEffect(() => {
@@ -65,7 +75,7 @@ export default function TasksList({ listRef, bgColor }) {
       if (isEditSidebarOpen && !cond) {
          toggleEditSidebar();
          await delay(200);
-         setActiveTask(tasksList[0]);
+         setActiveTask(selectedTask);
          toggleEditSidebar();
       }
    }
