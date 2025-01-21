@@ -1,5 +1,6 @@
 import { DotIcon } from '@/public/icons';
 import MenuButton from './MenuSidebar/MenuButton';
+import SortMethodBtn from './SortMethodBtn';
 
 export default function AppHeader({ listConfig, className }) {
    const { bgColor, listName, listIcon } = listConfig;
@@ -22,9 +23,8 @@ export default function AppHeader({ listConfig, className }) {
                {listIcon}
                {listName}
             </h1>
-            <button>
-               <DotIcon color={bgColor[3]} />
-            </button>
+
+            <SortMethodBtn bgColor={bgColor[3]} />
          </div>
 
          {listName === 'My Day' && (

@@ -674,3 +674,39 @@ export const NoteIcon = ({ size = '14px', color = '#586570' }) => (
       ></path>
    </svg>
 );
+
+// Alphabet Icon
+export const AlphabetIcon = ({ size = '14px', color = '#586570' }) => (
+   <svg
+      width={size}
+      height={size}
+      fill={color}
+      viewBox='0 0 1920 1920'
+      xmlns='http://www.w3.org/2000/svg'
+   >
+      <path
+         d='M1549.418 299.605V1429.62l203.915-204.032L1920 1392.255l-488.451 488.57-488.57-488.57 166.668-166.667 204.032 204.032V299.605h235.74ZM488.57 160l488.57 488.57-166.67 166.548-204.031-203.914v1129.898h-235.74V611.204L166.668 815.12 0 648.569 488.57 160Z'
+         fillRule='evenodd'
+      ></path>
+   </svg>
+);
+
+// Sort Icon
+export const SortIcon = ({ size = '14px', color = '#586570' }) => (
+   <svg
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+   >
+      <path
+         id='Vector'
+         d='M4 17H10M4 12H13M18 11V19M18 19L21 16M18 19L15 16M4 7H16'
+         stroke={color}
+         strokeWidth='2'
+         strokeLinecap='round'
+         strokeLinejoin='round'
+      ></path>
+   </svg>
+);

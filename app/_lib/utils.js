@@ -98,6 +98,33 @@ export function getRelativeDay(date) {
    return null;
 }
 
+export function sortTasks(tasks, sortOption) {
+   switch (sortOption) {
+      case 'importance':
+         return [...tasks].sort((a, b) => b.isStarred - a.isStarred);
+
+      case 'dueDate':
+         return [...tasks].sort((a, b) => {
+            if (!a.dueDate) return 1; // If no due date, push to the end
+            if (!b.dueDate) return -1;
+            return new Date(a.dueDate) - new Date(b.dueDate);
+         });
+
+      case 'alphabet':
+         return [...tasks].sort((a, b) =>
+            a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+         );
+
+      case 'creationDate':
+         return [...tasks].sort(
+            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+         );
+
+      default:
+         return tasks; // If no sort option matches, return as-is
+   }
+}
+
 // Route background color settings
 // [ 0  , 1   ,  2     , 3   , 4  ]
 // [bg1, bg2, bg-hover, txt1, txt2]

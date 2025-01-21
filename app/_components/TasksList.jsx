@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { delay } from '../_lib/utils';
+import { delay, sortTasks } from '../_lib/utils';
 import CompletedToggle from './CompletedToggle';
 import EditSidebar from './EditSidebar/EditSidebar';
 import TaskGroup from './TaskGroup';
@@ -13,6 +13,7 @@ export default function TasksList({ listRef, bgColor }) {
       tasksList,
       activeTask,
       setActiveTask,
+      sortMethod,
    } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
@@ -20,22 +21,16 @@ export default function TasksList({ listRef, bgColor }) {
          tasksList: state.tasksList,
          activeTask: state.activeTask,
          setActiveTask: state.setActiveTask,
+         sortMethod: state.sortMethod,
       }))
    );
 
    const [isCompletedVisible, setCompletedVisible] = useState(false);
-   console.log('>>>', activeTask);
    // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
 
-   /**
-    * Without this useEffect, activeTask would only update when handleToggleSidebar runs.
-    * This causes the activeTask to become stale if tasksList changes elsewhere.
-    * This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state.
-    */
+   /* Without this useEffect, activeTask would only update when handleToggleSidebar runs. This causes the activeTask to become stale if tasksList changes elsewhere. This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state. */
    useEffect(() => {
-      if (activeTask === undefined) setActiveTask(tasksList[0]);
-      else setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
-      console.log('efect:', activeTask);
+      setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
    }, [tasksList, activeTask, setActiveTask]);
 
    // Handle outside clicks
@@ -82,14 +77,11 @@ export default function TasksList({ listRef, bgColor }) {
 
    if (tasksList.length === 0) return null;
 
-   const uncompletedTasks = tasksList.filter((task) => !task.isCompleted);
    const completedTasks = tasksList.filter((task) => task.isCompleted);
-   const sortedCompletedTasks = completedTasks.sort(
-      (a, b) => b.isStarred - a.isStarred
-   );
-   const sortedUncompletedTasks = uncompletedTasks.sort(
-      (a, b) => b.isStarred - a.isStarred
-   );
+   const uncompletedTasks = tasksList.filter((task) => !task.isCompleted);
+
+   const sortedCompletedTasks = sortTasks(completedTasks, sortMethod);
+   const sortedUncompletedTasks = sortTasks(uncompletedTasks, sortMethod);
 
    return (
       <div>

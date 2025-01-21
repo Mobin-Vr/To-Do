@@ -19,6 +19,7 @@ const initialState = {
    userInfo: {},
    tasksList: [],
    changeLog: [],
+   sortMethod: 'importance',
 };
 
 const useTaskStore = create(
@@ -34,6 +35,7 @@ const useTaskStore = create(
             userInfo: initialState.userInfo,
             tasksList: initialState.tasksList,
             changeLog: initialState.changeLog,
+            sortMethod: initialState.sortMethod,
 
             // 0. Toggle sidebar
             toggleSidebar: () => {
@@ -738,6 +740,14 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      state.activeTask = task;
+                  })
+               );
+            },
+            //12. Set active task (To show in the EditSidebar)
+            setSortMethod: (sortMethod) => {
+               set(
+                  produce((state) => {
+                     state.sortMethod = sortMethod;
                   })
                );
             },
