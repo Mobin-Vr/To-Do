@@ -16,9 +16,8 @@ const initialState = {
    offlineLogMode: false,
    conectionStatus: {}, // {isConected, isOnline, lastOnline}
    userInfo: {},
-   TasksList: [],
+   tasksList: [],
    changeLog: [],
-   activeTaskId: null,
 };
 
 const useTaskStore = create(
@@ -30,9 +29,8 @@ const useTaskStore = create(
             isSyncing: initialState.isSyncing,
             conectionStatus: initialState.conectionStatus,
             userInfo: initialState.userInfo,
-            TasksList: initialState.TasksList,
+            tasksList: initialState.tasksList,
             changeLog: initialState.changeLog,
-            activeTaskId: initialState.activeTaskId,
 
             // 0. Toggle sidebar
             toggleSidebar: () => {
@@ -57,7 +55,7 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      // Add the task to LC
-                     state.TasksList.push(task);
+                     state.tasksList.push(task);
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -87,11 +85,11 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      // Delete the task from LC
-                     state.TasksList = state.TasksList.filter(
+                     state.tasksList = state.tasksList.filter(
                         (task) => task.id !== id
                      );
 
-                     const taskToDelete = state.TasksList.find(
+                     const taskToDelete = state.tasksList.find(
                         (task) => task.id === id
                      );
 
@@ -126,7 +124,7 @@ const useTaskStore = create(
             toggleCompleted: async (id) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -162,7 +160,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -181,7 +179,7 @@ const useTaskStore = create(
             toggleStarred: async (id) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -215,7 +213,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -230,7 +228,7 @@ const useTaskStore = create(
             updateNote: async (id, note) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -264,7 +262,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -279,7 +277,7 @@ const useTaskStore = create(
             updateReminder: async (id, reminder) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -313,7 +311,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -328,7 +326,7 @@ const useTaskStore = create(
             updateDueDate: async (id, dueDate) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -362,7 +360,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -377,7 +375,7 @@ const useTaskStore = create(
             updateRepeat: async (id, repeat) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -411,7 +409,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -426,7 +424,7 @@ const useTaskStore = create(
             toggleAddedToMyDay: async (id) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -460,7 +458,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -478,7 +476,7 @@ const useTaskStore = create(
             updateTitle: async (id, newTitle) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
@@ -512,7 +510,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((item) => item.id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -527,7 +525,7 @@ const useTaskStore = create(
             addStep: async (taskId, newStep) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === taskId
                      );
                      const updateTime = getDateNowIso();
@@ -561,7 +559,7 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().TasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find((item) => item.id === taskId);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -576,7 +574,7 @@ const useTaskStore = create(
             updateStep: async (taskId, stepId, updatedFields) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === taskId
                      );
                      const updateTime = getDateNowIso();
@@ -614,7 +612,7 @@ const useTaskStore = create(
                );
 
                // Sync with the database
-               const task = get().TasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find((item) => item.id === taskId);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -629,7 +627,7 @@ const useTaskStore = create(
             removeStep: async (taskId, stepId) => {
                set(
                   produce((state) => {
-                     const task = state.TasksList.find(
+                     const task = state.tasksList.find(
                         (item) => item.id === taskId
                      );
                      const updateTime = getDateNowIso();
@@ -663,7 +661,7 @@ const useTaskStore = create(
                );
 
                // Sync with the database
-               const task = get().TasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find((item) => item.id === taskId);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
@@ -680,7 +678,7 @@ const useTaskStore = create(
 
                set(
                   produce((state) => {
-                     state.TasksList = tasks;
+                     state.tasksList = tasks;
                   })
                );
             },
@@ -727,15 +725,6 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      state.isSyncing = bool;
-                  })
-               );
-            },
-
-            // 12. Setting active task id
-            setActiveTaskId: (id) => {
-               set(
-                  produce((state) => {
-                     state.activeTaskId = id;
                   })
                );
             },

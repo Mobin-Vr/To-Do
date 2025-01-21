@@ -4,8 +4,7 @@ export default function TaskGroup({
    tasks,
    listRef,
    bgColor,
-   activeTaskId,
-   setActiveTaskId,
+   handleToggleSidebar,
 }) {
    return (
       <ul className='list-none p-0 flex flex-col gap-0.5'>
@@ -15,8 +14,7 @@ export default function TaskGroup({
                listRef={listRef}
                key={task.id}
                bgColor={bgColor}
-               activeTaskId={activeTaskId}
-               setActiveTaskId={setActiveTaskId}
+               handleToggleSidebar={handleToggleSidebar}
             />
          ))}
       </ul>

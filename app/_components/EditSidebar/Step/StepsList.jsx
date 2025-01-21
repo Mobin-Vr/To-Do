@@ -1,23 +1,15 @@
-import StepItem from './StepsItem';
+import StepItem from './StepItem';
 
 // export default function StepsList({ listRef, bgColor, task }) {
 export default function StepsList({ task }) {
    const steps = task?.steps;
-   console.log(steps);
 
-   if (steps?.length === 0) return;
+   if (steps.length === 0) return;
 
    return (
-      <ul className='list-none p-0 flex flex-col gap-0.5'>
+      <ul className={`list-none flex flex-col gap-0.5 mb-1`}>
          {steps.map((step) => (
-            <StepItem
-               step={step}
-               taskId={task.id}
-               key={step.id}
-               //  listRef={listRef}
-               //  activeTaskId={activeTaskId}
-               //  setActiveTaskId={setActiveTaskId}
-            />
+            <StepItem step={step} taskId={task.id} key={step.id} />
          ))}
       </ul>
    );

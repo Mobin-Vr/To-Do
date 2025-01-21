@@ -1,11 +1,9 @@
-import { delay, getRelativeDay, getTimeAgo } from '@/app/_lib/utils';
+import { delay, getTimeAgo } from '@/app/_lib/utils';
 import { TrashIcon } from '@/public/icons';
-import { useEffect } from 'react';
 
 export default function ActionFooter({
    task,
    toggleEditSidebar,
-   setActiveTaskId,
    deleteTaskFromStore,
 }) {
    const timeAgoCreated = getTimeAgo(task.createdAt);
@@ -20,10 +18,7 @@ export default function ActionFooter({
       toggleEditSidebar();
       await delay(200);
 
-      // 2. set activeTaskId to null
-      setActiveTaskId(null);
-
-      // 3. Delete the task
+      // 2. Delete the task
       deleteTaskFromStore(task.id);
    }
 

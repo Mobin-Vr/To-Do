@@ -1,11 +1,10 @@
+import { getRelativeDay } from '@/app/_lib/utils';
+import useTaskStore from '@/app/store';
+import { format } from 'date-fns';
 import { useRef, useState } from 'react';
 import ModalTemplate from '../../ModalTemplate';
 import BoxBtn from '../BoxBtn';
 import AddReminderModal from '../RemiderBoxModals/AddReminderModal';
-import { format } from 'date-fns';
-import { getRelativeDay } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
-import { useShallow } from 'zustand/react/shallow';
 
 export default function AddReminder({ task }) {
    const AddReminder = useRef(null);

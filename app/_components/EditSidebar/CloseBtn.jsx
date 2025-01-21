@@ -6,16 +6,14 @@ import { useShallow } from 'zustand/react/shallow';
 export default function CloseBtn() {
    const closeRef = useRef(null);
 
-   const { toggleEditSidebar, setActiveTaskId } = useTaskStore(
+   const { toggleEditSidebar } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
-         setActiveTaskId: state.setActiveTaskId,
       }))
    );
 
    function handleClose() {
       toggleEditSidebar();
-      setActiveTaskId(null);
    }
 
    return (

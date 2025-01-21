@@ -17,14 +17,14 @@ export default function Page() {
       listIcon: <HomeIcon size='24px' color={bgColor[3]} />,
    };
 
-   const TasksList = useTaskStore((state) => state.TasksList);
+   const tasksList = useTaskStore((state) => state.tasksList);
    const listRef = useRef(null);
 
    useEffect(() => {
       if (listRef.current) {
          listRef.current.scrollIntoView({ behavior: 'smooth' });
       }
-   }, [TasksList.length]);
+   }, [tasksList.length]);
 
    return <Template listRef={listRef} listConfig={listConfig} />;
 }

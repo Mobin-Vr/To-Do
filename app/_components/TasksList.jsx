@@ -1,33 +1,94 @@
-import { useState } from 'react';
-import TaskGroup from './TaskGroup';
+import { useEffect, useState } from 'react';
+import { delay } from '../_lib/utils';
 import CompletedToggle from './CompletedToggle';
+import EditSidebar from './EditSidebar/EditSidebar';
+import TaskGroup from './TaskGroup';
 import useTaskStore from '../store';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function TasksList({ listRef, bgColor }) {
+   const { toggleEditSidebar, isEditSidebarOpen, tasksList } = useTaskStore(
+      useShallow((state) => ({
+         toggleEditSidebar: state.toggleEditSidebar,
+         isEditSidebarOpen: state.isEditSidebarOpen,
+         tasksList: state.tasksList,
+      }))
+   );
+
    const [isCompletedVisible, setCompletedVisible] = useState(false);
-   const TasksList = useTaskStore((state) => state.TasksList);
+   const [activeTask, setActiveTask] = useState(tasksList[0]);
+   // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
 
-   if (TasksList.length === 0) return null;
+   /**
+    * Without this useEffect, activeTask would only update when handleToggleSidebar runs.
+    * This causes the activeTask to become stale if tasksList changes elsewhere.
+    * This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state.
+    */
+   useEffect(() => {
+      setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
+   }, [tasksList, activeTask.id]);
 
-   const uncompletedTasks = TasksList.filter((task) => !task.isCompleted);
-   const completedTasks = TasksList.filter((task) => task.isCompleted);
+   // Handle outside clicks
+   useEffect(() => {
+      async function handleClickOutside(e) {
+         if (
+            isEditSidebarOpen &&
+            !e.target.closest('.task-item') &&
+            !e.target.closest('.edit-sidebar')
+         )
+            toggleEditSidebar();
+      }
 
+      document.addEventListener('mousedown', handleClickOutside);
+      return () =>
+         document.removeEventListener('mousedown', handleClickOutside);
+   }, [toggleEditSidebar, isEditSidebarOpen]);
+
+   // Handle sidebar toggle when clicking on the task item.
+   async function handleToggleSidebar(selectedTask, e) {
+      if (e.target.closest('.complete-btn') || e.target.closest('.star-btn'))
+         return;
+
+      const cond = e.target.closest('.task-item').id === activeTask?.id;
+
+      if (!isEditSidebarOpen) {
+         setActiveTask(selectedTask);
+         await delay(300);
+         toggleEditSidebar();
+      }
+
+      if (isEditSidebarOpen && cond) {
+         toggleEditSidebar();
+         setActiveTask(tasksList[0]); // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
+      }
+
+      if (isEditSidebarOpen && !cond) {
+         toggleEditSidebar();
+         await delay(200);
+         setActiveTask(tasksList[0]);
+         toggleEditSidebar();
+      }
+   }
+
+   if (tasksList.length === 0) return null;
+
+   const uncompletedTasks = tasksList.filter((task) => !task.isCompleted);
+   const completedTasks = tasksList.filter((task) => task.isCompleted);
    const sortedCompletedTasks = completedTasks.sort(
       (a, b) => b.isStarred - a.isStarred
    );
-
    const sortedUncompletedTasks = uncompletedTasks.sort(
       (a, b) => b.isStarred - a.isStarred
    );
 
    return (
-      <>
+      <div>
          <TaskGroup
             tasks={sortedUncompletedTasks}
             listRef={listRef}
             bgColor={bgColor}
+            handleToggleSidebar={handleToggleSidebar}
          />
-
          {completedTasks.length > 0 && (
             <>
                <CompletedToggle
@@ -41,10 +102,13 @@ export default function TasksList({ listRef, bgColor }) {
                      tasks={sortedCompletedTasks}
                      listRef={listRef}
                      bgColor={bgColor}
+                     handleToggleSidebar={handleToggleSidebar}
                   />
                )}
             </>
          )}
-      </>
+
+         <EditSidebar task={activeTask} className='edit-sidebar' />
+      </div>
    );
 }

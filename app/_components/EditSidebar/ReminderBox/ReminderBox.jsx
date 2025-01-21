@@ -1,6 +1,6 @@
 import Border from '../../_ui/Border';
-import AddDue from './AddDue';
 import BoxTemplate from '../BoxTemplate';
+import AddDue from './AddDue';
 import AddReminder from './AddReminder';
 import AddRepeat from './AddRepeat';
 

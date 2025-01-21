@@ -1,0 +1,14 @@
+import { useRef } from 'react';
+import AddStep from './AddStep';
+import StepsList from './StepsList';
+
+export default function Steps({ task }) {
+   const addStepRef = useRef(null); // for managing scroll
+
+   return (
+      <>
+         <StepsList task={task} />
+         <AddStep task={task} addStepRef={addStepRef} />
+      </>
+   );
+}
