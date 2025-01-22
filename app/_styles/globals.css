@@ -11,6 +11,11 @@ body {
    height: 100%;
 }
 
+input[type='time']::-webkit-calendar-picker-indicator {
+   display: none;
+   -webkit-appearance: none;
+}
+
 ::-webkit-scrollbar {
    width: 6px;
 }
@@ -101,4 +106,13 @@ body {
 }
 
 @layer base {
+}
+
+@layer base {
+   * {
+      @apply border-border;
+   }
+   body {
+      @apply bg-background text-foreground;
+   }
 }

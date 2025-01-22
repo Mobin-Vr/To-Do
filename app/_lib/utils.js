@@ -2,13 +2,10 @@ import { clsx } from 'clsx';
 import {
    addDays,
    addHours,
-   format,
    formatDistanceToNow,
    isSameDay,
-   parse,
    parseISO,
    roundToNearestMinutes,
-   set,
    startOfDay,
 } from 'date-fns';
 
@@ -123,6 +120,27 @@ export function sortTasks(tasks, sortOption) {
       default:
          return tasks; // If no sort option matches, return as-is
    }
+}
+
+// It make a string (HH:MM) base on date
+export function getHourMinString(inputDate) {
+   const date = new Date(inputDate);
+   const hours = String(date.getHours()).padStart(2, '0');
+   const minutes = String(date.getMinutes()).padStart(2, '0');
+   return `${hours}:${minutes}`;
+}
+
+// Function to replace time in an ISO date with new hours and minutes
+export function replaceTimeInIsoDate(inputDate, timeString) {
+   const [hours, minutes] = timeString.split(':');
+
+   const year = inputDate.getFullYear();
+   const month = String(inputDate.getMonth() + 1).padStart(2, '0');
+   const day = String(inputDate.getDate()).padStart(2, '0');
+
+   const date = new Date(`${year}-${month}-${day}T${hours}:${minutes}:00`);
+
+   return date.toISOString();
 }
 
 // Route background color settings

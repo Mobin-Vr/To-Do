@@ -1,6 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { Roboto } from 'next/font/google';
 import './_styles/globals.css';
+
 import HealthStatusSync from './_components/HealthStatusSync';
 
 import Sidebar from './_components/menuSidebar/Sidebar';

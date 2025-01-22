@@ -287,10 +287,14 @@ const useTaskStore = create(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
+                     const isoDate =
+                        reminder === null
+                           ? null
+                           : new Date(reminder).toISOString();
 
                      // Update the task reminder
                      if (task) {
-                        task.reminder = reminder;
+                        task.reminder = isoDate;
                         task.updatedAt = updateTime;
                      }
 
@@ -336,10 +340,14 @@ const useTaskStore = create(
                         (item) => item.id === id
                      );
                      const updateTime = getDateNowIso();
+                     const isoDate =
+                        dueDate === null
+                           ? null
+                           : new Date(dueDate).toISOString();
 
                      // Update the task dueDate
                      if (task) {
-                        task.dueDate = dueDate;
+                        task.dueDate = isoDate;
                         task.updatedAt = updateTime;
                      }
 

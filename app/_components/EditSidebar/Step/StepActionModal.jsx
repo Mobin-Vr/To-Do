@@ -5,11 +5,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { getDateNowIso } from '@/app/_lib/utils';
 
 export default function StepActionModal({ taskId, step }) {
-   // update store (id, dueDate)
-   //  function handleSelect(day) {
-   //     updateDueDate(task.id, day.toISOString());
-   //  }
-
    const { updateStep, removeStep, addTaskToStore } = useTaskStore(
       useShallow((state) => ({
          updateStep: state.updateStep,

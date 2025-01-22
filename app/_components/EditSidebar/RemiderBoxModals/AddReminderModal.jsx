@@ -11,6 +11,7 @@ export default function AddReminderModal({
    updateReminder,
    task,
    isForTaskInput = false,
+   toggleModalDatePicker,
 }) {
    const today = isSameDay(new Date(), getRoundedTime('today'))
       ? getRoundedTime('today')
@@ -20,8 +21,8 @@ export default function AddReminderModal({
 
    // update store (id, reminder)
    const handleSelect = (day) => {
-      if (!isForTaskInput) updateReminder(task.id, day.toISOString()); // for sidebar
-      if (isForTaskInput) updateReminder(day.toISOString()); // for task input (just update the locale state before creating a task)
+      if (!isForTaskInput) updateReminder(task.id, day); // for sidebar
+      if (isForTaskInput) updateReminder(day); // for task input (just update the locale state before creating a task)
    };
 
    return (
@@ -46,6 +47,7 @@ export default function AddReminderModal({
             icon={<TimerCalendarIcon size='14px' />}
             label='Pick a date & time'
             className=''
+            onClick={toggleModalDatePicker}
          />
       </>
    );

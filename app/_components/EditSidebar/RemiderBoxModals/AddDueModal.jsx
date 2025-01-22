@@ -12,6 +12,7 @@ export default function AddDueModal({
    updateDueDate,
    task,
    isForTaskInput = false,
+   toggleModal,
 }) {
    const today = getRoundedTime('today');
    const tomorrow = getRoundedTime('tomorrow');
@@ -19,8 +20,8 @@ export default function AddDueModal({
 
    // update store (id, dueDate)
    function handleSelect(day) {
-      if (!isForTaskInput) updateDueDate(task.id, day.toISOString());
-      if (isForTaskInput) updateDueDate(day.toISOString());
+      if (!isForTaskInput) updateDueDate(task.id, day);
+      if (isForTaskInput) updateDueDate(day);
    }
 
    return (
@@ -50,7 +51,7 @@ export default function AddDueModal({
          <ModalActionButton
             icon={<PeakCalendarIcon size='16px' />}
             label='Pick a date'
-            className=''
+            onClick={() => toggleModal()}
          />
       </>
    );

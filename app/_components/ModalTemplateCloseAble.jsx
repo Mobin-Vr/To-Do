@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { delay } from '../_lib/utils';
 
-export default function ModalTemplate({
+export default function ModalTemplateCloseAble({
    children,
    parentRef,
    className,
@@ -12,9 +12,11 @@ export default function ModalTemplate({
 
    useEffect(() => {
       if (isModalOpen) {
-         async function handleClickOutside() {
-            await delay(300);
-            toggleModal();
+         async function handleClickOutside(e) {
+            if (!parentRef.current.contains(e.target)) {
+               await delay(300);
+               toggleModal();
+            }
          }
 
          document.addEventListener('mousedown', handleClickOutside);
