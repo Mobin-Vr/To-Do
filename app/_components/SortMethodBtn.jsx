@@ -1,4 +1,4 @@
-import { DotIcon } from '@/public/icons';
+import { DotIcon, SortIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import ModalTemplate from './ModalTemplate';
 import SortMethodModal from './SortMethodModal';
@@ -15,9 +15,9 @@ function SortMethodBtn({ color }) {
       <div ref={sortRef} className='relative'>
          <button
             onClick={toggleModal}
-            className='h-6 aspect-square rounded-sm flex items-center justify-center hover:bg-gray-300'
+            className='h-6 aspect-square rounded-sm flex items-center justify-center hover:bg-gray-300 scale-x-[-1]'
          >
-            <DotIcon color={color} />
+            <SortIcon size='20px' color={color} />
          </button>
 
          <ModalTemplate

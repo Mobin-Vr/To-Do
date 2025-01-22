@@ -15,7 +15,7 @@ export default function SortMethodModal({ setSortMethod }) {
    return (
       <>
          <ModalActionButton
-            label='Sort Method'
+            label='Sort by'
             className='border-b border-gray-100 text-gray-800 hover:bg-inherit cursor-default'
          />
 
