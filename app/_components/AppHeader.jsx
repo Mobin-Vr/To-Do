@@ -1,5 +1,5 @@
 import { DotIcon } from '@/public/icons';
-import MenuButton from './MenuSidebar/MenuButton';
+import MenuButton from './menuSidebar/MenuButton';
 import SortMethodBtn from './SortMethodBtn';
 
 export default function AppHeader({ listConfig, className }) {

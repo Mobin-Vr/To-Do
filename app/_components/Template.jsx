@@ -1,5 +1,5 @@
 import AppHeader from './AppHeader';
-import TaskInput from './TaskInput';
+import TaskInput from './taskInput/TaskInput';
 import TasksList from './TasksList';
 
 export default function Template({ listRef, listConfig }) {

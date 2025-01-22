@@ -1,7 +1,7 @@
 import CompleteButton from '../CompleteButton';
 import StarButton from '../StarButton';
 import BoxTemplate from './BoxTemplate';
-import Steps from './Step/Steps';
+import Steps from './step/Steps';
 import TaskTitleEditor from './TaskTitleEditor';
 
 function TaskOverView({ task }) {

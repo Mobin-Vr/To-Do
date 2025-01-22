@@ -4,7 +4,7 @@ import { format } from 'date-fns';
 import { useRef, useState } from 'react';
 import ModalTemplate from '../../ModalTemplate';
 import BoxBtn from '../BoxBtn';
-import AddDueModal from '../RemiderBoxModals/AddDueModal';
+import AddDueModal from '../remiderBoxModals/AddDueModal';
 
 export default function AddDue({ task }) {
    const AddDueRef = useRef(null);

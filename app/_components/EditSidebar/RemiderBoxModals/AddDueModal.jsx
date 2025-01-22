@@ -8,14 +8,19 @@ import {
 import { format } from 'date-fns';
 import { ModalActionButton } from './ModalActionBtn';
 
-export default function AddDueModal({ updateDueDate, task }) {
+export default function AddDueModal({
+   updateDueDate,
+   task,
+   isForTaskInput = false,
+}) {
    const today = getRoundedTime('today');
    const tomorrow = getRoundedTime('tomorrow');
    const nextWeek = getRoundedTime('nextWeek');
 
    // update store (id, dueDate)
    function handleSelect(day) {
-      updateDueDate(task.id, day.toISOString());
+      if (!isForTaskInput) updateDueDate(task.id, day.toISOString());
+      if (isForTaskInput) updateDueDate(day.toISOString());
    }
 
    return (

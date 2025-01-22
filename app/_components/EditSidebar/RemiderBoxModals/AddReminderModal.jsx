@@ -7,7 +7,11 @@ import {
 import { format, isSameDay } from 'date-fns';
 import { ModalActionButton } from './ModalActionBtn';
 
-export default function AddReminderModal({ updateReminder, task }) {
+export default function AddReminderModal({
+   updateReminder,
+   task,
+   isForTaskInput = false,
+}) {
    const today = isSameDay(new Date(), getRoundedTime('today'))
       ? getRoundedTime('today')
       : null;
@@ -16,7 +20,8 @@ export default function AddReminderModal({ updateReminder, task }) {
 
    // update store (id, reminder)
    const handleSelect = (day) => {
-      updateReminder(task.id, day.toISOString());
+      if (!isForTaskInput) updateReminder(task.id, day.toISOString()); // for sidebar
+      if (isForTaskInput) updateReminder(day.toISOString()); // for task input (just update the locale state before creating a task)
    };
 
    return (

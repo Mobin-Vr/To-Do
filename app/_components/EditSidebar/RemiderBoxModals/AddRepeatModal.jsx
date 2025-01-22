@@ -1,9 +1,4 @@
-import {
-   getRoundedTime,
-   getWeekendForWeekdays,
-   isWeekday,
-} from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import { getWeekendForWeekdays, isWeekday } from '@/app/_lib/utils';
 import {
    DailyIcon,
    MonthlyIcon,
@@ -11,18 +6,32 @@ import {
    WeeklyIcon,
    YearlyIcon,
 } from '@/public/icons';
-import { useShallow } from 'zustand/react/shallow';
 import { ModalActionButton } from './ModalActionBtn';
 
-export default function AddRepeatModal({ updateRepeat, updateDueDate, task }) {
+export default function AddRepeatModal({
+   updateRepeat,
+   updateDueDate,
+   task,
+   isForTaskInput = false,
+   taskDueDate,
+   taskRepeat,
+}) {
    // Update store (id, repeat)
    function handleSelect(period) {
-      updateRepeat(task.id, period);
+      if (!isForTaskInput) {
+         const nearestFriday = getWeekendForWeekdays(task.dueDate);
+         updateRepeat(task.id, period);
 
-      // for some bug fixes of clicking again on weekdays (repeat) and update the due date if its not a weekday
-      if (task.repeat === 'Weekdays' && !isWeekday(task.dueDate)) {
-         const nearestFridy = getWeekendForWeekdays(task.dueDate);
-         updateDueDate(task.id, nearestFridy);
+         if (task.repeat === 'Weekdays' && !isWeekday(task.dueDate))
+            updateDueDate(task.id, nearestFriday);
+      }
+
+      if (isForTaskInput) {
+         const nearestFriday = getWeekendForWeekdays(taskDueDate);
+         updateRepeat(period);
+
+         if (taskRepeat === 'Weekdays' && !isWeekday(taskDueDate))
+            updateDueDate(nearestFriday);
       }
    }
 

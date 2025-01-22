@@ -7,7 +7,7 @@ import AddFile from './AddFile';
 import AddNote from './AddNote';
 import AddToMyDay from './AddToMyDay';
 import CloseBtn from './CloseBtn';
-import ReminderBox from './ReminderBox/ReminderBox';
+import ReminderBox from './reminderBox/ReminderBox';
 import TaskOverView from './TaskOverView';
 
 export default function EditSidebar({ className, task }) {

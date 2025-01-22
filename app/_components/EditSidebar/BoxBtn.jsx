@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { DEFAULT_COLOR } from '@/app/_lib/utils';
 import {
    CalendarIcon,
+   ClockIcon,
    PaperClipIcon,
    RefreshCw,
-   XIcon,
-   ClockIcon,
    SunIcon,
+   XIcon,
 } from '@/public/icons';
-import { DEFAULT_COLOR } from '@/app/_lib/utils';
 
 const iconsMap = {
    ClockIcon,

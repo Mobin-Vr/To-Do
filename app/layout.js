@@ -3,8 +3,8 @@ import { Roboto } from 'next/font/google';
 import './_styles/globals.css';
 import HealthStatusSync from './_components/HealthStatusSync';
 
-import Sidebar from './_components/MenuSidebar/Sidebar';
-import UserSignupHandler from './_components/MenuSidebar/UserSignupHandler';
+import Sidebar from './_components/menuSidebar/Sidebar';
+import UserSignupHandler from './_components/menuSidebar/UserSignupHandler';
 
 const roboto = Roboto({
    subsets: ['latin'],
