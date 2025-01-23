@@ -3,7 +3,6 @@ import { delay } from '../_lib/utils';
 
 export default function ModalTemplateCloseAble({
    children,
-   parentRef,
    className,
    isModalOpen,
    toggleModal,
@@ -13,7 +12,7 @@ export default function ModalTemplateCloseAble({
    useEffect(() => {
       if (isModalOpen) {
          async function handleClickOutside(e) {
-            if (!parentRef.current.contains(e.target)) {
+            if (!modalRef.current.contains(e.target)) {
                await delay(300);
                toggleModal();
             }
@@ -24,7 +23,7 @@ export default function ModalTemplateCloseAble({
          return () =>
             document.removeEventListener('mousedown', handleClickOutside);
       }
-   }, [isModalOpen, toggleModal, parentRef]);
+   }, [isModalOpen, toggleModal]);
 
    if (!isModalOpen) return null;
 

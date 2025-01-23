@@ -1,10 +1,10 @@
+import { getWeekendForWeekdays, isWeekday } from '@/app/_lib/utils';
+import useTaskStore from '@/app/store';
 import { useEffect, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import ModalTemplate from '../../ModalTemplate';
 import BoxBtn from '../BoxBtn';
 import AddRepeatModal from '../remiderBoxModals/AddRepeatModal';
-import useTaskStore from '@/app/store';
-import { getWeekendForWeekdays, isWeekday } from '@/app/_lib/utils';
-import { useShallow } from 'zustand/react/shallow';
 
 export default function AddRepeat({ task }) {
    const repeatRef = useRef(null);
@@ -30,7 +30,7 @@ export default function AddRepeat({ task }) {
    }, [task.repeat]);
 
    return (
-      <div ref={repeatRef} className='relative'>
+      <div ref={repeatRef} className=''>
          <BoxBtn
             text='Repeat'
             activeText={activeText}
@@ -45,7 +45,7 @@ export default function AddRepeat({ task }) {
             parentRef={repeatRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='top-12 left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
+            className='left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
          >
             <AddRepeatModal
                task={task}

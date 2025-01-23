@@ -4,7 +4,7 @@ import CancelSaveBtn from '../../_ui/CancelSaveBtn';
 import DatePicker from '../../_ui/DatePicker';
 
 export default function DatePickerModal({ updateDueDate, toggleModal, task }) {
-   const [date, setDate] = useState(new Date(task.reminder));
+   const [date, setDate] = useState(new Date(task.dueDate));
 
    function hanldeSave() {
       const due = date.toISOString();

@@ -1,11 +1,11 @@
 import { getRelativeDay } from '@/app/_lib/utils';
 import useTaskStore from '@/app/store';
 import { format } from 'date-fns';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ModalTemplate from '../../ModalTemplate';
 import ModalTemplateCloseAble from '../../ModalTemplateCloseAble';
 import BoxBtn from '../BoxBtn';
 import AddDueModal from '../remiderBoxModals/AddDueModal';
-import ModalTemplate from '../../ModalTemplate';
 import DatePickerModal from '../remiderBoxModals/DatePickerModal';
 
 export default function AddDue({ task }) {
@@ -20,13 +20,15 @@ export default function AddDue({ task }) {
       relativeDay ? relativeDay : format(task.dueDate, 'MMM, dd')
    }`;
 
-   const toggleModal = () => setIsModalOpen(!isModalOpen);
-   const toggleModalDatePicker = () =>
-      setIsDatePickerModalOpen(!isDatePickerModalOpen);
    const removeDueDate = () => updateDueDate(task.id, null);
 
+   const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+   const toggleModalDatePicker = () =>
+      setIsDatePickerModalOpen(!isDatePickerModalOpen);
+
    return (
-      <div ref={AddDueRef} className='relative'>
+      <div ref={AddDueRef} className=''>
          <BoxBtn
             text='Add due date'
             activeText={activeText}
@@ -41,7 +43,7 @@ export default function AddDue({ task }) {
             parentRef={AddDueRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='top-12 left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
+            className='left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
          >
             <AddDueModal
                toggleModal={toggleModalDatePicker}
@@ -51,10 +53,9 @@ export default function AddDue({ task }) {
          </ModalTemplate>
 
          <ModalTemplateCloseAble
-            parentRef={AddDueRef}
             isModalOpen={isDatePickerModalOpen}
             toggleModal={toggleModalDatePicker}
-            className='top-12 left-1/2 -translate-x-1/2 w-auto text-xs font-normal'
+            className='bottom-12 left-1/2 -translate-x-1/2 w-auto text-xs font-normal'
          >
             <DatePickerModal
                updateDueDate={updateDueDate}
