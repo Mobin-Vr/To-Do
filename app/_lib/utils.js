@@ -123,8 +123,7 @@ export function sortTasks(tasks, sortOption) {
 }
 
 // It make a string (HH:MM) base on date
-export function getHourMinString(inputDate) {
-   const date = new Date(inputDate);
+export function getHourMinString(date) {
    const hours = String(date.getHours()).padStart(2, '0');
    const minutes = String(date.getMinutes()).padStart(2, '0');
    return `${hours}:${minutes}`;

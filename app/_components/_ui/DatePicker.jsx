@@ -4,8 +4,9 @@ export default function DatePicker({ date, setDate }) {
    return (
       <Calendar
          mode='single'
-         selected={date ? date : new Date().toISOString()}
+         selected={date}
          onSelect={setDate}
+         disabled={{ before: new Date() }}
          autoFocus
          classNames={{
             day_today: 'bg-blue-700 text-white',

@@ -1,5 +1,3 @@
-import { getHourMinString } from '@/app/_lib/utils';
-
 export default function TimePicker({
    timeInputRef,
    handleInputClick,
@@ -14,7 +12,7 @@ export default function TimePicker({
             ref={timeInputRef}
             onClick={handleInputClick}
             onChange={(e) => setTime(e.target.value)}
-            value={time ? time : getHourMinString(new Date())}
+            value={time}
             className='outline-none border-none p-1.5 text-xl bg-inherit text-white rounded-t-none focus:text-white focus:outline-none focus:ring-none select-none'
          />
       </div>
