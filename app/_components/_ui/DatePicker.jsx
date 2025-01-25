@@ -1,4 +1,4 @@
-import { Calendar } from './calendar';
+import { Calendar } from './Calendar';
 
 export default function DatePicker({ date, setDate }) {
    return (

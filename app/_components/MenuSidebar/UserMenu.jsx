@@ -2,7 +2,7 @@ import { ClerkLoaded, SignInButton, UserButton } from '@clerk/nextjs';
 import React, { useRef, useState } from 'react';
 import ProfileModal from './ProfileModal';
 import UserStatus from './UserStatus';
-import ModalTemplate from '../ModalTemplate';
+import ModalTemplate from '../_ui/ModalTemplate';
 
 function UserMenu({ user, createClerkPasskey, className }) {
    const userMenuBtnRef = useRef(null);

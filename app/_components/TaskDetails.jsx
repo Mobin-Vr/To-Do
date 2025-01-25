@@ -1,5 +1,4 @@
 import { BellIcon, CalendarIcon, NoteIcon, RefreshCw } from '@/public/icons';
-import { getRelativeDay } from '../_lib/utils';
 
 function TaskDetails({ task }) {
    const cond = task.reminder || task.dueDate || task.repeat ? true : false;

@@ -8,7 +8,7 @@ export const UserRoundCog = ({ size = 20, color = '#586570' }) => (
       height={size}
       viewBox='0 0 24 24'
       fill='none'
-      stroke={color}
+      stroke='currentColor'
       strokeWidth='1'
       strokeLinecap='round'
       strokeLinejoin='round'
@@ -36,7 +36,7 @@ export const SettingsIcon = ({ size = 20, color = '#586570' }) => (
       height={size}
       viewBox='0 0 24 24'
       fill='none'
-      stroke={color}
+      stroke='currentColor'
       strokeWidth='1'
       strokeLinecap='round'
       strokeLinejoin='round'
@@ -55,7 +55,7 @@ export const RefreshCw = ({ size = 20, color = '#586570' }) => (
       height={size}
       viewBox='0 0 24 24'
       fill='none'
-      stroke={color}
+      stroke='currentColor'
       strokeWidth='1'
       strokeLinecap='round'
       strokeLinejoin='round'
@@ -69,17 +69,20 @@ export const RefreshCw = ({ size = 20, color = '#586570' }) => (
 );
 
 // Menu Icon
-export const MenuIcon = ({ size = 26, color = '#586570' }) => (
+export const MenuIcon = ({ size = 20, color = '#586570' }) => (
    <svg
+      aria-label=''
+      fill='currentColor'
+      aria-hidden='true'
       width={size}
       height={size}
-      viewBox='0 0 24 24'
-      fill='none'
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
    >
-      <path d='M5 6.5H19V8H5V6.5Z' fill={color}></path>
-      <path d='M5 16.5H19V18H5V16.5Z' fill={color}></path>
-      <path d='M5 11.5H19V13H5V11.5Z' fill={color}></path>
+      <path
+         d='M2 4.5c0-.28.22-.5.5-.5h15a.5.5 0 010 1h-15a.5.5 0 01-.5-.5zm0 5c0-.28.22-.5.5-.5h15a.5.5 0 010 1h-15a.5.5 0 01-.5-.5zm.5 4.5a.5.5 0 000 1h15a.5.5 0 000-1h-15z'
+         fill='currentColor'
+      ></path>
    </svg>
 );
 
@@ -92,12 +95,12 @@ export const ChevronIcon = ({ size = 13, color = '#586570' }) => (
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
    >
-      <path d='M7 15L12 20L17 15M7 9L12 4L17 9' stroke={color}></path>
+      <path d='M7 15L12 20L17 15M7 9L12 4L17 9' stroke='currentColor'></path>
    </svg>
 );
 
 // Sun Icon
-export const SunIcon = ({ size = 20, color = '#586570' }) => (
+export const SunIcon = ({ size = 20, color = '#000' }) => (
    <svg
       width={size}
       height={size}
@@ -105,44 +108,46 @@ export const SunIcon = ({ size = 20, color = '#586570' }) => (
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
    >
-      <circle cx='12' cy='12' r='6' stroke={color}></circle>
-      <path d='M12 2V3' stroke={color}></path>
-      <path d='M12 21V22' stroke={color}></path>
-      <path d='M22 12L21 12' stroke={color}></path>
-      <path d='M3 12L2 12' stroke={color}></path>
-      <path d='M19.0708 4.92969L18.678 5.32252' stroke={color}></path>
-      <path d='M5.32178 18.6777L4.92894 19.0706' stroke={color}></path>
-      <path d='M19.0708 19.0703L18.678 18.6775' stroke={color}></path>
-      <path d='M5.32178 5.32227L4.92894 4.92943' stroke={color}></path>
+      <circle cx='12' cy='12' r='6' stroke='currentColor'></circle>
+      <path d='M12 2V3' stroke='currentColor'></path>
+      <path d='M12 21V22' stroke='currentColor'></path>
+      <path d='M22 12L21 12' stroke='currentColor'></path>
+      <path d='M3 12L2 12' stroke='currentColor'></path>
+      <path d='M19.0708 4.92969L18.678 5.32252' stroke='currentColor'></path>
+      <path d='M5.32178 18.6777L4.92894 19.0706' stroke='currentColor'></path>
+      <path d='M19.0708 19.0703L18.678 18.6775' stroke='currentColor'></path>
+      <path d='M5.32178 5.32227L4.92894 4.92943' stroke='currentColor'></path>
    </svg>
 );
 
 // Infinity Icon
-export const InfinityIcon = ({ size = 20, color = '#c5514c' }) => (
+export const InfinityIcon = ({ size = 24, color = '#c5514c' }) => (
    <svg
-      fill={color}
+      focusable='false'
+      aria-hidden='true'
       width={size}
       height={size}
-      viewBox='0 0 256 256'
-      id='Flat'
+      fill='currentColor'
       xmlns='http://www.w3.org/2000/svg'
    >
-      <path d='M248,128a55.99955,55.99955,0,0,1-95.59766,39.59766q-.17137-.17139-.332-.35254L92.11963,99.55225a40,40,0,1,0,0,56.8955l8.519-9.61914a8,8,0,1,1,11.97754,10.6084l-8.68652,9.80811q-.16041.1809-.332.35254a56,56,0,1,1,0-79.19532q.17137.17139.332.35254l59.95068,67.69287a40,40,0,1,0,0-56.8955l-8.519,9.61914A8,8,0,0,1,143.38379,98.563l8.68652-9.80811q.16041-.1809.332-.35254A56,56,0,0,1,248,128Z'></path>
+      <path d='M3 12c0-2.168 1.36-4 3.5-4 1.352 0 2.291.498 3.053 1.26.486.486.899 1.078 1.293 1.729.176-.316.363-.647.564-.982a9.018 9.018 0 00-1.15-1.454C9.334 7.627 8.148 7 6.5 7 3.64 7 2 9.466 2 12s1.64 5 4.5 5c1.648 0 2.834-.627 3.76-1.553.92-.919 1.551-2.078 2.177-3.204.633-1.14 1.225-2.198 2.01-2.983C15.21 8.498 16.148 8 17.5 8c2.14 0 3.5 1.832 3.5 4s-1.36 4-3.5 4c-1.352 0-2.291-.498-3.053-1.26-.486-.486-.899-1.078-1.293-1.729-.176.316-.363.647-.564.982a9.02 9.02 0 001.15 1.454c.926.926 2.112 1.553 3.76 1.553 2.86 0 4.5-2.466 4.5-5s-1.64-5-4.5-5c-1.648 0-2.834.627-3.76 1.553-.893.893-1.547 2.07-2.159 3.171-.585 1.054-1.168 2.155-2.028 3.016C8.79 15.502 7.852 16 6.5 16 4.36 16 3 14.168 3 12z'></path>
    </svg>
 );
 
 // Home Icon
 export const HomeIcon = ({ size = '20px', color = '#4270b1' }) => (
    <svg
+      aria-label=''
+      fill='currentColor'
+      aria-hidden='true'
       width={size}
       height={size}
       viewBox='0 0 24 24'
-      fill='none'
       xmlns='http://www.w3.org/2000/svg'
    >
       <path
-         d='M12 3.1875L21.4501 10.275L21.0001 11.625H20.25V20.25H3.75005V11.625H3.00005L2.55005 10.275L12 3.1875ZM5.25005 10.125V18.75H18.75V10.125L12 5.0625L5.25005 10.125Z'
-         fill={color}
+         d='M10.55 2.53c.84-.7 2.06-.7 2.9 0l6.75 5.7c.5.42.8 1.05.8 1.71v9.8c0 .97-.78 1.76-1.75 1.76h-3.5c-.97 0-1.75-.79-1.75-1.75v-5.5a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25v5.5c0 .96-.78 1.75-1.75 1.75h-3.5C3.78 21.5 3 20.7 3 19.75v-9.8c0-.67.3-1.3.8-1.73l6.75-5.69zm1.93 1.15a.75.75 0 00-.96 0l-6.75 5.7a.75.75 0 00-.27.56v9.8c0 .14.11.26.25.26h3.5c.14 0 .25-.12.25-.25v-5.5c0-.97.78-1.75 1.75-1.75h3.5c.97 0 1.75.78 1.75 1.75v5.5c0 .13.11.25.25.25h3.5c.14 0 .25-.12.25-.25v-9.8c0-.23-.1-.44-.27-.58l-6.75-5.7z'
+         fill='currentColor'
       ></path>
    </svg>
 );
@@ -156,7 +161,7 @@ export const PlusIcon = ({ size = '21px', color = '#000000' }) => (
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
    >
-      <path d='M4 12H20M12 4V20' stroke={color}></path>
+      <path d='M4 12H20M12 4V20' stroke='currentColor'></path>
    </svg>
 );
 
@@ -172,7 +177,7 @@ export const CircleIcon = ({ size = '20px', color = '#586570' }) => (
       <path
          id='Vector'
          d='M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12Z'
-         stroke={color}
+         stroke='currentColor'
       ></path>
    </svg>
 );
@@ -189,7 +194,7 @@ export const TickCircleIcon = ({ size = '20px', color = '#586570' }) => (
       <path
          id='Vector'
          d='M15 10L11 14L9 12M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z'
-         stroke={color}
+         stroke='currentColor'
       ></path>
    </svg>
 );
@@ -201,10 +206,10 @@ export const CompletedIcon = ({ size = '20px', color = '#586570' }) => (
       height={size}
       viewBox='0 0 1024 1024'
       xmlns='http://www.w3.org/2000/svg'
-      fill={color}
+      fill='currentColor'
    >
       <path
-         fill={color}
+         fill='currentColor'
          d='M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm-55.808 536.384-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.272 38.272 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336L456.192 600.384z'
       ></path>
    </svg>
@@ -214,11 +219,11 @@ export const CompletedIcon = ({ size = '20px', color = '#586570' }) => (
 export const MagnifierIcon = ({ size = '10px', color = '#586570' }) => (
    <svg
       xmlns='http://www.w3.org/2000/svg'
-      fill={color}
+      fill='currentColor'
       height={size}
       width={size}
       viewBox='0 0 512 512'
-      stroke={color}
+      stroke='currentColor'
    >
       <path d='M508.255,490.146l-128-128c-0.06-0.06-0.137-0.077-0.196-0.128c34.193-38.434,55.142-88.917,55.142-144.418 c0-120.175-97.425-217.6-217.6-217.6S0.001,97.425,0.001,217.6s97.425,217.6,217.6,217.6c55.501,0,105.975-20.949,144.418-55.151 c0.06,0.06,0.077,0.137,0.128,0.196l128,128c2.5,2.509,5.777,3.755,9.054,3.755s6.554-1.246,9.054-3.746 C513.247,503.253,513.247,495.147,508.255,490.146z M217.601,409.6c-105.865,0-192-86.135-192-192s86.135-192,192-192 s192,86.135,192,192S323.466,409.6,217.601,409.6z'></path>
    </svg>
@@ -233,38 +238,44 @@ export const XIcon = ({ size = '16px', color = '#000000' }) => (
       xmlns='http://www.w3.org/2000/svg'
       fill='none'
    >
-      <path stroke={color} d='M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6'></path>
+      <path
+         stroke='currentColor'
+         d='M12 12 6 6m6 6 6 6m-6-6 6-6m-6 6-6 6'
+      ></path>
    </svg>
 );
 
 // Dot Icon
 export const DotIcon = ({ size = '12px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       height={size}
       width={size}
       id='Layer_1'
       data-name='Layer 1'
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 16 16'
-      stroke={color}
+      stroke='currentColor'
    >
       <path d='M8,6.5A1.5,1.5,0,1,1,6.5,8,1.5,1.5,0,0,1,8,6.5ZM.5,8A1.5,1.5,0,1,0,2,6.5,1.5,1.5,0,0,0,.5,8Zm12,0A1.5,1.5,0,1,0,14,6.5,1.5,1.5,0,0,0,12.5,8Z'></path>
    </svg>
 );
 
 // Trash Icon
-export const TrashIcon = ({ size = '16px', color = '#586570' }) => (
+export const TrashIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
+      aria-label=''
+      fill='currentColor'
+      aria-hidden='true'
       width={size}
       height={size}
-      viewBox='0 0 24 24'
-      fill='none'
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
+      focusable='false'
    >
       <path
-         d='M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17'
-         stroke={color}
+         d='M8.5 4h3a1.5 1.5 0 00-3 0zm-1 0a2.5 2.5 0 015 0h5a.5.5 0 010 1h-1.05l-1.2 10.34A3 3 0 0112.27 18H7.73a3 3 0 01-2.98-2.66L3.55 5H2.5a.5.5 0 010-1h5zM5.74 15.23A2 2 0 007.73 17h4.54a2 2 0 001.99-1.77L15.44 5H4.56l1.18 10.23zM8.5 7.5c.28 0 .5.22.5.5v6a.5.5 0 01-1 0V8c0-.28.22-.5.5-.5zM12 8a.5.5 0 00-1 0v6a.5.5 0 001 0V8z'
+         fill='currentColor'
       ></path>
    </svg>
 );
@@ -277,8 +288,8 @@ export const StarIcon = ({ size = '14px', color = '#000000' }) => (
       height={size}
       viewBox='0 0 64 64'
       enableBackground='new 0 0 64 64'
-      fill={color}
-      stroke={color}
+      fill='currentColor'
+      stroke='currentColor'
    >
       <path
          fill='#231F20'
@@ -295,11 +306,11 @@ export const FullStarIcon = ({ size = '14px', color = '#586570' }) => (
       height={size}
       viewBox='0 0 64 64'
       enableBackground='new 0 0 64 64'
-      fill={color}
+      fill='currentColor'
       strokeWidth='0.4'
    >
       <path
-         fill={color}
+         fill='currentColor'
          d='M63.893,24.277c-0.238-0.711-0.854-1.229-1.595-1.343l-19.674-3.006L33.809,1.15 C33.479,0.448,32.773,0,31.998,0s-1.48,0.448-1.811,1.15l-8.815,18.778L1.698,22.935c-0.741,0.113-1.356,0.632-1.595,1.343 c-0.238,0.71-0.059,1.494,0.465,2.031l14.294,14.657L11.484,61.67c-0.124,0.756,0.195,1.517,0.822,1.957 c0.344,0.243,0.747,0.366,1.151,0.366c0.332,0,0.666-0.084,0.968-0.25l17.572-9.719l17.572,9.719c0.302,0.166,0.636,0.25,0.968,0.25 c0.404,0,0.808-0.123,1.151-0.366c0.627-0.44,0.946-1.201,0.822-1.957l-3.378-20.704l14.294-14.657 C63.951,25.771,64.131,24.987,63.893,24.277z'
       ></path>
    </svg>
@@ -315,7 +326,7 @@ export const ArrowIcon = ({ size = '14px', color = '#586570' }) => (
       xmlns='http://www.w3.org/2000/svg'
    >
       <path
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2.4'
          strokeMiterlimit='10'
          strokeLinecap='round'
@@ -331,9 +342,9 @@ export const ClockIcon = ({ size = '14px', color = '#586570' }) => (
       width={size}
       height={size}
       viewBox='0 0 1024.00 1024.00'
-      fill={color}
+      fill='currentColor'
       xmlns='http://www.w3.org/2000/svg'
-      stroke={color}
+      stroke='currentColor'
    >
       <path
          d='M176.8 983.2c-4.8 0-9.6-1.6-13.6-5.6-8.8-7.2-9.6-20.8-2.4-30.4l80-93.6-4.8-4C135.2 768.8 77.6 648 77.6 519.2c0-49.6 8.8-98.4 24.8-144.8l1.6-4-3.2-2.4C62.4 338.4 40 293.6 40 245.6c0-84.8 68.8-153.6 153.6-153.6 42.4 0 81.6 16.8 110.4 46.4l3.2 3.2 4-1.6c60-31.2 127.2-47.2 195.2-47.2 68.8 0 138.4 17.6 200.8 50.4l4 2.4 3.2-3.2c28.8-31.2 69.6-49.6 112.8-49.6 84.8 0 153.6 68.8 153.6 153.6 0 51.2-25.6 99.2-68 128l-4 2.4 1.6 4c15.2 44.8 23.2 91.2 23.2 140 0 129.6-57.6 250.4-158.4 331.2l-4.8 3.2 78.4 93.6c4 4 5.6 9.6 4.8 15.2-0.8 5.6-3.2 11.2-8 15.2-4 3.2-8.8 4.8-14.4 4.8-6.4 0-12-2.4-16.8-7.2l-81.6-96-4 2.4c-68 41.6-145.6 64-224.8 64-80 0-157.6-22.4-224.8-64l-4-2.4-82.4 96.8c-4 2.4-10.4 5.6-16 5.6zM505.6 134.4c-212 0-384 172-384 384s172 384 384 384 384-172 384-384-172.8-384-384-384z m320 0c-27.2 0-52.8 9.6-72.8 28l-5.6 4.8 5.6 4c56.8 40.8 103.2 95.2 134.4 157.6l3.2 6.4 5.6-4.8c25.6-20.8 40-52 40-84.8 0-61.6-49.6-111.2-110.4-111.2z m-631.2 0c-60.8 0-110.4 49.6-110.4 110.4 0 30.4 12 58.4 33.6 79.2l5.6 5.6 3.2-6.4c32-61.6 79.2-116 136.8-155.2l6.4-4-5.6-4.8c-20-16-44.8-24.8-69.6-24.8z'
@@ -349,12 +360,12 @@ export const ClockIcon = ({ size = '14px', color = '#586570' }) => (
 // Repeat Icon
 export const RepeatIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       height={size}
       width={size}
       xmlns='http://www.w3.org/2000/svg'
       viewBox='0 0 58.778 58.778'
-      stroke={color}
+      stroke='currentColor'
    >
       <path d='M39.389,48.229h-29V11.186l6.682,6.682c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293 c0.391-0.391,0.391-1.023,0-1.414l-8.389-8.389c-0.391-0.391-1.023-0.391-1.414,0l-8.389,8.389c-0.391,0.391-0.391,1.023,0,1.414 s1.023,0.391,1.414,0l6.682-6.682v38.043c0,0.552,0.448,1,1,1h30c0.552,0,1-0.448,1-1S39.941,48.229,39.389,48.229z'></path>
       <path d='M58.485,40.91c-0.391-0.391-1.023-0.391-1.414,0l-6.682,6.682V9.229c0-0.552-0.448-1-1-1h-30c-0.552,0-1,0.448-1,1 c0,0.552,0.448,1,1,1h29v37.364l-6.682-6.682c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414l8.389,8.389 c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293l8.389-8.389C58.876,41.934,58.876,41.301,58.485,40.91z'></path>
@@ -372,7 +383,7 @@ export const CalendarIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M3 9H21M17 13.0014L7 13M10.3333 17.0005L7 17M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='0.9600000000000002'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -383,7 +394,7 @@ export const CalendarIcon = ({ size = '14px', color = '#586570' }) => (
 // Calendar Icon
 export const PaperClipIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='0 0 1920 1920'
@@ -399,7 +410,7 @@ export const PaperClipIcon = ({ size = '14px', color = '#586570' }) => (
 // Today clock Icon
 export const TodayClockIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='0 0 24 24'
@@ -412,7 +423,7 @@ export const TodayClockIcon = ({ size = '14px', color = '#586570' }) => (
 // Tomorrow click Icon
 export const TomorrowClockIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='0 0 24 24'
@@ -435,17 +446,17 @@ export const TimerCalendarIcon = ({ size = '14px', color = '#586570' }) => (
          fillRule='evenodd'
          clipRule='evenodd'
          d='M7 1C6.44772 1 6 1.44772 6 2V3H5C3.34315 3 2 4.34315 2 6V20C2 21.6569 3.34315 23 5 23H13.101C12.5151 22.4259 12.0297 21.7496 11.6736 21H5C4.44772 21 4 20.5523 4 20V11H20V11.2899C20.7224 11.5049 21.396 11.8334 22 12.2547V6C22 4.34315 20.6569 3 19 3H18V2C18 1.44772 17.5523 1 17 1C16.4477 1 16 1.44772 16 2V3H8V2C8 1.44772 7.55228 1 7 1ZM16 6V5H8V6C8 6.55228 7.55228 7 7 7C6.44772 7 6 6.55228 6 6V5H5C4.44772 5 4 5.44772 4 6V9H20V6C20 5.44772 19.5523 5 19 5H18V6C18 6.55228 17.5523 7 17 7C16.4477 7 16 6.55228 16 6Z'
-         fill={color}
+         fill='currentColor'
       ></path>
       <path
          d='M17 16C17 15.4477 17.4477 15 18 15C18.5523 15 19 15.4477 19 16V17.703L19.8801 18.583C20.2706 18.9736 20.2706 19.6067 19.8801 19.9973C19.4896 20.3878 18.8564 20.3878 18.4659 19.9973L17.2929 18.8243C17.0828 18.6142 16.9857 18.3338 17.0017 18.0588C17.0006 18.0393 17 18.0197 17 18V16Z'
-         fill={color}
+         fill='currentColor'
       ></path>
       <path
          fillRule='evenodd'
          clipRule='evenodd'
          d='M24 18C24 21.3137 21.3137 24 18 24C14.6863 24 12 21.3137 12 18C12 14.6863 14.6863 12 18 12C21.3137 12 24 14.6863 24 18ZM13.9819 18C13.9819 20.2191 15.7809 22.0181 18 22.0181C20.2191 22.0181 22.0181 20.2191 22.0181 18C22.0181 15.7809 20.2191 13.9819 18 13.9819C15.7809 13.9819 13.9819 15.7809 13.9819 18Z'
-         fill={color}
+         fill='currentColor'
       ></path>
    </svg>
 );
@@ -461,7 +472,7 @@ export const TodayCalendarIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M3 9H21M9 15L11 17L15 13M7 3V5M17 3V5M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -480,7 +491,7 @@ export const TomorrowCalendarIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M3 9H21M7 3V5M17 3V5M10 16L12 18M12 18L14 16M12 18V12M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -499,7 +510,7 @@ export const NextWeekCalendarIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M3 9H21M7 3V5M17 3V5M6 13H8M6 17H8M11 13H13M11 17H13M16 13H18M16 17H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -518,7 +529,7 @@ export const PeakCalendarIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M10 21H6.2C5.0799 21 4.51984 21 4.09202 20.782C3.71569 20.5903 3.40973 20.2843 3.21799 19.908C3 19.4802 3 18.9201 3 17.8V8.2C3 7.0799 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H17.8C18.9201 5 19.4802 5 19.908 5.21799C20.2843 5.40973 20.5903 5.71569 20.782 6.09202C21 6.51984 21 7.0799 21 8.2V10M7 3V5M17 3V5M3 9H21M13.5 13.0001L7 13M10 17.0001L7 17M14 21L16.025 20.595C16.2015 20.5597 16.2898 20.542 16.3721 20.5097C16.4452 20.4811 16.5147 20.4439 16.579 20.399C16.6516 20.3484 16.7152 20.2848 16.8426 20.1574L21 16C21.5523 15.4477 21.5523 14.5523 21 14C20.4477 13.4477 19.5523 13.4477 19 14L14.8426 18.1574C14.7152 18.2848 14.6516 18.3484 14.601 18.421C14.5561 18.4853 14.5189 18.5548 14.4903 18.6279C14.458 18.7102 14.4403 18.7985 14.405 18.975L14 21Z'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -529,7 +540,7 @@ export const PeakCalendarIcon = ({ size = '14px', color = '#586570' }) => (
 // Daily Icon
 export const DailyIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='-11 0 32 32'
@@ -551,7 +562,7 @@ export const DailyIcon = ({ size = '14px', color = '#586570' }) => (
 // Weekdays Icon
 export const WeekDaysIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='-7 0 32 32'
@@ -573,7 +584,7 @@ export const WeekDaysIcon = ({ size = '14px', color = '#586570' }) => (
 // Weekly Icon
 export const WeeklyIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='-7 0 32 32'
@@ -595,7 +606,7 @@ export const WeeklyIcon = ({ size = '14px', color = '#586570' }) => (
 // Monthly Icon
 export const MonthlyIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='-7 0 32 32'
@@ -617,7 +628,7 @@ export const MonthlyIcon = ({ size = '14px', color = '#586570' }) => (
 // Yearly Icon
 export const YearlyIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
-      fill={color}
+      fill='currentColor'
       width={size}
       height={size}
       viewBox='-7 0 32 32'
@@ -647,7 +658,7 @@ export const BellIcon = ({ size = '14px', color = '#586570' }) => (
    >
       <path
          d='M9.00195 17H5.60636C4.34793 17 3.71872 17 3.58633 16.9023C3.4376 16.7925 3.40126 16.7277 3.38515 16.5436C3.37082 16.3797 3.75646 15.7486 4.52776 14.4866C5.32411 13.1835 6.00031 11.2862 6.00031 8.6C6.00031 7.11479 6.63245 5.69041 7.75766 4.6402C8.88288 3.59 10.409 3 12.0003 3C13.5916 3 15.1177 3.59 16.2429 4.6402C17.3682 5.69041 18.0003 7.11479 18.0003 8.6C18.0003 11.2862 18.6765 13.1835 19.4729 14.4866C20.2441 15.7486 20.6298 16.3797 20.6155 16.5436C20.5994 16.7277 20.563 16.7925 20.4143 16.9023C20.2819 17 19.6527 17 18.3943 17H15.0003M9.00195 17L9.00031 18C9.00031 19.6569 10.3435 21 12.0003 21C13.6572 21 15.0003 19.6569 15.0003 18V17M9.00195 17H15.0003'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -667,7 +678,7 @@ export const NoteIcon = ({ size = '14px', color = '#586570' }) => (
       <path
          id='Vector'
          d='M13 19.9991C12.9051 20 12.7986 20 12.677 20H7.19691C6.07899 20 5.5192 20 5.0918 19.7822C4.71547 19.5905 4.40973 19.2842 4.21799 18.9079C4 18.4801 4 17.9203 4 16.8002V7.2002C4 6.08009 4 5.51962 4.21799 5.0918C4.40973 4.71547 4.71547 4.40973 5.0918 4.21799C5.51962 4 6.08009 4 7.2002 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V12.6747C20 12.7973 20 12.9045 19.9991 13M13 19.9991C13.2857 19.9966 13.4663 19.9862 13.6388 19.9448C13.8429 19.8958 14.0379 19.8147 14.2168 19.705C14.4186 19.5814 14.5916 19.4089 14.9375 19.063L19.063 14.9375C19.4089 14.5916 19.5809 14.4186 19.7046 14.2168C19.8142 14.0379 19.8953 13.8424 19.9443 13.6384C19.9857 13.4659 19.9964 13.2855 19.9991 13M13 19.9991V14.6001C13 14.04 13 13.7598 13.109 13.5459C13.2049 13.3577 13.3577 13.2049 13.5459 13.109C13.7598 13 14.0396 13 14.5996 13H19.9991'
-         stroke={color}
+         stroke='currentColor'
          strokeWidth='2'
          strokeLinecap='round'
          strokeLinejoin='round'
@@ -680,7 +691,7 @@ export const AlphabetIcon = ({ size = '14px', color = '#586570' }) => (
    <svg
       width={size}
       height={size}
-      fill={color}
+      fill='currentColor'
       viewBox='0 0 1920 1920'
       xmlns='http://www.w3.org/2000/svg'
    >
@@ -692,21 +703,55 @@ export const AlphabetIcon = ({ size = '14px', color = '#586570' }) => (
 );
 
 // Sort Icon
-export const SortIcon = ({ size = '14px', color = '#586570' }) => (
+export const SortIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
+      aria-label=''
+      fill='currentColor'
+      aria-hidden='true'
+      width={size}
+      height={size}
+      viewBox='0 0 20 20'
+      xmlns='http://www.w3.org/2000/svg'
+   >
+      <path
+         d='M2.35 7.35L5 4.71V16.5a.5.5 0 001 0V4.7l2.65 2.65a.5.5 0 00.7-.7l-3.49-3.5A.5.5 0 005.5 3a.5.5 0 00-.39.18L1.65 6.65a.5.5 0 10.7.7zm15.3 5.3L15 15.29V3.5a.5.5 0 00-1 0v11.8l-2.65-2.65a.5.5 0 00-.7.7l3.49 3.5a.5.5 0 00.36.15.5.5 0 00.39-.18l3.46-3.47a.5.5 0 10-.7-.7z'
+         fill='currentColor'
+      ></path>
+   </svg>
+);
+
+// Menu Star Icon
+export const MenuStarIcon = ({ size = '14px', color = '#000000' }) => (
+   <svg
+      xmlns='http://www.w3.org/2000/svg'
       width={size}
       height={size}
       viewBox='0 0 24 24'
       fill='none'
+   >
+      <path
+         fillRule='evenodd'
+         clipRule='evenodd'
+         d='M15.0859 8.50266L12.0001 2.25L8.9142 8.50266L2.01398 9.50532L7.00702 14.3723L5.82833 21.2447L12.0001 18L18.1718 21.2447L16.9931 14.3723L21.9862 9.50532L15.0859 8.50266ZM18.7627 10.5527L14.0898 9.87367L12.0001 5.63933L9.9103 9.87367L5.23742 10.5527L8.61875 13.8487L7.82052 18.5027L12.0001 16.3053L16.1796 18.5027L15.3814 13.8487L18.7627 10.5527Z'
+         fill='currentColor'
+      ></path>
+   </svg>
+);
+
+// Share Icon
+export const ShareIcon = ({ size = '20px', color = '#000000' }) => (
+   <svg
+      aria-label=''
+      fill='currentColor'
+      aria-hidden='true'
+      width={size}
+      height={size}
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
    >
       <path
-         id='Vector'
-         d='M4 17H10M4 12H13M18 11V19M18 19L21 16M18 19L15 16M4 7H16'
-         stroke={color}
-         strokeWidth='2'
-         strokeLinecap='round'
-         strokeLinejoin='round'
+         d='M9 2a4 4 0 100 8 4 4 0 000-8zM6 6a3 3 0 116 0 3 3 0 01-6 0zm-2 5a2 2 0 00-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 009 18c.41 0 .82-.02 1.21-.06A5.5 5.5 0 019.6 17 12 12 0 019 17a8.16 8.16 0 01-4.33-1.05A3.36 3.36 0 013 13a1 1 0 011-1h5.6c.18-.36.4-.7.66-1H4zm10.5 8a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0-7c.28 0 .5.22.5.5V14h1.5a.5.5 0 010 1H15v1.5a.5.5 0 01-1 0V15h-1.5a.5.5 0 010-1H14v-1.5c0-.28.22-.5.5-.5z'
+         fill='currentColor'
       ></path>
    </svg>
 );

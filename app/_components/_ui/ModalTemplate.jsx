@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { delay } from '../_lib/utils';
+import { delay } from '../../_lib/utils';
 
 export default function ModalTemplate({
    children,

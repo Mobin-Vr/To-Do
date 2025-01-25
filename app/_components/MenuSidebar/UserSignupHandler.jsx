@@ -35,6 +35,8 @@ export default function UserSignupHandler() {
 
             memoized_setUserInfo(newUser[0]);
          }
+
+         if (existingUser) memoized_setUserInfo(existingUser);
       }
 
       // Call the sign-in handler and catch any errors

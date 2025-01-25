@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import useTaskStore from '../store';
-import Template from '../_components/Template';
+import useTaskStore from '../../store';
+import Template from '../../_components/_ui/Template';
 import { BG_COLORS } from '@/app/_lib/utils';
 import { usePathname } from 'next/navigation';
 import { InfinityIcon, SunIcon } from '@/public/icons';

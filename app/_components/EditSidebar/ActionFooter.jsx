@@ -1,5 +1,6 @@
 import { delay, getTimeAgo } from '@/app/_lib/utils';
 import { TrashIcon } from '@/public/icons';
+import DeleteBtn from '../_ui/DeleteBtn';
 
 export default function ActionFooter({
    task,
@@ -26,12 +27,10 @@ export default function ActionFooter({
       <div className='flex items-center gap-4 h-12 border border-t-1 border-gray-200 text-gray-700 p-3 font-light justify-between relative'>
          <span className='w-full text-center'>{ActionFooterText}</span>
 
-         <button
+         <DeleteBtn
             onClick={handleDelete}
             className='absolute right-0 h-full aspect-square flex justify-center items-center hover:bg-accent-200 rounded-sm transition-all duration-300'
-         >
-            <TrashIcon size='20px' />
-         </button>
+         />
       </div>
    );
 }

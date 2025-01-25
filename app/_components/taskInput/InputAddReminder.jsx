@@ -1,9 +1,9 @@
 import { ClockIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import AddReminderModal from '../EditSidebar/remiderBoxModals/AddReminderModal';
-import ModalTemplate from '../ModalTemplate';
-import InputBtnTempl from './InputBtnTempl';
-import ModalTemplateCloseAble from '../ModalTemplateCloseAble';
+import ModalTemplate from '../_ui/ModalTemplate';
+import InputBtnTempl from '../_ui/InputBtnTempl';
+import ModalTemplateCloseAble from '../_ui/ModalTemplateCloseAble';
 import DateTimePickerModal from '../EditSidebar/remiderBoxModals/DateTimePickerModal';
 
 export default function InputAddReminder({ setTaskReminder, className }) {

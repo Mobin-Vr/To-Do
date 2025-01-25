@@ -147,8 +147,8 @@ export function replaceTimeInIsoDate(inputDate, timeString) {
 // [bg1, bg2, bg-hover, txt1, txt2]
 
 export const BG_COLORS = {
-   '/': ['#e7ecf0', '#f6f6f6', '#fbfbfb', '#4B5563  ', '#6B7280 '],
-   '/tasks': ['#df14', '#f6f6f6', '#6b7280', '#fff', '#fff'],
+   '/slug': ['#dfedf9', '#f6f6f6', '#fbfbfb', '#3063ab  ', '#6B7280 '],
+   '/tasks': ['#dfedf9', '#f6f6f6', '#fbfbfb', '#3063ab  ', '#6B7280 '],
    '/all': ['#c4514c', '#f6f6f6', '#6b7280', '#fff', '#fff'],
 };
 
@@ -159,3 +159,13 @@ export const DEFAULT_COLOR = {
 
 // Timer interval (in seconds) for checking the database connection health
 export const HEALTH_CHECK_TIMER = 300;
+
+export const defaultCategoryId = '00000000-0000-0000-0000-000000000000';
+export const defaultCategory = {
+   id: defaultCategoryId,
+   title: 'default',
+   ownerId: null,
+   created_at: null,
+   isShared: null,
+   shared_with: null,
+};

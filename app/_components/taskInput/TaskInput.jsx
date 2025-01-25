@@ -2,14 +2,24 @@
 
 import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
-import { generateNewUuid, getDateNowIso } from '../../_lib/utils';
+import {
+   defaultCategoryId,
+   generateNewUuid,
+   getDateNowIso,
+} from '../../_lib/utils';
 import useTaskStore from '../../store';
 import InputAddDue from './InputAddDue';
 import InputAddReminder from './InputAddReminder';
 import InputAddRepeat from './InputAddRepeat';
+import { useShallow } from 'zustand/react/shallow';
 
-export default function TaskInput({ bgColor, className }) {
-   const addTaskToStore = useTaskStore((state) => state.addTaskToStore);
+export default function TaskInput({ bgColor, className, categoryId }) {
+   const { addTaskToStore, userInfo } = useTaskStore(
+      useShallow((state) => ({
+         addTaskToStore: state.addTaskToStore,
+         userInfo: state.userInfo,
+      }))
+   );
 
    const [taskInput, setTaskInput] = useState('');
    const [isTyping, setIsTyping] = useState(false);
@@ -24,12 +34,13 @@ export default function TaskInput({ bgColor, className }) {
 
       const newItem = {
          id: generateNewUuid(),
+         ownerId: userInfo.id,
          title: taskInput,
          isCompleted: false,
          isStarred: false,
          note: '',
-         categoryId: null,
          isAddedToMyDay: false,
+         categoryId,
          updatedAt: null,
          completedAt: null,
          createdAt: getDateNowIso(),

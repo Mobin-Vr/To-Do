@@ -9,7 +9,7 @@ export default function StepsList({ task }) {
    return (
       <ul className={`list-none flex flex-col gap-0.5 mb-1`}>
          {steps.map((step) => (
-            <StepItem step={step} taskId={task.id} key={step.id} />
+            <StepItem step={step} task={task} key={step.id} />
          ))}
       </ul>
    );

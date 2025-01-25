@@ -1,30 +1,54 @@
-import { DotIcon } from '@/public/icons';
-import MenuButton from './menuSidebar/MenuButton';
-import SortMethodBtn from './SortMethodBtn';
+'use client';
 
-export default function AppHeader({ listConfig, className }) {
-   const { bgColor, listName, listIcon } = listConfig;
+import { defaultCategoryId } from '../_lib/utils';
+import DeleteBtn from './_ui/DeleteBtn';
+import MenuBtn from './_ui/MenuBtn';
+import ShareBtn from './_ui/ShareBtn';
+import SortMethodBtn from './_ui/SortMethodBtn';
+import CategoryTitleEditor from './CategoryTitleEditor';
+
+export default function AppHeader({
+   listConfig,
+   className,
+   handleDeleteCategory,
+   handleShareCategory,
+}) {
+   const { bgColor, listName, listIcon, theCategory } = listConfig;
 
    return (
       <div
          className={`${className}`}
          style={{ backgroundColor: bgColor[0], opacity: 0.99 }}
       >
-         <MenuButton
+         <MenuBtn
             className='mt-6 -translate-x-1 -translate-y-1'
             color={bgColor[3]}
          />
 
-         <div className='flex justify-between items-center sm:mt-10'>
+         <div
+            className='flex justify-between items-center sm:mt-10'
+            style={{ color: bgColor[3] }}
+         >
             <h1
-               className='text-2xl font-medium flex gap-3 items-center '
+               className='text-3xl font-medium flex gap-3 items-center'
                style={{ color: bgColor[3] }}
             >
                {listIcon}
-               {listName}
+               {theCategory.id === defaultCategoryId ? (
+                  listName
+               ) : (
+                  <CategoryTitleEditor theCategory={theCategory} />
+               )}
             </h1>
 
-            <SortMethodBtn bgColor={bgColor[3]} />
+            {theCategory.id !== defaultCategoryId && (
+               <>
+                  <DeleteBtn onClick={handleDeleteCategory} />
+                  <ShareBtn onClick={handleShareCategory} />
+               </>
+            )}
+
+            <SortMethodBtn />
          </div>
 
          {listName === 'My Day' && (

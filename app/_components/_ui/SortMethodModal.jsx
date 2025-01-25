@@ -4,7 +4,7 @@ import {
    TimerCalendarIcon,
    TodayCalendarIcon,
 } from '@/public/icons';
-import { ModalActionButton } from './EditSidebar/remiderBoxModals/ModalActionBtn';
+import { ModalActionButton } from '../EditSidebar/remiderBoxModals/ModalActionBtn';
 
 export default function SortMethodModal({ setSortMethod }) {
    // update store (id, dueDate)

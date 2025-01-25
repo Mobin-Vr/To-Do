@@ -2,7 +2,7 @@ import { getWeekendForWeekdays, isWeekday } from '@/app/_lib/utils';
 import useTaskStore from '@/app/store';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import ModalTemplate from '../../ModalTemplate';
+import ModalTemplate from '../../_ui/ModalTemplate';
 import BoxBtn from '../BoxBtn';
 import AddRepeatModal from '../remiderBoxModals/AddRepeatModal';
 

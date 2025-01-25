@@ -6,7 +6,7 @@ import TaskGroup from './TaskGroup';
 import useTaskStore from '../store';
 import { useShallow } from 'zustand/react/shallow';
 
-export default function TasksList({ listRef, bgColor }) {
+export default function TasksList({ listRef, bgColor, categoryId }) {
    const {
       toggleEditSidebar,
       isEditSidebarOpen,
@@ -75,10 +75,12 @@ export default function TasksList({ listRef, bgColor }) {
       }
    }
 
-   if (tasksList.length === 0) return null;
+   if (tasksList.length === 0 && categoryId) return null;
 
-   const completedTasks = tasksList.filter((task) => task.isCompleted);
-   const uncompletedTasks = tasksList.filter((task) => !task.isCompleted);
+   const tasks = tasksList.filter((task) => task.categoryId === categoryId); // only the relevent tasks not all categories
+
+   const completedTasks = tasks.filter((task) => task.isCompleted);
+   const uncompletedTasks = tasks.filter((task) => !task.isCompleted);
 
    const sortedCompletedTasks = sortTasks(completedTasks, sortMethod);
    const sortedUncompletedTasks = sortTasks(uncompletedTasks, sortMethod);
@@ -97,6 +99,7 @@ export default function TasksList({ listRef, bgColor }) {
                   isCompletedVisible={isCompletedVisible}
                   completedCount={completedTasks.length}
                   onClick={() => setCompletedVisible(!isCompletedVisible)}
+                  bgColor={bgColor}
                />
 
                {isCompletedVisible && (

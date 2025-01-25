@@ -1,8 +1,8 @@
 import { CalendarIcon, ClockIcon, RefreshCw } from '@/public/icons';
 import { useRef, useState } from 'react';
 import AddReminderModal from '../EditSidebar/remiderBoxModals/AddReminderModal';
-import ModalTemplate from '../ModalTemplate';
-import InputBtnTempl from './InputBtnTempl';
+import ModalTemplate from '../_ui/ModalTemplate';
+import InputBtnTempl from '../_ui/InputBtnTempl';
 import AddDueModal from '../EditSidebar/remiderBoxModals/AddDueModal';
 import AddRepeatModal from '../EditSidebar/remiderBoxModals/AddRepeatModal';
 

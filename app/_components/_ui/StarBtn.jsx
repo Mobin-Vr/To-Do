@@ -1,7 +1,7 @@
 import { FullStarIcon, StarIcon } from '@/public/icons';
-import useTaskStore from '../store';
+import useTaskStore from '../../store';
 
-export default function StarButton({ task, starBtnRef, className }) {
+export default function StarBtn({ task, starBtnRef, className }) {
    const toggleStarred = useTaskStore((state) => state.toggleStarred);
 
    return (

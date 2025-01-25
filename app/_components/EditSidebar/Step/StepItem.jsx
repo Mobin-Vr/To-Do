@@ -8,15 +8,14 @@ import { DotIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import StepCompleteBtn from './StepCompleteBtn';
 import StepTitleEditor from './StepTitleEditor';
-import ModalTemplate from '../../ModalTemplate';
+import ModalTemplate from '../../_ui/ModalTemplate';
 import StepActionModal from './StepActionModal';
 
-export default function StepItem({ step, taskId }) {
+export default function StepItem({ step, task }) {
    const stepRef = useRef(null);
    const [isModalOpen, setIsModalOpen] = useState(false);
 
    const toggleModal = () => setIsModalOpen(!isModalOpen);
-   //  const removeDueDate = () => updateDueDate(task.id, null);
 
    return (
       <div className='relative'>
@@ -24,8 +23,8 @@ export default function StepItem({ step, taskId }) {
             ref={stepRef}
             className='flex items-center justify-center bg-accent-50 rounded-md overflow-hidden border border-1 border-gray-200'
          >
-            <StepCompleteBtn taskId={taskId} step={step} className='ml-1' />
-            <StepTitleEditor step={step} taskId={taskId} />
+            <StepCompleteBtn taskId={task.id} step={step} className='ml-1' />
+            <StepTitleEditor step={step} taskId={task.id} />
 
             <button
                onClick={toggleModal}
@@ -40,7 +39,7 @@ export default function StepItem({ step, taskId }) {
                toggleModal={toggleModal}
                className='top-12 left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
             >
-               <StepActionModal taskId={taskId} step={step} />
+               <StepActionModal task={task} step={step} />
             </ModalTemplate>
          </li>
       </div>

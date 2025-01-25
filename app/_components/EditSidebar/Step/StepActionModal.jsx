@@ -1,10 +1,10 @@
-import { PlusIcon, TickCircleIcon, TrashIcon } from '@/public/icons';
-import { ModalActionButton } from '../remiderBoxModals/ModalActionBtn';
-import useTaskStore from '@/app/store';
-import { useShallow } from 'zustand/react/shallow';
 import { getDateNowIso } from '@/app/_lib/utils';
+import useTaskStore from '@/app/store';
+import { PlusIcon, TickCircleIcon, TrashIcon } from '@/public/icons';
+import { useShallow } from 'zustand/react/shallow';
+import { ModalActionButton } from '../remiderBoxModals/ModalActionBtn';
 
-export default function StepActionModal({ taskId, step }) {
+export default function StepActionModal({ task, step }) {
    const { updateStep, removeStep, addTaskToStore } = useTaskStore(
       useShallow((state) => ({
          updateStep: state.updateStep,
@@ -14,11 +14,11 @@ export default function StepActionModal({ taskId, step }) {
    );
 
    function handleUpdate() {
-      updateStep(taskId, step.id, { isCompleted: !step.isCompleted });
+      updateStep(task.id, step.id, { isCompleted: !step.isCompleted });
    }
 
    function handleRemove() {
-      removeStep(taskId, step.id);
+      removeStep(task.id, step.id);
    }
 
    function handlePromote() {
@@ -28,7 +28,7 @@ export default function StepActionModal({ taskId, step }) {
          isCompleted: step.isCompleted,
          isStarred: false,
          note: '',
-         categoryId: null,
+         categoryId: task.categoryId,
          isAddedToMyDay: false,
          updatedAt: step.updatedAt,
          completedAt: step.completedAt,
@@ -42,7 +42,7 @@ export default function StepActionModal({ taskId, step }) {
       };
 
       addTaskToStore(promotedStep);
-      removeStep(taskId, step.id);
+      removeStep(task.id, step.id);
    }
 
    return (
@@ -61,7 +61,7 @@ export default function StepActionModal({ taskId, step }) {
          />
 
          <ModalActionButton
-            icon={<TrashIcon size='16px' />}
+            icon={<TrashIcon />}
             label='Delete step'
             onClick={handleRemove}
          />

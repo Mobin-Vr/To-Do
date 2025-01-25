@@ -6,9 +6,9 @@ import ActionFooter from './ActionFooter';
 import AddFile from './AddFile';
 import AddNote from './AddNote';
 import AddToMyDay from './AddToMyDay';
-import CloseBtn from './CloseBtn';
 import ReminderBox from './reminderBox/ReminderBox';
 import TaskOverView from './TaskOverView';
+import CloseBtn from '../_ui/CloseBtn';
 
 export default function EditSidebar({ className, task }) {
    const {

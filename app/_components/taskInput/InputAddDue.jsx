@@ -1,9 +1,9 @@
 import { CalendarIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import AddDueModal from '../EditSidebar/remiderBoxModals/AddDueModal';
-import ModalTemplate from '../ModalTemplate';
-import InputBtnTempl from './InputBtnTempl';
-import ModalTemplateCloseAble from '../ModalTemplateCloseAble';
+import ModalTemplate from '../_ui/ModalTemplate';
+import InputBtnTempl from '../_ui/InputBtnTempl';
+import ModalTemplateCloseAble from '../_ui/ModalTemplateCloseAble';
 import DatePickerModal from '../EditSidebar/remiderBoxModals/DatePickerModal';
 
 export default function InputAddDue({ setTaskDueDate, className }) {

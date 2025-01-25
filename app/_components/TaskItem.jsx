@@ -1,5 +1,5 @@
-import CompleteButton from './CompleteButton';
-import StarButton from './StarButton';
+import CompleteBtn from './_ui/CompleteBtn';
+import StarBtn from './_ui/StarBtn';
 import TaskDetails from './TaskDetails';
 import TaskTitle from './TaskTitle';
 
@@ -45,7 +45,7 @@ export default function TaskItem({
          }}
       >
          <div className='flex justify-between items-start px-2'>
-            <CompleteButton task={task} className='complete-btn mt-1' />
+            <CompleteBtn task={task} className='complete-btn mt-1' />
 
             <div className='flex flex-col justify-center overflow-hidden flex-1 px-2'>
                {/* Added class to identify the buttons for click handling */}
@@ -58,7 +58,7 @@ export default function TaskItem({
             </div>
 
             {/* Added class to identify the buttons for click handling */}
-            <StarButton task={task} className='star-btn mt-1' />
+            <StarBtn task={task} className='star-btn mt-1' />
          </div>
 
          {/* Include the styles */}

@@ -1,13 +1,18 @@
-import { create } from 'zustand';
-import { persist, devtools } from 'zustand/middleware';
 import { produce } from 'immer';
+import { create } from 'zustand';
+import { devtools, persist } from 'zustand/middleware';
 import {
+   addCategory,
    addTask,
+   deleteCategory,
+   deleteManyTask,
    deleteTask,
+   getCategories,
    getTasks,
+   updateCategory,
    updateTask,
 } from './_lib/data-services';
-import { getDateNowIso } from './_lib/utils';
+import { defaultCategory, getDateNowIso } from './_lib/utils';
 
 const initialState = {
    isSidebarOpen: false,
@@ -18,6 +23,7 @@ const initialState = {
    conectionStatus: {}, // {isConected, isOnline, lastOnline}
    userInfo: {},
    tasksList: [],
+   categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
 };
@@ -36,6 +42,7 @@ const useTaskStore = create(
             tasksList: initialState.tasksList,
             changeLog: initialState.changeLog,
             sortMethod: initialState.sortMethod,
+            categoriesList: initialState.categoriesList,
 
             // 0. Toggle sidebar
             toggleSidebar: () => {
@@ -90,13 +97,24 @@ const useTaskStore = create(
             deleteTaskFromStore: async (id) => {
                set(
                   produce((state) => {
+                     const taskToDelete = state.tasksList.find(
+                        (task) => task.id === id
+                     );
+
+                     // Set an active task if the active task is deleted
+                     if (state.activeTask.id === id) {
+                        const remainingTasks = state.tasksList.filter(
+                           (task) => task.id !== id
+                        );
+                        state.activeTask =
+                           remainingTasks.length > 0
+                              ? remainingTasks[0] // Choose the first remaining task as active
+                              : {};
+                     }
+
                      // Delete the task from LC
                      state.tasksList = state.tasksList.filter(
                         (task) => task.id !== id
-                     );
-
-                     const taskToDelete = state.tasksList.find(
-                        (task) => task.id === id
                      );
 
                      // Add to change log only if offline.
@@ -124,6 +142,64 @@ const useTaskStore = create(
                // Synchronizing with the database
                const onlineStatus = get().conectionStatus.isOnline;
                if (onlineStatus) await deleteTask(id);
+            },
+
+            //  Delete multiple tasks by category
+            deleteTasksByCategory: async (categoryId) => {
+               set(
+                  produce((state) => {
+                     const tasksToDelete = state.tasksList.filter(
+                        (task) => task.categoryId === categoryId
+                     );
+
+                     const taskIdsToDelete = tasksToDelete.map(
+                        (task) => task.id
+                     );
+
+                     // Set an active task if the active task is deleted
+                     if (taskIdsToDelete.includes(state.activeTask.id)) {
+                        const remainingTasks = state.tasksList.filter(
+                           (task) => task.categoryId !== categoryId
+                        );
+                        state.activeTask =
+                           remainingTasks.length > 0
+                              ? remainingTasks[0] // Choose the first remaining task as active
+                              : {};
+                     }
+
+                     // Filter out the tasks to be deleted from the local store
+                     state.tasksList = state.tasksList.filter(
+                        (task) => task.categoryId !== categoryId
+                     );
+
+                     // Add to change log only if offline
+                     if (state.offlineLogMode) {
+                        // Remove if exist a record in log with the same ID and TYPE
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'delete-by-category' &&
+                                 log.id === categoryId
+                              )
+                        );
+
+                        // Save the chenges log
+                        state.changeLog.push({
+                           type: 'delete-by-category',
+                           id: categoryId,
+                           logTime: getDateNowIso(),
+                           task: tasksToDelete,
+                        });
+                     }
+                  })
+               );
+
+               // Synchronizing with the database
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await deleteManyTask(categoryId); // Call the API method for deleting multiple tasks
+               }
             },
 
             // 4. Toggle to completed or uncompleted
@@ -686,13 +762,144 @@ const useTaskStore = create(
                }
             },
 
+            // 15. Add category
+            addCategoryToStore: async (category) => {
+               set(
+                  produce((state) => {
+                     // Extract existing category names
+                     const existingNames = state.categoriesList.map(
+                        (cat) => cat.title
+                     );
+
+                     // Match names with the pattern "Untitled list" or "Untitled list (n)"
+                     const untitledRegex = /^Untitled list(?: \((\d+)\))?$/;
+                     const usedNumbers = existingNames
+                        .map((name) => {
+                           const match = name.match(untitledRegex);
+                           return match ? parseInt(match[1] || '0', 10) : null;
+                        })
+                        .filter((num) => num !== null);
+
+                     // Determine the smallest available number
+                     let nextNumber = 0;
+                     while (usedNumbers.includes(nextNumber)) {
+                        nextNumber++;
+                     }
+
+                     // Generate the name based on the smallest available number
+                     const newName =
+                        nextNumber === 0
+                           ? 'Untitled list'
+                           : `Untitled list (${nextNumber})`;
+
+                     // Assign the generated name
+                     category.title = newName;
+
+                     // Add the category to the local store
+                     state.categoriesList.push(category);
+
+                     // Handle offline log mode
+                     if (state.offlineLogMode) {
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(
+                                 log.type === 'add-category' &&
+                                 log.id === category.id
+                              )
+                        );
+
+                        state.changeLog.push({
+                           type: 'add-category',
+                           id: category.id,
+                           logTime: getDateNowIso(),
+                           category,
+                        });
+                     }
+                  })
+               );
+
+               // Sync with the server if online
+               const onlineStatus = get().conectionStatus.isOnline;
+               if (onlineStatus) {
+                  await addCategory(category);
+               }
+            },
+
+            // 16. Update category
+            updateCategoryInStore: async (id, updatedFields) => {
+               set(
+                  produce((state) => {
+                     const category = state.categoriesList.find(
+                        (cat) => cat.id === id
+                     );
+                     const updateTime = getDateNowIso();
+
+                     if (category) {
+                        Object.assign(category, updatedFields);
+                        category.updatedAt = updateTime;
+                     }
+
+                     if (state.offlineLogMode) {
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(log.type === 'update-category' && log.id === id)
+                        );
+
+                        state.changeLog.push({
+                           type: 'update-category',
+                           id,
+                           logTime: updateTime,
+                           updatedFields,
+                        });
+                     }
+                  })
+               );
+
+               const onlineStatus = get().conectionStatus.isOnline;
+
+               if (onlineStatus) {
+                  await updateCategory(updatedFields, id);
+               }
+            },
+
+            // 17. Delete category
+            deleteCategoryFromStore: async (id) => {
+               set(
+                  produce((state) => {
+                     state.categoriesList = state.categoriesList.filter(
+                        (cat) => cat.id !== id
+                     );
+
+                     if (state.offlineLogMode) {
+                        state.changeLog = state.changeLog.filter(
+                           (log) =>
+                              !(log.type === 'delete-category' && log.id === id)
+                        );
+
+                        state.changeLog.push({
+                           type: 'delete-category',
+                           id,
+                           logTime: getDateNowIso(),
+                        });
+                     }
+                  })
+               );
+
+               const onlineStatus = get().conectionStatus.isOnline;
+               if (onlineStatus) {
+                  await deleteCategory(id);
+               }
+            },
+
             // 6. Fetching tasks from DB and Synchronizing localeStorage with the database
             syncLcWithDb: async () => {
                const tasks = await getTasks();
+               const categories = await getCategories();
 
                set(
                   produce((state) => {
                      state.tasksList = tasks;
+                     state.categoriesList = categories;
                   })
                );
             },

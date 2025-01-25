@@ -71,12 +71,12 @@ export async function deleteTask(taskId) {
    return data;
 }
 
-// Delete many task
-export async function deleteManyTask(taskIdsArr) {
+// Delete many task that has the same category id
+export async function deleteManyTask(categoryId) {
    const { data, error } = await supabase
       .from('tasks')
       .delete()
-      .in('id', taskIdsArr)
+      .eq('categoryId', categoryId)
       .select(); // LATER does select work?
 
    if (error) {
@@ -107,6 +107,63 @@ export async function createUser(newUser) {
    if (error) {
       console.error(error);
       throw new Error('User could not be created');
+   }
+
+   return data;
+}
+
+export async function getCategories() {
+   const { data: categories, error } = await supabase
+      .from('task_categories')
+      .select('*');
+
+   if (error) {
+      console.error(error);
+      throw new Error('Error getting categories from Supabase');
+   }
+
+   return categories;
+}
+
+export async function addCategory(newCategory) {
+   const { data, error } = await supabase
+      .from('task_categories')
+      .insert([newCategory])
+      .select();
+
+   if (error) {
+      console.error(error);
+      throw new Error('Category could not be created');
+   }
+
+   return data;
+}
+
+export async function updateCategory(updatedPart, categoryId) {
+   const { data, error } = await supabase
+      .from('task_categories')
+      .update(updatedPart)
+      .eq('id', categoryId)
+      .select();
+
+   if (error) {
+      console.error(error);
+      throw new Error('Category could not be updated');
+   }
+
+   return data;
+}
+
+export async function deleteCategory(categoryId) {
+   const { data, error } = await supabase
+      .from('task_categories')
+      .delete()
+      .eq('id', categoryId)
+      .select(); // LATER does select work?
+
+   if (error) {
+      console.error(error);
+      throw new Error('Category could not be deleted');
    }
 
    return data;
