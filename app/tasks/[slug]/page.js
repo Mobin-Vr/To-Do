@@ -71,7 +71,6 @@ export default function Page({}) {
       <Template
          listRef={listRef}
          listConfig={listConfig}
-         handleShareCategory={() => {}}
          handleDeleteCategory={handleDeleteCategory}
       />
    );

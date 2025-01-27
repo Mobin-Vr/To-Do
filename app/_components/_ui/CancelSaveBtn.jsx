@@ -1,19 +1,21 @@
+import OrdinaryBtn from './OrdinaryBtn';
+
 export default function CancelSaveBtn({ hanldeCancel, hanldeSave }) {
    return (
       <div className='flex gap-1 px-1 mb-1'>
-         <button
+         <OrdinaryBtn
             onClick={hanldeCancel}
-            className='w-full py-0.5 bg-gray-300 text-base font-light text-black rounded-sm'
-         >
-            Cancel
-         </button>
+            text='Cancel'
+            mode='primary'
+            className='w-full'
+         />
 
-         <button
+         <OrdinaryBtn
             onClick={hanldeSave}
-            className='w-full py-0.5 bg-blue-700 text-base font-light text-white rounded-sm '
-         >
-            Save
-         </button>
+            text='Save'
+            mode='secondary'
+            className='w-full'
+         />
       </div>
    );
 }

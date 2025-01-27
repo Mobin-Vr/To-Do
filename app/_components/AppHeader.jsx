@@ -3,7 +3,7 @@
 import { defaultCategoryId } from '../_lib/utils';
 import DeleteBtn from './_ui/DeleteBtn';
 import MenuBtn from './_ui/MenuBtn';
-import ShareBtn from './_ui/ShareBtn';
+import ShareBtn from './shareList/ShareBtn';
 import SortMethodBtn from './_ui/SortMethodBtn';
 import CategoryTitleEditor from './CategoryTitleEditor';
 
@@ -11,7 +11,6 @@ export default function AppHeader({
    listConfig,
    className,
    handleDeleteCategory,
-   handleShareCategory,
 }) {
    const { bgColor, listName, listIcon, theCategory } = listConfig;
 
@@ -44,7 +43,7 @@ export default function AppHeader({
             {theCategory.id !== defaultCategoryId && (
                <>
                   <DeleteBtn onClick={handleDeleteCategory} />
-                  <ShareBtn onClick={handleShareCategory} />
+                  <ShareBtn />
                </>
             )}
 

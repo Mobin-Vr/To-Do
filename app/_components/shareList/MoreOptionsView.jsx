@@ -1,0 +1,53 @@
+import { ArrowIcon } from '@/public/icons';
+import OrdinaryBtn from '../_ui/OrdinaryBtn';
+import { Switch } from '../_ui/switch';
+
+export default function MoreOptionsView({
+   onBackToLinkCreated,
+   isChecked,
+   setIsChecked,
+}) {
+   return (
+      <div className='h-full flex flex-col justify-between text-sm font-light text-black'>
+         <div className='w-full text-center px-2 py-3 border-b border-b-gray-300'>
+            <p className='font-normal'>More options</p>
+            <button
+               onClick={onBackToLinkCreated}
+               className='transform scale-x-[-1] absolute top-2 left-2 text-gray-500 p-2'
+            >
+               <ArrowIcon />
+            </button>
+         </div>
+
+         <div className='w-full px-3 py-4 border-b border-b-gray-300'>
+            <div className='w-full flex justify-between items-center mb-1'>
+               <p className='self-center'>Limit access to current members</p>
+               <Switch
+                  checked={isChecked}
+                  onCheckedChange={setIsChecked}
+                  id='airplane-mode'
+                  className='data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-500'
+               />
+            </div>
+            <p className='text-gray-700 text-xs'>
+               Toggle to prevent joining new people.
+            </p>
+         </div>
+
+         <div className='px-3 py-4 border-b w-full border-b-gray-300 flex-1'>
+            <p className='mb-2'>Invitation link</p>
+            <span className='text-gray-700 text-xs'>
+               https://to-do.microsoft.com/tasks/sharing?InvitationToken=uXh4Wvwa5-25uaZ374kxsQo3oTyLBNhbCsmXju-hJhgHdbT3i2BeuNrEb0d0unMLM
+            </span>
+         </div>
+
+         <div className='px-3 py-3 w-full'>
+            <OrdinaryBtn
+               text='Stop sharing'
+               mode='warn'
+               className='font-thin text-sm w-full'
+            />
+         </div>
+      </div>
+   );
+}

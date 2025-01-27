@@ -1,8 +1,8 @@
-import { ClerkLoaded, SignInButton, UserButton } from '@clerk/nextjs';
-import React, { useRef, useState } from 'react';
+import { ClerkLoaded, UserButton } from '@clerk/nextjs';
+import { useRef, useState } from 'react';
+import ModalTemplate from '../_ui/ModalTemplate';
 import ProfileModal from './ProfileModal';
 import UserStatus from './UserStatus';
-import ModalTemplate from '../_ui/ModalTemplate';
 
 function UserMenu({ user, createClerkPasskey, className }) {
    const userMenuBtnRef = useRef(null);
@@ -20,7 +20,7 @@ function UserMenu({ user, createClerkPasskey, className }) {
 
    return (
       <ClerkLoaded>
-         {user ? (
+         {user && (
             <div
                className={`flex items-center space-x-3 relative ${className}`}
             >
@@ -48,8 +48,6 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   <ProfileModal />
                </ModalTemplate>
             </div>
-         ) : (
-            <SignInButton mode='modal' />
          )}
       </ClerkLoaded>
    );

@@ -9,11 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.5.2",
+    "@clerk/nextjs": "^6.10.2",
     "@date-fns/tz": "^1.2.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.4",
     "@supabase/supabase-js": "^2.47.12",
     "class-variance-authority": "^0.7.1",

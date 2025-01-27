@@ -168,3 +168,22 @@ export async function deleteCategory(categoryId) {
 
    return data;
 }
+
+///////////////////
+/////// RPC ///////
+//////////////////
+
+// Function to create an invitation
+export async function createInvitation(categoryId, ownerId) {
+   const { data: token, error } = await supabase.rpc('create_invitation', {
+      category_id: categoryId,
+      owner_id: ownerId,
+   });
+
+   if (error) {
+      console.error('Error creating invitation:', error);
+      throw new Error('Failed to create invitation.');
+   }
+
+   return token;
+}

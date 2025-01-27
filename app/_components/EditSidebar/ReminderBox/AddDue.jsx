@@ -1,7 +1,7 @@
 import { getRelativeDay } from '@/app/_lib/utils';
 import useTaskStore from '@/app/store';
 import { format } from 'date-fns';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import ModalTemplate from '../../_ui/ModalTemplate';
 import ModalTemplateCloseAble from '../../_ui/ModalTemplateCloseAble';
 import BoxBtn from '../BoxBtn';

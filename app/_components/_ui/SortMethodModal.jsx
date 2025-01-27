@@ -20,7 +20,7 @@ export default function SortMethodModal({ setSortMethod }) {
          />
 
          <ModalActionButton
-            icon={<StarIcon size='16px' />}
+            icon={<StarIcon />}
             label='Importance'
             onClick={() => handleSelect('importance')}
          />
