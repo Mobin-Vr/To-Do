@@ -171,19 +171,119 @@ export async function deleteCategory(categoryId) {
 
 ///////////////////
 /////// RPC ///////
-//////////////////
+///////////////////
 
-// Function to create an invitation
+// Creates a new invitation for a category.
 export async function createInvitation(categoryId, ownerId) {
-   const { data: token, error } = await supabase.rpc('create_invitation', {
+   const { data, error } = await supabase.rpc('create_invitation', {
       category_id: categoryId,
       owner_id: ownerId,
    });
 
    if (error) {
-      console.error('Error creating invitation:', error);
-      throw new Error('Failed to create invitation.');
+      console.error(error);
+      throw new Error('Failed to create invitation');
    }
 
-   return token;
+   return data;
+}
+
+// Accepts an invitation by adding the user to the category.
+export async function acceptInvitation(invitationToken, userId) {
+   const { error } = await supabase.rpc('accept_invitation', {
+      invitation_token: invitationToken,
+      user_id: userId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to accept the invitation');
+   }
+
+   return;
+}
+
+// Allows a user to leave an invitation.
+export async function leaveInvitation(invitationToken, userId) {
+   const { error } = await supabase.rpc('leave_invitation', {
+      invitation_token: invitationToken,
+      user_id: userId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to leave the invitation');
+   }
+
+   return;
+}
+
+// Removes a specific user from an invitation.
+export async function removeUserFromInvitation(
+   invitationToken,
+   userId,
+   ownerId
+) {
+   const { error } = await supabase.rpc('remove_user_from_invitation', {
+      invitation_token: invitationToken,
+      user_id: userId,
+      owner_id: ownerId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to remove user from the invitation');
+   }
+
+   return;
+}
+
+// Updates the access limit for a specific invitation.
+export async function setInvitationAccessLimit(
+   invitationToken,
+   limitStatus,
+   ownerId
+) {
+   const { error } = await supabase.rpc('set_invitation_access_limit', {
+      invitation_token: invitationToken,
+      invitation_owner_id: ownerId,
+      limit_status: limitStatus,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to set invitation access limit');
+   }
+
+   return;
+}
+
+// Fetches all users associated with a specific invitation.
+export async function getUsersByInvitation(invitationToken, ownerId) {
+   const { data, error } = await supabase.rpc('get_users_by_invitation', {
+      invitation_token: invitationToken,
+      owner_id: ownerId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to fetch users by invitation');
+   }
+
+   return data;
+}
+
+// Stops sharing a category by deleting the invitation and its users.
+export async function stopSharingInvitation(invitationToken, ownerId) {
+   const { error } = await supabase.rpc('stop_sharing_invitation', {
+      invitation_token: invitationToken,
+      invitation_owner_id: ownerId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to stop sharing the invitation');
+   }
+
+   return;
 }

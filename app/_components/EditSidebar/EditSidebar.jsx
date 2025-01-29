@@ -1,6 +1,6 @@
 'use client';
 
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { useShallow } from 'zustand/react/shallow';
 import ActionFooter from './ActionFooter';
 import AddFile from './AddFile';

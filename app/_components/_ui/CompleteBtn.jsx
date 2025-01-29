@@ -1,5 +1,5 @@
 import { CircleIcon, CompletedIcon, TickCircleIcon } from '@/public/icons';
-import useTaskStore from '../../store';
+import useTaskStore from '../../taskStore';
 
 export default function CompleteBtn({ task, compBtnRef, className }) {
    const toggleCompleted = useTaskStore((state) => state.toggleCompleted);

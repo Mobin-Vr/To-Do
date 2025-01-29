@@ -21,7 +21,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { addTask, deleteTask, updateManyTask } from '../_lib/data-services';
 import { checkDatabaseHealth } from '../_lib/healthCheck';
 import { getDateNowIso, HEALTH_CHECK_TIMER } from '../_lib/utils';
-import useTaskStore from '../store';
+import useTaskStore from '../taskStore';
 
 export default function HealthStatusSync() {
    // Track connection and online status locally

@@ -1,4 +1,4 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { XIcon } from '@/public/icons';
 import { useRef } from 'react';
 import { useShallow } from 'zustand/react/shallow';

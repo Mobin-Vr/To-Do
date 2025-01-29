@@ -2,8 +2,8 @@
 
 import Template from '@/app/_components/_ui/Template';
 import { BG_COLORS } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
-import { useParams, useRouter } from 'next/navigation';
+import useTaskStore from '@/app/taskStore';
+import { notFound, useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -30,6 +30,7 @@ export default function Page({}) {
    );
 
    const theCategory = categoriesList?.find((cat) => cat.id === id);
+   if (!theCategory) notFound();
 
    useEffect(() => {
       if (listRef.current) {
@@ -44,7 +45,7 @@ export default function Page({}) {
    const listConfig = theCategory
       ? {
            bgColor,
-           listName: theCategory.title,
+           listName: theCategory?.title,
            listIcon: '',
            theCategory,
         }
@@ -72,6 +73,7 @@ export default function Page({}) {
          listRef={listRef}
          listConfig={listConfig}
          handleDeleteCategory={handleDeleteCategory}
+         theCategoryId={theCategory.id}
       />
    );
 }

@@ -7,6 +7,7 @@ import HealthStatusSync from './_components/HealthStatusSync';
 import Sidebar from './_components/menuSidebar/Sidebar';
 import UserSignupHandler from './_components/menuSidebar/UserSignupHandler';
 import { currentUser } from '@clerk/nextjs/server';
+import { Toaster } from 'react-hot-toast';
 
 const roboto = Roboto({
    subsets: ['latin'],
@@ -41,6 +42,8 @@ export default async function RootLayout({ children }) {
                <main className='h-full overflow-y-hidden sm:flex-1'>
                   {children}
                </main>
+
+               <Toaster />
             </body>
          </html>
       </ClerkProvider>

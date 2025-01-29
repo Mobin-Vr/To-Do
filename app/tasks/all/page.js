@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import useTaskStore from '../../store';
-import Template from '../../_components/_ui/Template';
 import { BG_COLORS } from '@/app/_lib/utils';
+import { InfinityIcon } from '@/public/icons';
 import { usePathname } from 'next/navigation';
-import { InfinityIcon, SunIcon } from '@/public/icons';
+import { useEffect, useRef } from 'react';
+import Template from '../../_components/_ui/Template';
+import useTaskStore from '../../taskStore';
 
 export default function Page() {
    const pathname = usePathname();

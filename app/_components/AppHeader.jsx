@@ -11,6 +11,7 @@ export default function AppHeader({
    listConfig,
    className,
    handleDeleteCategory,
+   theCategoryId,
 }) {
    const { bgColor, listName, listIcon, theCategory } = listConfig;
 
@@ -43,7 +44,7 @@ export default function AppHeader({
             {theCategory.id !== defaultCategoryId && (
                <>
                   <DeleteBtn onClick={handleDeleteCategory} />
-                  <ShareBtn />
+                  <ShareBtn theCategoryId={theCategoryId} />
                </>
             )}
 

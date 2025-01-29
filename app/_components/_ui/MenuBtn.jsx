@@ -2,7 +2,7 @@
 
 import { MenuIcon } from '@/public/icons';
 import React from 'react';
-import useTaskStore from '../../store';
+import useTaskStore from '../../taskStore';
 import { useShallow } from 'zustand/react/shallow';
 
 function MenuBtn({ menuButtonRef, color, className }) {

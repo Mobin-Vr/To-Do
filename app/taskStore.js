@@ -13,6 +13,13 @@ import {
    updateTask,
 } from './_lib/data-services';
 import { defaultCategory, getDateNowIso } from './_lib/utils';
+import {
+   createInvitationAction,
+   getUsersByInvitationAction,
+   removeUserFromInvitationAction,
+   setInvitationAccessLimitAction,
+   stopSharingInvitationAction,
+} from './_lib/invitationActions';
 
 const initialState = {
    isSidebarOpen: false,
@@ -26,6 +33,7 @@ const initialState = {
    categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
+   invitations: [], // each object : {invitationToken, categoryId, categoryName, ownerId, [users], access limit }
 };
 
 const useTaskStore = create(
@@ -43,6 +51,7 @@ const useTaskStore = create(
             changeLog: initialState.changeLog,
             sortMethod: initialState.sortMethod,
             categoriesList: initialState.categoriesList,
+            invitations: initialState.invitations,
 
             // 0. Toggle sidebar
             toggleSidebar: () => {
@@ -965,6 +974,161 @@ const useTaskStore = create(
                      state.sortMethod = sortMethod;
                   })
                );
+            },
+
+            //////////////////////////////////////
+            /////////////////////////////////////
+            //////////// INVATATION /////////////
+            /////////////////////////////////////
+            /////////////////////////////////////
+
+            // 1. Create invitation
+            createInvitationInStore: async (categoryId) => {
+               const userInfo = get().userInfo;
+
+               try {
+                  const token = await createInvitationAction(
+                     categoryId,
+                     userInfo.id
+                  );
+
+                  const baseUrl =
+                     process.env.NODE_ENV === 'production'
+                        ? `https://${process.env.VERCEL_URL}`
+                        : process.env.NEXT_PUBLIC_BASE_URL;
+
+                  const invitationLink = `${baseUrl}/invite?token=${token}`;
+
+                  set(
+                     produce((state) => {
+                        state.invitations.push({
+                           invitationToken: token,
+                           categoryId,
+                           ownerId: userInfo.id,
+                           sharedWith: [],
+                           limitAccess: false,
+                           invitationLink,
+                           createdAt: new Date().toISOString(),
+                        });
+                     })
+                  );
+
+                  return true; // this is for some management in "SharedListModal" component
+               } catch (error) {
+                  return false; // this is for some management in "SharedListModal" component
+                  console.error(error.message);
+               }
+            },
+
+            // 2. Remove user
+            removeUserFromInvitationStore: async (invitationToken, userId) => {
+               const owner = get().userInfo;
+
+               try {
+                  await removeUserFromInvitationAction(
+                     invitationToken,
+                     userId,
+                     owner.id
+                  );
+
+                  set(
+                     produce((state) => {
+                        const invitation = state.invitations.find(
+                           (inv) => inv.invitationToken === invitationToken
+                        );
+
+                        if (invitation) {
+                           invitation.sharedWith = invitation.sharedWith.filter(
+                              (user) => user.id !== userId
+                           );
+                        }
+                     })
+                  );
+               } catch (error) {
+                  console.error(error.message);
+               }
+            },
+
+            // 3. Set access limit
+            setInvitationAccessLimitInStore: async (categoryId) => {
+               const owner = get().userInfo;
+
+               const { limitAccess: limitStatus } = get().invitations.find(
+                  (inv) => inv.categoryId === categoryId
+               );
+
+               const { invitationToken } = get().invitations.find(
+                  (inv) => inv.categoryId === categoryId
+               );
+
+               try {
+                  await setInvitationAccessLimitAction(
+                     invitationToken,
+                     owner.id,
+                     !limitStatus
+                  );
+
+                  set(
+                     produce((state) => {
+                        const invitation = state.invitations.find(
+                           (inv) => inv.invitationToken === invitationToken
+                        );
+
+                        if (invitation) {
+                           invitation.limitAccess = !limitStatus;
+                        }
+                     })
+                  );
+               } catch (error) {
+                  console.error(error.message);
+               }
+            },
+
+            // 4. Stop sharing
+            stopSharingInvitationInStore: async (categoryId) => {
+               const owner = get().userInfo;
+
+               const { invitationToken } = get().invitations.find(
+                  (inv) => inv.categoryId === categoryId
+               );
+
+               try {
+                  await stopSharingInvitationAction(invitationToken, owner.id);
+
+                  set(
+                     produce((state) => {
+                        state.invitations = state.invitations.filter(
+                           (inv) => inv.invitationToken !== invitationToken
+                        );
+                     })
+                  );
+               } catch (error) {
+                  console.error(error.message);
+               }
+            },
+
+            // Fetch users
+            getUsersByInvitationInStore: async (invitationToken) => {
+               const owner = get().userInfo;
+
+               try {
+                  const users = await getUsersByInvitationAction(
+                     invitationToken,
+                     owner.id
+                  );
+
+                  set(
+                     produce((state) => {
+                        const invitation = state.invitations.find(
+                           (inv) => inv.invitationToken === invitationToken
+                        );
+
+                        if (invitation) invitation.sharedWith = users;
+                     })
+                  );
+               } catch (error) {
+                  console.error(error.message);
+               }
             },
          }),
          {

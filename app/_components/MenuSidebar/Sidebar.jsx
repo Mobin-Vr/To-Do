@@ -3,7 +3,7 @@
 import { useUser } from '@clerk/nextjs';
 import { useEffect, useRef } from 'react';
 
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { useShallow } from 'zustand/react/shallow';
 import MenuBtn from '../_ui/MenuBtn';
 import NewListBtn from '../_ui/NewListBtn';

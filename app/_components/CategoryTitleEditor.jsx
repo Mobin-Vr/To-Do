@@ -1,4 +1,4 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { useEffect, useRef, useState } from 'react';
 
 export default function CategoryTitleEditor({ theCategory, className }) {

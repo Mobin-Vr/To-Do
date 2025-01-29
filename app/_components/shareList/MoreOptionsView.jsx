@@ -1,12 +1,40 @@
+import useTaskStore from '@/app/taskStore';
 import { ArrowIcon } from '@/public/icons';
+import { useShallow } from 'zustand/react/shallow';
 import OrdinaryBtn from '../_ui/OrdinaryBtn';
 import { Switch } from '../_ui/switch';
 
 export default function MoreOptionsView({
    onBackToLinkCreated,
-   isChecked,
-   setIsChecked,
+   toggleModal,
+   link,
+   theCategoryId,
 }) {
+   const {
+      invitations,
+      setInvitationAccessLimitInStore: setLimit,
+      stopSharingInvitationInStore: stopSharing,
+   } = useTaskStore(
+      useShallow((state) => ({
+         invitations: state.invitations,
+         setInvitationAccessLimitInStore: state.setInvitationAccessLimitInStore,
+         stopSharingInvitationInStore: state.stopSharingInvitationInStore,
+      }))
+   );
+
+   const limitAccess = invitations.find(
+      (inv) => inv.categoryId === theCategoryId
+   )?.limitAccess;
+
+   async function handleLimitAccess() {
+      await setLimit(theCategoryId);
+   }
+
+   async function handleStopSharing() {
+      await stopSharing(theCategoryId);
+      toggleModal();
+   }
+
    return (
       <div className='h-full flex flex-col justify-between text-sm font-light text-black'>
          <div className='w-full text-center px-2 py-3 border-b border-b-gray-300'>
@@ -23,8 +51,8 @@ export default function MoreOptionsView({
             <div className='w-full flex justify-between items-center mb-1'>
                <p className='self-center'>Limit access to current members</p>
                <Switch
-                  checked={isChecked}
-                  onCheckedChange={setIsChecked}
+                  checked={limitAccess}
+                  onCheckedChange={handleLimitAccess}
                   id='airplane-mode'
                   className='data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-500'
                />
@@ -36,13 +64,12 @@ export default function MoreOptionsView({
 
          <div className='px-3 py-4 border-b w-full border-b-gray-300 flex-1'>
             <p className='mb-2'>Invitation link</p>
-            <span className='text-gray-700 text-xs'>
-               https://to-do.microsoft.com/tasks/sharing?InvitationToken=uXh4Wvwa5-25uaZ374kxsQo3oTyLBNhbCsmXju-hJhgHdbT3i2BeuNrEb0d0unMLM
-            </span>
+            <span className='text-gray-700 text-xs'>{link}</span>
          </div>
 
          <div className='px-3 py-3 w-full'>
             <OrdinaryBtn
+               onClick={handleStopSharing}
                text='Stop sharing'
                mode='warn'
                className='font-thin text-sm w-full'

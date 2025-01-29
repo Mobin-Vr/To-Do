@@ -1,6 +1,5 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { useEffect, useRef, useState } from 'react';
-import Border from '../../_ui/Border';
 
 export default function StepTitleEditor({ step, taskId, className }) {
    const textareaRef = useRef(null);

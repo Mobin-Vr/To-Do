@@ -1,6 +1,6 @@
 import { ChevronIcon } from '@/public/icons';
 import { getTimeAgo } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 
 export default function UserStatus({ user }) {
    const { isConnected, isOnline, lastOnline } = useTaskStore(

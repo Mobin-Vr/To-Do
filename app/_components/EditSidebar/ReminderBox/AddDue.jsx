@@ -1,5 +1,5 @@
 import { getRelativeDay } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { format } from 'date-fns';
 import { useRef, useState } from 'react';
 import ModalTemplate from '../../_ui/ModalTemplate';

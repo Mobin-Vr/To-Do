@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { defaultCategoryId } from '@/app/_lib/utils';
 
 const SidebarLink = ({ href, title, children, categoryId, onClick }) => {

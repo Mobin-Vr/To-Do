@@ -1,4 +1,4 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import BoxBtn from './BoxBtn';
 import BoxTemplate from './BoxTemplate';
 

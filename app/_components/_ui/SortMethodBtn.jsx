@@ -1,6 +1,6 @@
 import { SortIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
-import useTaskStore from '../../store';
+import useTaskStore from '../../taskStore';
 import SortMethodModal from './SortMethodModal';
 import ModalTemplate from './ModalTemplate';
 

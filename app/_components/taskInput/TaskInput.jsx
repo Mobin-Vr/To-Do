@@ -2,16 +2,12 @@
 
 import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
-import {
-   defaultCategoryId,
-   generateNewUuid,
-   getDateNowIso,
-} from '../../_lib/utils';
-import useTaskStore from '../../store';
+import { useShallow } from 'zustand/react/shallow';
+import { generateNewUuid, getDateNowIso } from '../../_lib/utils';
+import useTaskStore from '../../taskStore';
 import InputAddDue from './InputAddDue';
 import InputAddReminder from './InputAddReminder';
 import InputAddRepeat from './InputAddRepeat';
-import { useShallow } from 'zustand/react/shallow';
 
 export default function TaskInput({ bgColor, className, categoryId }) {
    const { addTaskToStore, userInfo } = useTaskStore(
@@ -47,8 +43,6 @@ export default function TaskInput({ bgColor, className, categoryId }) {
          dueDate: taskDueDate,
          reminder: taskReminder,
          repeat: taskRepeat,
-         parentTaskId: null,
-         assignedTo: null,
          steps: [],
       };
 
@@ -70,7 +64,7 @@ export default function TaskInput({ bgColor, className, categoryId }) {
          style={{ backgroundColor: bgColor[0] }}
       >
          <form
-            className='flex items-center  h-[2.9rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
+            className='flex items-center h-[2.9rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
             onSubmit={handleSubmit}
          >
             <button className='absolute left-9 cursor-pointer'>

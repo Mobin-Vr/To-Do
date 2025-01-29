@@ -1,5 +1,5 @@
 import { generateNewUuid, getDateNowIso } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { PlusIcon } from '@/public/icons';
 import { redirect } from 'next/navigation';
 
@@ -12,12 +12,14 @@ export default function NewListBtn({
 
    function handleNewList() {
       const uuId = generateNewUuid();
+
       const newCategory = {
          id: uuId,
          title: 'list-1',
          owner_id: userInfo.id,
+         has_token: false,
+         has_collaborator: false,
          created_at: getDateNowIso(),
-         is_shared: false,
       };
 
       addCategoryToStore(newCategory);

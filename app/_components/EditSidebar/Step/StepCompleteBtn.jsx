@@ -1,4 +1,4 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { CircleIcon, CompletedIcon, TickCircleIcon } from '@/public/icons';
 
 export default function StepCompleteBtn({ taskId, step, className }) {

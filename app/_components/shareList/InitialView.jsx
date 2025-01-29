@@ -1,8 +1,9 @@
+import illsturation from '@/public/email.svg';
 import Image from 'next/image';
 import OrdinaryBtn from '../_ui/OrdinaryBtn';
-import illsturation from '@/public/email.svg';
+import SpinnerMini from '../_ui/SpinnerMini';
 
-export default function InitialView({ onCreateLink, toggleModal }) {
+export default function InitialView({ onCreateLink, toggleModal, isPending }) {
    return (
       <div className='h-full flex flex-col justify-between text-sm font-light text-black '>
          <p className='w-full text-center font-normal px-2 py-3 border-b border-b-gray-300'>
@@ -28,12 +29,23 @@ export default function InitialView({ onCreateLink, toggleModal }) {
             {/* LATER user lists */}
 
             <div>
-               <OrdinaryBtn
-                  onClick={onCreateLink}
-                  text='Create invitation link'
-                  mode='secondary'
-                  className='font-thin w-full text-sm mb-3'
-               />
+               <div className='flex justify-between items-center'>
+                  <OrdinaryBtn
+                     onClick={onCreateLink}
+                     text={`${
+                        isPending ? 'Creating' : 'Create'
+                     } invitation link`}
+                     mode='secondary'
+                     disabled={isPending}
+                     className='font-thin w-full text-sm mb-3 flex justify-around'
+                  >
+                     {isPending && (
+                        <span className='max-auto '>
+                           <SpinnerMini />
+                        </span>
+                     )}
+                  </OrdinaryBtn>
+               </div>
 
                <p className='px-4 text-center text-xs text-gray-700'>
                   Anyone with this link and an account can join and edit this

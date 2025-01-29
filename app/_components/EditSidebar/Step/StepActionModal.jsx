@@ -1,5 +1,5 @@
 import { getDateNowIso } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { PlusIcon, TickCircleIcon, TrashIcon } from '@/public/icons';
 import { useShallow } from 'zustand/react/shallow';
 import { ModalActionButton } from '../remiderBoxModals/ModalActionBtn';

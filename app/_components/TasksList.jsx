@@ -3,7 +3,7 @@ import { delay, sortTasks } from '../_lib/utils';
 import CompletedToggle from './CompletedToggle';
 import EditSidebar from './EditSidebar/EditSidebar';
 import TaskGroup from './TaskGroup';
-import useTaskStore from '../store';
+import useTaskStore from '../taskStore';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function TasksList({ listRef, bgColor, categoryId }) {
@@ -113,7 +113,8 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
             </>
          )}
 
-         <EditSidebar task={activeTask} className='edit-sidebar' />
+         {/* It has some BUG  */}
+         {/* <EditSidebar task={activeTask} className='edit-sidebar' /> */}
       </div>
    );
 }

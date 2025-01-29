@@ -1,4 +1,4 @@
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export default function TaskTitleEditor({ task, className }) {

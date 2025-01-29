@@ -1,5 +1,5 @@
 import { generateNewUuid, getDateNowIso } from '@/app/_lib/utils';
-import useTaskStore from '@/app/store';
+import useTaskStore from '@/app/taskStore';
 import { CircleIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
