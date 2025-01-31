@@ -14,12 +14,12 @@ export default function NewListBtn({
       const uuId = generateNewUuid();
 
       const newCategory = {
-         id: uuId,
-         title: 'list-1',
-         owner_id: userInfo.id,
-         has_token: false,
-         has_collaborator: false,
-         created_at: getDateNowIso(),
+         category_id: uuId,
+         category_title: '',
+         category_owner_id: userInfo.user_id,
+         category_created_at: getDateNowIso(),
+         has_category_invitation: false,
+         has_category_collaborator: false,
       };
 
       addCategoryToStore(newCategory);

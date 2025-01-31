@@ -5,7 +5,7 @@ export default function StepCompleteBtn({ taskId, step, className }) {
    const updateStep = useTaskStore((state) => state.updateStep);
 
    function handleCompleteBtn() {
-      updateStep(taskId, step.id, { isCompleted: !step.isCompleted });
+      updateStep(taskId, step.step_id, { isCompleted: !step.isCompleted });
    }
 
    return (

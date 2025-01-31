@@ -25,14 +25,14 @@ export default function Template({
             <TasksList
                listRef={listRef}
                bgColor={listConfig.bgColor}
-               categoryId={listConfig.theCategory.id}
+               categoryId={listConfig.theCategory.category_id}
             />
          </div>
 
          <TaskInput
             className='px-6 sm:px-10 h-[7rem] w-full'
             bgColor={listConfig.bgColor}
-            categoryId={listConfig.theCategory.id}
+            categoryId={listConfig.theCategory.category_id}
          />
       </div>
    );

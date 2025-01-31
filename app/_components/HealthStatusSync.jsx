@@ -75,21 +75,21 @@ export default function HealthStatusSync() {
          .filter((log) => log.type === 'update-isCompleted')
          .map((log) => ({
             task: {
-               isCompleted: log.task.isCompleted,
-               updatedAt: log.task.updatedAt,
-               completedAt: log.task.completedAt,
+               isCompleted: log.task.is_task_completed,
+               updatedAt: log.task.task_updated_at,
+               completedAt: log.task.task_completed_at,
             },
-            id: log.task.id,
+            id: log.task.task_id,
          }));
 
       const starredUpdates = changeLog
          .filter((log) => log.type === 'update-isStarred')
          .map((log) => ({
             task: {
-               isStarred: log.task.isStarred,
-               updatedAt: log.task.updatedAt,
+               isStarred: log.task.is_task_starred,
+               updatedAt: log.task.task_updated_at,
             },
-            id: log.task.id,
+            id: log.task.task_id,
          }));
 
       // LATER add update Reminder - note - due - reapet - category - steps

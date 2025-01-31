@@ -14,13 +14,13 @@ export default function AddDue({ task }) {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
-   const hasDueDate = task.dueDate ? true : false;
-   const relativeDay = getRelativeDay(task.dueDate);
+   const hasDueDate = task.task_due_date ? true : false;
+   const relativeDay = getRelativeDay(task.task_due_date);
    const activeText = `Due ${
-      relativeDay ? relativeDay : format(task.dueDate, 'MMM, dd')
+      relativeDay ? relativeDay : format(task.task_due_date, 'MMM, dd')
    }`;
 
-   const removeDueDate = () => updateDueDate(task.id, null);
+   const removeDueDate = () => updateDueDate(task.task_id, null);
 
    const toggleModal = () => setIsModalOpen(!isModalOpen);
 

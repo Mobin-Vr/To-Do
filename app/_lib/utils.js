@@ -98,23 +98,27 @@ export function getRelativeDay(date) {
 export function sortTasks(tasks, sortOption) {
    switch (sortOption) {
       case 'importance':
-         return [...tasks].sort((a, b) => b.isStarred - a.isStarred);
+         return [...tasks].sort(
+            (a, b) => b.is_task_starred - a.is_task_starred
+         );
 
       case 'dueDate':
          return [...tasks].sort((a, b) => {
-            if (!a.dueDate) return 1; // If no due date, push to the end
-            if (!b.dueDate) return -1;
-            return new Date(a.dueDate) - new Date(b.dueDate);
+            if (!a.task_due_date) return 1; // If no due date, push to the end
+            if (!b.task_due_date) return -1;
+            return new Date(a.task_due_date) - new Date(b.task_due_date);
          });
 
       case 'alphabet':
          return [...tasks].sort((a, b) =>
-            a.title.localeCompare(b.title, undefined, { sensitivity: 'base' })
+            a.task_title.localeCompare(b.task_title, undefined, {
+               sensitivity: 'base',
+            })
          );
 
       case 'creationDate':
          return [...tasks].sort(
-            (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+            (a, b) => new Date(a.task_created_at) - new Date(b.task_created_at)
          );
 
       default:
@@ -162,10 +166,10 @@ export const HEALTH_CHECK_TIMER = 300;
 
 export const defaultCategoryId = '00000000-0000-0000-0000-000000000000';
 export const defaultCategory = {
-   id: defaultCategoryId,
-   title: 'default',
-   ownerId: null,
-   created_at: null,
-   isShared: null,
-   shared_with: null,
+   category_id: defaultCategoryId,
+   category_title: 'default',
+   category_owner_id: null,
+   category_created_at: null,
+   has_category_collaborator: false,
+   has_category_invatation: false,
 };

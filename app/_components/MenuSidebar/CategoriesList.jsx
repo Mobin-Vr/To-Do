@@ -5,10 +5,10 @@ export default function CategoriesList({ categoriesList, toggleSidebar }) {
    return (
       <ul className=' pt-2'>
          {categoriesList
-            .filter((cat) => cat.id !== defaultCategoryId)
+            .filter((cat) => cat.category_id !== defaultCategoryId)
             .map((cat) => (
                <CategoryItem
-                  key={cat.id}
+                  key={cat.category_id}
                   category={cat}
                   toggleSidebar={toggleSidebar}
                />

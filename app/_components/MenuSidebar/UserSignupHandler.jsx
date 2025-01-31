@@ -28,9 +28,9 @@ export default function UserSignupHandler() {
          // If the user doesn't exist, create a new user and store their data in the store
          if (!existingUser) {
             const newUser = await createUser({
-               name: user.fullName,
-               email: email,
-               clerk_id: user.id,
+               user_fullname: user.fullName,
+               user_email: email,
+               user_clerk_id: user.id,
             });
 
             memoized_setUserInfo(newUser[0]);

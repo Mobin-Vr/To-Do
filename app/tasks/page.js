@@ -10,7 +10,7 @@ export default function Page() {
    const categoriesList = useTaskStore((state) => state.categoriesList);
 
    const theCategory = categoriesList?.find(
-      (cat) => cat.id === defaultCategoryId
+      (cat) => cat.category_id === defaultCategoryId
    );
 
    const bgColor = BG_COLORS['/tasks'];

@@ -36,7 +36,7 @@ export default function TaskItem({
    return (
       <li
          ref={listRef}
-         id={task.id}
+         id={task.task_id}
          onClick={(e) => handleToggleSidebar(task, e)}
          className='task-item min-h-fit' // for click handeling
          style={{

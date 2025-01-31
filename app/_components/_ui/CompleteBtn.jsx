@@ -6,14 +6,14 @@ export default function CompleteBtn({ task, compBtnRef, className }) {
    return (
       <button
          ref={compBtnRef}
-         onClick={() => toggleCompleted(task.id)}
+         onClick={() => toggleCompleted(task.task_id)}
          className={`group bg-transparent relative transition-all cursor-default duration-300 ease-in-out ${className} ${
-            task.isCompleted
+            task.is_task_completed
                ? 'line-through text-gray-300 decoration-gray-300 decoration-2'
                : ''
          }`}
       >
-         {task.isCompleted ? (
+         {task.is_task_completed ? (
             <CompletedIcon />
          ) : (
             <>

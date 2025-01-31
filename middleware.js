@@ -1,14 +1,22 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
+// Define the protected routes
 const isProtectedRoute = createRouteMatcher([
    '/tasks',
-   '/tasks/(.*)',
    '/tasks/:slug',
    '/settings',
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
-   if (isProtectedRoute(req)) await auth.protect();
+   // If the URL includes "/tasks/invite", bypass authentication
+   if (req.url?.includes('/tasks/invite')) {
+      return;
+   }
+
+   // Protect the routes defined in the `isProtectedRoute` matcher
+   if (isProtectedRoute(req)) {
+      await auth.protect();
+   }
 });
 
 export const config = {

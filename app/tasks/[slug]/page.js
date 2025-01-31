@@ -11,7 +11,7 @@ export default function Page({}) {
    const [isRedirecting, setIsRedirecting] = useState(false);
 
    const router = useRouter();
-   const id = useParams().slug;
+   const slugId = useParams().slug;
    const listRef = useRef(null);
    const bgColor = BG_COLORS['/slug'];
 
@@ -29,7 +29,9 @@ export default function Page({}) {
       }))
    );
 
-   const theCategory = categoriesList?.find((cat) => cat.id === id);
+   const theCategory = categoriesList?.find(
+      (cat) => cat.category_id === slugId
+   );
    if (!theCategory) notFound();
 
    useEffect(() => {
@@ -45,7 +47,7 @@ export default function Page({}) {
    const listConfig = theCategory
       ? {
            bgColor,
-           listName: theCategory?.title,
+           listName: theCategory?.category_title,
            listIcon: '',
            theCategory,
         }
@@ -55,10 +57,10 @@ export default function Page({}) {
       setIsRedirecting(true);
 
       // 1. If the category has task delete them
-      await deleteTasksByCategory(theCategory.id);
+      await deleteTasksByCategory(theCategory.category_id);
 
       // 2. Delete the category
-      await deleteCategoryFromStore(theCategory.id);
+      await deleteCategoryFromStore(theCategory.category_id);
 
       // 3. Redirect the url
       router.push('/tasks');
@@ -73,7 +75,7 @@ export default function Page({}) {
          listRef={listRef}
          listConfig={listConfig}
          handleDeleteCategory={handleDeleteCategory}
-         theCategoryId={theCategory.id}
+         theCategoryId={theCategory.category_id}
       />
    );
 }

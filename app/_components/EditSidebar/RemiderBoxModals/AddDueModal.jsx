@@ -20,7 +20,7 @@ export default function AddDueModal({
 
    // update store (id, dueDate)
    function handleSelect(day) {
-      if (!isForTaskInput) updateDueDate(task.id, day);
+      if (!isForTaskInput) updateDueDate(task.task_id, day);
       if (isForTaskInput) updateDueDate(day);
    }
 

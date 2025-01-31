@@ -8,17 +8,17 @@ function AddNote({ updateNote, task, isEditSidebarOpen }) {
       const textarea = textareaRef.current;
       textarea.style.height = 'auto'; // Reset height
       textarea.style.height = `${textarea.scrollHeight}px`;
-   }, [isEditSidebarOpen, task.note]);
+   }, [isEditSidebarOpen, task.task_note]);
 
    function handleNote(value) {
-      updateNote(task.id, value);
+      updateNote(task.task_id, value);
    }
 
    return (
       <BoxTemplate className='p-3 min-h-20'>
          <textarea
             ref={textareaRef}
-            value={task.note ? task.note : ''}
+            value={task.task_note ? task.task_note : ''}
             onChange={(e) => handleNote(e.target.value)}
             placeholder='Add note'
             maxLength={300}

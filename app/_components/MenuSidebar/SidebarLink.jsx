@@ -16,24 +16,24 @@ const SidebarLink = ({ href, title, children, categoryId, onClick }) => {
       if (!tasksList) return 0;
 
       if (title === 'My Day')
-         return tasksList.filter((task) => task.isAddedToMyDay).length;
+         return tasksList.filter((task) => task.is_task_in_mayday).length;
 
       if (title === 'Important')
-         return tasksList.filter((task) => task.isStarred).length;
+         return tasksList.filter((task) => task.is_task_starred).length;
 
       if (title === 'Planned')
-         return tasksList.filter((task) => task.dueDate !== null).length;
+         return tasksList.filter((task) => task.task_due_date !== null).length;
 
       if (title === 'All') return 0;
       // if (title === 'All') tasksList.length; LATER CHANGE after adding new list
 
       if (title === 'Completed')
-         return tasksList.filter((task) => task.isCompleted).length;
+         return tasksList.filter((task) => task.is_task_completed).length;
 
       if (title === 'Tasks') return tasksList.length;
 
       if (categoryId !== defaultCategoryId)
-         return tasksList.filter((task) => task.categoryId === categoryId)
+         return tasksList.filter((task) => task.task_category_id === categoryId)
             .length;
    }
 

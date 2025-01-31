@@ -16,18 +16,18 @@ export default function AddRepeat({ task }) {
    );
    const [isModalOpen, setIsModalOpen] = useState(false);
 
-   const hasRepeat = task.repeat ? true : false;
-   const activeText = task.repeat;
+   const hasRepeat = task.task_repeat ? true : false;
+   const activeText = task.task_repeat;
 
    const toggleModal = () => setIsModalOpen(!isModalOpen);
-   const removeRepeat = () => updateRepeat(task.id, null);
+   const removeRepeat = () => updateRepeat(task.task_id, null);
 
    useEffect(() => {
-      if (task.repeat === 'Weekdays' && !isWeekday(task.dueDate)) {
-         const nearestFridy = getWeekendForWeekdays(task.dueDate);
-         updateDueDate(task.id, nearestFridy);
+      if (task.task_repeat === 'Weekdays' && !isWeekday(task.task_due_date)) {
+         const nearestFridy = getWeekendForWeekdays(task.task_due_date);
+         updateDueDate(task.task_id, nearestFridy);
       }
-   }, [task.repeat]);
+   }, [task.task_repeat]);
 
    return (
       <div ref={repeatRef} className=''>

@@ -1,6 +1,7 @@
 import {
-   acceptInvitation,
+   joinInvitation,
    createInvitation,
+   getTasksByInvitation,
    getUsersByInvitation,
    leaveInvitation,
    removeUserFromInvitation,
@@ -17,18 +18,9 @@ export async function createInvitationAction(categoryId, ownerId) {
    }
 }
 
-export async function acceptInvitationAction(invitationToken, userId) {
+export async function leaveInvitationAction(invitationId, userId) {
    try {
-      return await acceptInvitation(invitationToken, userId);
-   } catch (err) {
-      console.error(err.message);
-      throw err;
-   }
-}
-
-export async function leaveInvitationAction(invitationToken, userId) {
-   try {
-      return await leaveInvitation(invitationToken, userId);
+      return await leaveInvitation(invitationId, userId);
    } catch (err) {
       console.error(err.message);
       throw err;
@@ -36,12 +28,12 @@ export async function leaveInvitationAction(invitationToken, userId) {
 }
 
 export async function removeUserFromInvitationAction(
-   invitationToken,
+   invitationId,
    userId,
    ownerId
 ) {
    try {
-      return await removeUserFromInvitation(invitationToken, userId, ownerId);
+      return await removeUserFromInvitation(invitationId, userId, ownerId);
    } catch (err) {
       console.error(err.message);
       throw err;
@@ -49,36 +41,50 @@ export async function removeUserFromInvitationAction(
 }
 
 export async function setInvitationAccessLimitAction(
-   invitationToken,
-   limitStatus,
+   invitationId,
+   limitAccess,
    ownerId
 ) {
    try {
-      return await setInvitationAccessLimit(
-         invitationToken,
-         ownerId,
-         limitStatus
-      );
+      return await setInvitationAccessLimit(invitationId, ownerId, limitAccess);
    } catch (err) {
       console.error(err.message);
       throw err;
    }
 }
 
-export async function getUsersByInvitationAction(invitationToken, ownerId) {
+export async function getUsersByInvitationAction(invitationId, ownerId) {
    try {
-      return await getUsersByInvitation(invitationToken, ownerId);
+      return await getUsersByInvitation(invitationId, ownerId);
    } catch (err) {
       console.error(err.message);
       throw err;
    }
 }
 
-export async function stopSharingInvitationAction(invitationToken, ownerId) {
+export async function stopSharingInvitationAction(invitationId, ownerId) {
    try {
-      return await stopSharingInvitation(invitationToken, ownerId);
+      return await stopSharingInvitation(invitationId, ownerId);
    } catch (err) {
       console.error(err.message);
+      throw err;
+   }
+}
+
+export async function joinInvitationAction(invitationId, userId) {
+   try {
+      return await joinInvitation(invitationId, userId);
+   } catch (err) {
+      console.error('Error accepting invitation:', err.message);
+      throw err;
+   }
+}
+
+export async function getTasksByInvitationAction(invitationId, userId) {
+   try {
+      return await getTasksByInvitation(invitationId, userId);
+   } catch (err) {
+      console.error('Error fetching tasks for invitation:', err.message);
       throw err;
    }
 }

@@ -37,7 +37,7 @@ export default function StepTitleEditor({ step, taskId, className }) {
    function handleBlur() {
       setIsTyping(false);
       if (currentTitle.trim())
-         updateStep(taskId, step.id, { title: currentTitle });
+         updateStep(taskId, step.step_id, { title: currentTitle });
       if (currentTitle.trim() === '') setCurrentTitle(previousTitle);
    }
 

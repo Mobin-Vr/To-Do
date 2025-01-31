@@ -8,9 +8,9 @@ export default function StarBtn({ task, starBtnRef, className }) {
       <button
          ref={starBtnRef}
          className={`h-4 w-4 p-0 bg-none border-none text-gray-300 cursor-pointer text-lg ml-2 transition-colors duration-300 ${className}`}
-         onClick={() => toggleStarred(task.id)}
+         onClick={() => toggleStarred(task.task_id)}
       >
-         {task.isStarred ? <FullStarIcon /> : <StarIcon />}
+         {task.is_task_starred ? <FullStarIcon /> : <StarIcon />}
       </button>
    );
 }

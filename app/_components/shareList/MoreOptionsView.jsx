@@ -23,8 +23,8 @@ export default function MoreOptionsView({
    );
 
    const limitAccess = invitations.find(
-      (inv) => inv.categoryId === theCategoryId
-   )?.limitAccess;
+      (inv) => inv.invitation_category_id === theCategoryId
+   )?.invitation_limit_access;
 
    async function handleLimitAccess() {
       await setLimit(theCategoryId);

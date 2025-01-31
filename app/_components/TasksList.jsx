@@ -30,7 +30,9 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
 
    /* Without this useEffect, activeTask would only update when handleToggleSidebar runs. This causes the activeTask to become stale if tasksList changes elsewhere. This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state. */
    useEffect(() => {
-      setActiveTask(tasksList.find((t) => t.id === activeTask?.id));
+      setActiveTask(
+         tasksList.find((task) => task.task_id === activeTask?.task_id)
+      );
    }, [tasksList, activeTask, setActiveTask]);
 
    // Handle outside clicks
@@ -54,7 +56,7 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
       if (e.target.closest('.complete-btn') || e.target.closest('.star-btn'))
          return;
 
-      const cond = e.target.closest('.task-item').id === activeTask?.id;
+      const cond = e.target.closest('.task-item').id === activeTask?.task_id;
 
       if (!isEditSidebarOpen) {
          setActiveTask(selectedTask);
@@ -77,10 +79,12 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
 
    if (tasksList.length === 0 && categoryId) return null;
 
-   const tasks = tasksList.filter((task) => task.categoryId === categoryId); // only the relevent tasks not all categories
+   const tasks = tasksList.filter(
+      (task) => task.task_category_id === categoryId
+   ); // only the relevent tasks not all categories
 
-   const completedTasks = tasks.filter((task) => task.isCompleted);
-   const uncompletedTasks = tasks.filter((task) => !task.isCompleted);
+   const completedTasks = tasks.filter((task) => task.is_task_completed);
+   const uncompletedTasks = tasks.filter((task) => !task.is_task_completed);
 
    const sortedCompletedTasks = sortTasks(completedTasks, sortMethod);
    const sortedUncompletedTasks = sortTasks(uncompletedTasks, sortMethod);

@@ -34,14 +34,15 @@ export default function AppHeader({
                style={{ color: bgColor[3] }}
             >
                {listIcon}
-               {theCategory.id === defaultCategoryId ? (
+
+               {theCategory.category_id === defaultCategoryId ? (
                   listName
                ) : (
                   <CategoryTitleEditor theCategory={theCategory} />
                )}
             </h1>
 
-            {theCategory.id !== defaultCategoryId && (
+            {theCategory.category_id !== defaultCategoryId && (
                <>
                   <DeleteBtn onClick={handleDeleteCategory} />
                   <ShareBtn theCategoryId={theCategoryId} />

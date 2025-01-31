@@ -29,21 +29,21 @@ export default function TaskInput({ bgColor, className, categoryId }) {
       if (taskInput.trim() === '') return;
 
       const newItem = {
-         id: generateNewUuid(),
-         ownerId: userInfo.id,
-         title: taskInput,
-         isCompleted: false,
-         isStarred: false,
-         note: '',
-         isAddedToMyDay: false,
-         categoryId,
-         updatedAt: null,
-         completedAt: null,
-         createdAt: getDateNowIso(),
-         dueDate: taskDueDate,
-         reminder: taskReminder,
-         repeat: taskRepeat,
-         steps: [],
+         task_id: generateNewUuid(),
+         task_owner_id: userInfo.user_id,
+         task_title: taskInput,
+         task_category_id: categoryId,
+         task_note: '',
+         task_due_date: taskDueDate,
+         task_reminder: taskReminder,
+         task_repeat: taskRepeat,
+         task_steps: [],
+         task_created_at: getDateNowIso(),
+         task_completed_at: null,
+         task_updated_at: null,
+         is_task_starred: false,
+         is_task_completed: false,
+         is_task_in_myday: false,
       };
 
       addTaskToStore(newItem);

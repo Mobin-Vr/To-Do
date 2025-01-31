@@ -5,44 +5,46 @@ import { useShallow } from 'zustand/react/shallow';
 import { ModalActionButton } from '../remiderBoxModals/ModalActionBtn';
 
 export default function StepActionModal({ task, step }) {
-   const { updateStep, removeStep, addTaskToStore } = useTaskStore(
+   const { updateStep, removeStep, addTaskToStore, userInfo } = useTaskStore(
       useShallow((state) => ({
          updateStep: state.updateStep,
          removeStep: state.removeStep,
          addTaskToStore: state.addTaskToStore,
+         userInfo: state.userInfo,
       }))
    );
 
    function handleUpdate() {
-      updateStep(task.id, step.id, { isCompleted: !step.isCompleted });
+      updateStep(task.task_id, step.step_id, {
+         isCompleted: !step.isCompleted,
+      });
    }
 
    function handleRemove() {
-      removeStep(task.id, step.id);
+      removeStep(task.task_id, step.step_id);
    }
 
    function handlePromote() {
       const promotedStep = {
-         id: step.id,
-         title: step.title,
-         isCompleted: step.isCompleted,
-         isStarred: false,
-         note: '',
-         categoryId: task.categoryId,
-         isAddedToMyDay: false,
-         updatedAt: step.updatedAt,
-         completedAt: step.completedAt,
-         createdAt: getDateNowIso(),
-         dueDate: null,
-         reminder: null,
-         repeat: null,
-         parentTaskId: null,
-         assignedTo: null,
-         steps: [],
+         task_id: step.step_id,
+         task_owner_id: userInfo.user_id,
+         task_title: step.step_title,
+         task_categoryId: task.task_category_id,
+         task_note: '',
+         task_due_date: null,
+         task_reminder: null,
+         task_repeat: null,
+         task_steps: [],
+         task_created_at: getDateNowIso(),
+         task_updated_at: step.step_updated_at,
+         task_completed_at: step.step_completed_at,
+         is_task_completed: step.is_step_completed,
+         is_task_starred: false,
+         is_task_in_myday: false,
       };
 
       addTaskToStore(promotedStep);
-      removeStep(task.id, step.id);
+      removeStep(task.task_id, step.step_id);
    }
 
    return (

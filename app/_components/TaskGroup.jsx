@@ -12,7 +12,7 @@ export default function TaskGroup({
             <TaskItem
                task={task}
                listRef={listRef}
-               key={task.id}
+               key={task.task_id}
                bgColor={bgColor}
                handleToggleSidebar={handleToggleSidebar}
             />

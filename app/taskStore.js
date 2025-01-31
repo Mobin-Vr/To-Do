@@ -9,17 +9,20 @@ import {
    deleteTask,
    getCategories,
    getTasks,
+   getTasksByInvitation,
    updateCategory,
    updateTask,
 } from './_lib/data-services';
 import { defaultCategory, getDateNowIso } from './_lib/utils';
 import {
+   joinInvitationAction,
    createInvitationAction,
    getUsersByInvitationAction,
    removeUserFromInvitationAction,
    setInvitationAccessLimitAction,
    stopSharingInvitationAction,
 } from './_lib/invitationActions';
+import { redirect } from 'next/navigation';
 
 const initialState = {
    isSidebarOpen: false,
@@ -33,7 +36,8 @@ const initialState = {
    categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
-   invitations: [], // each object : {invitationToken, categoryId, categoryName, ownerId, [users], access limit }
+   invitations: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [users]}
+   sharedWithMe: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
 };
 
 const useTaskStore = create(
@@ -52,8 +56,9 @@ const useTaskStore = create(
             sortMethod: initialState.sortMethod,
             categoriesList: initialState.categoriesList,
             invitations: initialState.invitations,
+            sharedWithMe: initialState.sharedWithMe,
 
-            // 0. Toggle sidebar
+            // # Toggle sidebar
             toggleSidebar: () => {
                set(
                   produce((state) => {
@@ -62,7 +67,7 @@ const useTaskStore = create(
                );
             },
 
-            // 1. Toggle Edit sidebar
+            // # Toggle Edit sidebar
             toggleEditSidebar: () => {
                set(
                   produce((state) => {
@@ -71,7 +76,7 @@ const useTaskStore = create(
                );
             },
 
-            // 2. Add a task
+            // # Add a task
             addTaskToStore: async (task) => {
                set(
                   produce((state) => {
@@ -83,13 +88,14 @@ const useTaskStore = create(
                      if (state.offlineLogMode) {
                         // Remove if exist log with the same ID and TYPE
                         state.changeLog = state.changeLog.filter(
-                           (log) => !(log.type === 'add' && log.id === task.id)
+                           (log) =>
+                              !(log.type === 'add' && log.id === task.task_id)
                         );
 
                         // Save the chenges log
                         state.changeLog.push({
                            type: 'add',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: task.createdAt,
                            task,
                         });
@@ -102,18 +108,18 @@ const useTaskStore = create(
                if (onlineStatus) await addTask(task);
             },
 
-            // 3. Delete a task
+            // # Delete a task
             deleteTaskFromStore: async (id) => {
                set(
                   produce((state) => {
                      const taskToDelete = state.tasksList.find(
-                        (task) => task.id === id
+                        (task) => task.task_id === id
                      );
 
                      // Set an active task if the active task is deleted
-                     if (state.activeTask.id === id) {
+                     if (state.activeTask.task_id === id) {
                         const remainingTasks = state.tasksList.filter(
-                           (task) => task.id !== id
+                           (task) => task.task_id !== id
                         );
                         state.activeTask =
                            remainingTasks.length > 0
@@ -123,7 +129,7 @@ const useTaskStore = create(
 
                      // Delete the task from LC
                      state.tasksList = state.tasksList.filter(
-                        (task) => task.id !== id
+                        (task) => task.task_id !== id
                      );
 
                      // Add to change log only if offline.
@@ -153,22 +159,22 @@ const useTaskStore = create(
                if (onlineStatus) await deleteTask(id);
             },
 
-            //  Delete multiple tasks by category
+            // # Delete multiple tasks by category
             deleteTasksByCategory: async (categoryId) => {
                set(
                   produce((state) => {
                      const tasksToDelete = state.tasksList.filter(
-                        (task) => task.categoryId === categoryId
+                        (task) => task.task_category_id === categoryId
                      );
 
                      const taskIdsToDelete = tasksToDelete.map(
-                        (task) => task.id
+                        (task) => task.task_id
                      );
 
                      // Set an active task if the active task is deleted
-                     if (taskIdsToDelete.includes(state.activeTask.id)) {
+                     if (taskIdsToDelete.includes(state.activeTask?.task_id)) {
                         const remainingTasks = state.tasksList.filter(
-                           (task) => task.categoryId !== categoryId
+                           (task) => task.task_category_id !== categoryId
                         );
                         state.activeTask =
                            remainingTasks.length > 0
@@ -178,7 +184,7 @@ const useTaskStore = create(
 
                      // Filter out the tasks to be deleted from the local store
                      state.tasksList = state.tasksList.filter(
-                        (task) => task.categoryId !== categoryId
+                        (task) => task.task_category_id !== categoryId
                      );
 
                      // Add to change log only if offline
@@ -211,21 +217,24 @@ const useTaskStore = create(
                }
             },
 
-            // 4. Toggle to completed or uncompleted
+            // # Toggle to completed or uncompleted
             toggleCompleted: async (id) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.isCompleted = !task.isCompleted;
-                        task.updatedAt = updateTime;
-                        if (task.isCompleted) task.completedAt = updateTime;
-                        if (!task.isCompleted) task.completedAt = null;
+                        task.is_task_completed = !task.is_task_completed;
+                        task.task_updated_at = updateTime;
+                        if (task.is_task_completed)
+                           task.task_completed_at = updateTime;
+
+                        if (!task.is_task_completed)
+                           task.task_completed_at = null;
                      }
 
                      // Add to change log only if offline.
@@ -235,14 +244,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-isCompleted' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the chenges log
                         state.changeLog.push({
                            type: 'update-isCompleted',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -251,34 +260,34 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
                      {
-                        isCompleted: task.isCompleted,
-                        updatedAt: task.updatedAt,
-                        completedAt: task.completedAt,
+                        is_task_completed: task.is_task_completed,
+                        task_updated_at: task.task_updated_at,
+                        task_completed_at: task.task_completed_at,
                      },
-                     task.id
+                     task.task_id
                   );
                }
             },
 
-            // 5. Toggle to Starred or NOT Starred
+            // # Toggle to Starred or NOT Starred
             toggleStarred: async (id) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.isStarred = !task.isStarred;
-                        task.updatedAt = updateTime;
+                        task.is_task_starred = !task.is_task_starred;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -288,14 +297,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-isStarred' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the chenges log
                         state.changeLog.push({
                            type: 'update-isStarred',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -304,30 +313,33 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { isStarred: task.isStarred, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        is_task_starred: task.is_task_starred,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 6. Update task note
+            // # Update task note
             updateNote: async (id, note) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.note = note;
-                        task.updatedAt = updateTime;
+                        task.task_note = note;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -337,14 +349,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-note' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the chenges log
                         state.changeLog.push({
                            type: 'update-note',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -353,23 +365,26 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { note: task.note, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_note: task.task_note,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 7. Update task reminder
+            // # Update task reminder
             updateReminder: async (id, reminder) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
                      const isoDate =
@@ -379,8 +394,8 @@ const useTaskStore = create(
 
                      // Update the task reminder
                      if (task) {
-                        task.reminder = isoDate;
-                        task.updatedAt = updateTime;
+                        task.task_reminder = isoDate;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -390,14 +405,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-reminder' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the changes log
                         state.changeLog.push({
                            type: 'update-reminder',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -406,23 +421,26 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { reminder: task.reminder, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_reminder: task.task_reminder,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 8. Update task dueDate
+            // # Update task dueDate
             updateDueDate: async (id, dueDate) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
                      const isoDate =
@@ -432,8 +450,8 @@ const useTaskStore = create(
 
                      // Update the task dueDate
                      if (task) {
-                        task.dueDate = isoDate;
-                        task.updatedAt = updateTime;
+                        task.task_due_date = isoDate;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -443,14 +461,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-dueDate' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the changes log
                         state.changeLog.push({
                            type: 'update-dueDate',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -459,30 +477,33 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { dueDate: task.dueDate, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_due_date: task.task_due_date,
+                        updatedAt: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 9. Update task repeat
+            // # Update task repeat
             updateRepeat: async (id, repeat) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task repeat
                      if (task) {
-                        task.repeat = repeat;
-                        task.updatedAt = updateTime;
+                        task.task_repeat = repeat;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -492,14 +513,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-repeat' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the changes log
                         state.changeLog.push({
                            type: 'update-repeat',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -508,30 +529,33 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { repeat: task.repeat, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_repeat: task.task_repeat,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 10. Toggle to "isAddedToMyDay" or NOT
+            // # Toggle to "is_task_in_myday" or NOT
             toggleAddedToMyDay: async (id) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.isAddedToMyDay = !task.isAddedToMyDay;
-                        task.updatedAt = updateTime;
+                        task.is_task_in_mayday = !task.is_task_in_mayday;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -541,14 +565,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-isAddedToMyDay' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the changes log
                         state.changeLog.push({
                            type: 'update-isAddedToMyDay',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -557,33 +581,33 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
                      {
-                        isAddedToMyDay: task.isAddedToMyDay,
-                        updatedAt: task.updatedAt,
+                        is_task_in_mayday: task.is_task_in_mayday,
+                        task_updated_at: task.task_updated_at,
                      },
-                     task.id
+                     task.task_id
                   );
                }
             },
 
-            // 11. Update the task title
+            // # Update the task title
             updateTitle: async (id, newTitle) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === id
+                        (task) => task.task_id === id
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.title = newTitle;
-                        task.updatedAt = updateTime;
+                        task.task_title = newTitle;
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline.
@@ -593,14 +617,14 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'update-title' &&
-                                 log.id === task.id
+                                 log.id === task.task_id
                               )
                         );
 
                         // Save the changes log
                         state.changeLog.push({
                            type: 'update-title',
-                           id: task.id,
+                           id: task.task_id,
                            logTime: updateTime,
                            task,
                         });
@@ -609,31 +633,40 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === id);
+               const task = get().tasksList.find((task) => task.task_id === id);
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { title: task.title, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_title: task.task_title,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 12. Add a new step to a task's steps
+            /////////////////////////////
+            /////////////////////////////
+            //////// Step ///////////
+            /////////////////////////////
+            /////////////////////////////
+
+            // # Add a new step to a task's steps
             addStep: async (taskId, newStep) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === taskId
+                        (task) => task.task_id === taskId
                      );
                      const updateTime = getDateNowIso();
 
                      // Update the task locally
                      if (task) {
-                        if (!task.steps) task.steps = []; // Initialize steps if not present
-                        task.steps.push(newStep);
-                        task.updatedAt = updateTime;
+                        if (!task.task_steps) task.task_steps = []; // Initialize steps if not present
+                        task.task_steps.push(newStep);
+                        task.task_updated_at = updateTime;
                      }
 
                      // Add to change log only if offline
@@ -658,32 +691,39 @@ const useTaskStore = create(
                );
 
                // Synchronizing with the database
-               const task = get().tasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find(
+                  (task) => task.task_id === taskId
+               );
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { steps: task.steps, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_steps: task.task_steps,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 13. Update a specific step of a specific task
+            // # Update a specific step of a specific task
             updateStep: async (taskId, stepId, updatedFields) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === taskId
+                        (task) => task.task_id === taskId
                      );
                      const updateTime = getDateNowIso();
 
-                     if (task && task.steps) {
-                        const step = task.steps.find((s) => s.id === stepId);
+                     if (task && task.task_steps) {
+                        const step = task.task_steps.find(
+                           (s) => s.step_id === stepId
+                        );
                         if (step) {
                            // Update only the provided fields
                            Object.assign(step, updatedFields);
-                           task.updatedAt = updateTime;
+                           task.task_updated_at = updateTime;
                         }
                      }
 
@@ -711,30 +751,37 @@ const useTaskStore = create(
                );
 
                // Sync with the database
-               const task = get().tasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find(
+                  (task) => task.task_id === taskId
+               );
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { steps: task.steps, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_steps: task.task_steps,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 14. Remove a specific step from a specific task
+            // # Remove a specific step from a specific task
             removeStep: async (taskId, stepId) => {
                set(
                   produce((state) => {
                      const task = state.tasksList.find(
-                        (item) => item.id === taskId
+                        (task) => task.task_id === taskId
                      );
                      const updateTime = getDateNowIso();
 
-                     if (task && task.steps) {
+                     if (task && task.task_steps) {
                         // Filter out the step with the given stepId
-                        task.steps = task.steps.filter((s) => s.id !== stepId);
-                        task.updatedAt = updateTime;
+                        task.task_steps = task.task_steps.filter(
+                           (s) => s.step_id !== stepId
+                        );
+                        task.task_updated_at = updateTime;
                      }
 
                      // Handle offline mode
@@ -760,24 +807,35 @@ const useTaskStore = create(
                );
 
                // Sync with the database
-               const task = get().tasksList.find((item) => item.id === taskId);
+               const task = get().tasksList.find(
+                  (task) => task.task_id === taskId
+               );
                const onlineStatus = get().conectionStatus.isOnline;
 
                if (onlineStatus) {
                   await updateTask(
-                     { steps: task.steps, updatedAt: task.updatedAt },
-                     task.id
+                     {
+                        task_steps: task.task_steps,
+                        task_updated_at: task.task_updated_at,
+                     },
+                     task.task_id
                   );
                }
             },
 
-            // 15. Add category
+            /////////////////////////////
+            /////////////////////////////
+            //////// Category ///////////
+            /////////////////////////////
+            /////////////////////////////
+
+            // # Add category
             addCategoryToStore: async (category) => {
                set(
                   produce((state) => {
                      // Extract existing category names
                      const existingNames = state.categoriesList.map(
-                        (cat) => cat.title
+                        (cat) => cat.category_title
                      );
 
                      // Match names with the pattern "Untitled list" or "Untitled list (n)"
@@ -802,7 +860,7 @@ const useTaskStore = create(
                            : `Untitled list (${nextNumber})`;
 
                      // Assign the generated name
-                     category.title = newName;
+                     category.category_title = newName;
 
                      // Add the category to the local store
                      state.categoriesList.push(category);
@@ -813,13 +871,13 @@ const useTaskStore = create(
                            (log) =>
                               !(
                                  log.type === 'add-category' &&
-                                 log.id === category.id
+                                 log.id === category.category_id
                               )
                         );
 
                         state.changeLog.push({
                            type: 'add-category',
-                           id: category.id,
+                           id: category.category_id,
                            logTime: getDateNowIso(),
                            category,
                         });
@@ -834,12 +892,12 @@ const useTaskStore = create(
                }
             },
 
-            // 16. Update category
+            // # Update category
             updateCategoryInStore: async (id, updatedFields) => {
                set(
                   produce((state) => {
                      const category = state.categoriesList.find(
-                        (cat) => cat.id === id
+                        (cat) => cat.category_id === id
                      );
                      const updateTime = getDateNowIso();
 
@@ -871,12 +929,12 @@ const useTaskStore = create(
                }
             },
 
-            // 17. Delete category
+            // # Delete category
             deleteCategoryFromStore: async (id) => {
                set(
                   produce((state) => {
                      state.categoriesList = state.categoriesList.filter(
-                        (cat) => cat.id !== id
+                        (cat) => cat.category_id !== id
                      );
 
                      if (state.offlineLogMode) {
@@ -900,7 +958,13 @@ const useTaskStore = create(
                }
             },
 
-            // 6. Fetching tasks from DB and Synchronizing localeStorage with the database
+            //////////////////////////
+            //////////////////////////
+            //////// other ///////////
+            //////////////////////////
+            //////////////////////////
+
+            // # Fetching tasks from DB and Synchronizing localeStorage with the database
             syncLcWithDb: async () => {
                const tasks = await getTasks();
                const categories = await getCategories();
@@ -913,7 +977,7 @@ const useTaskStore = create(
                );
             },
 
-            // 7. Update health statuses
+            // # Update health statuses
             // (receives the status from the HealthStatusSync component, whuch is a component to monitor database and internet connectivity status)
             updateConnectionStatus: (conectionStatus) => {
                set(
@@ -923,7 +987,7 @@ const useTaskStore = create(
                );
             },
 
-            // 8. Set user's info
+            // Set user's info
             setUserInfo: (userInfo) => {
                set(
                   produce((state) => {
@@ -932,7 +996,7 @@ const useTaskStore = create(
                );
             },
 
-            // 9. Toggle offline log mode
+            // Toggle offline log mode
             toggleOfflineLogMode: (bool) => {
                set(
                   produce((state) => {
@@ -941,7 +1005,7 @@ const useTaskStore = create(
                );
             },
 
-            // 10. Clear changeLog
+            // # Clear changeLog
             clearLog: () => {
                set(
                   produce((state) => {
@@ -950,7 +1014,7 @@ const useTaskStore = create(
                );
             },
 
-            // 11. Toggle isSyncing
+            // # Toggle isSyncing
             toggleIsSyncing: (bool) => {
                set(
                   produce((state) => {
@@ -959,7 +1023,7 @@ const useTaskStore = create(
                );
             },
 
-            //12. Set active task (To show in the EditSidebar)
+            // # Set active task (To show in the EditSidebar)
             setActiveTask: (task) => {
                set(
                   produce((state) => {
@@ -967,7 +1031,8 @@ const useTaskStore = create(
                   })
                );
             },
-            //12. Set active task (To show in the EditSidebar)
+
+            // # Set active task (To show in the EditSidebar)
             setSortMethod: (sortMethod) => {
                set(
                   produce((state) => {
@@ -978,18 +1043,18 @@ const useTaskStore = create(
 
             //////////////////////////////////////
             /////////////////////////////////////
-            //////////// INVATATION /////////////
+            //////////// INVITATION /////////////
             /////////////////////////////////////
             /////////////////////////////////////
 
-            // 1. Create invitation
+            // # Create invitation
             createInvitationInStore: async (categoryId) => {
                const userInfo = get().userInfo;
 
                try {
                   const token = await createInvitationAction(
                      categoryId,
-                     userInfo.id
+                     userInfo.user_id
                   );
 
                   const baseUrl =
@@ -997,49 +1062,52 @@ const useTaskStore = create(
                         ? `https://${process.env.VERCEL_URL}`
                         : process.env.NEXT_PUBLIC_BASE_URL;
 
-                  const invitationLink = `${baseUrl}/invite?token=${token}`;
+                  const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
 
                   set(
                      produce((state) => {
                         state.invitations.push({
-                           invitationToken: token,
-                           categoryId,
-                           ownerId: userInfo.id,
-                           sharedWith: [],
-                           limitAccess: false,
-                           invitationLink,
-                           createdAt: new Date().toISOString(),
+                           invitation_id: token,
+                           invitation_category_id: categoryId,
+                           invitation_owner_id: userInfo.user_id,
+                           invitation_limit_access: false,
+                           invitation_created_at: new Date().toISOString(),
+                           invitation_link: invitationLink, // This is not in the DB "inavtion" table
+                           sharedWith: [], // This is not in the DB "inavtion" table
                         });
                      })
                   );
 
-                  return true; // this is for some management in "SharedListModal" component
+                  return {
+                     status: true,
+                     message: 'the invation link has been created',
+                  }; // this is for some management in "SharedListModal" component
                } catch (error) {
-                  return false; // this is for some management in "SharedListModal" component
+                  return { status: false, message: error.message }; // this is for some management in "SharedListModal" component
                   console.error(error.message);
                }
             },
 
-            // 2. Remove user
-            removeUserFromInvitationStore: async (invitationToken, userId) => {
+            // # Remove user
+            removeUserFromInvitationStore: async (invitationId, userId) => {
                const owner = get().userInfo;
 
                try {
                   await removeUserFromInvitationAction(
-                     invitationToken,
+                     invitationId,
                      userId,
-                     owner.id
+                     owner.user_id
                   );
 
                   set(
                      produce((state) => {
                         const invitation = state.invitations.find(
-                           (inv) => inv.invitationToken === invitationToken
+                           (inv) => inv.invitation_id === invitationId
                         );
 
                         if (invitation) {
                            invitation.sharedWith = invitation.sharedWith.filter(
-                              (user) => user.id !== userId
+                              (user) => user.user_id !== userId
                            );
                         }
                      })
@@ -1049,33 +1117,34 @@ const useTaskStore = create(
                }
             },
 
-            // 3. Set access limit
+            // # Set access limit
             setInvitationAccessLimitInStore: async (categoryId) => {
                const owner = get().userInfo;
 
-               const { limitAccess: limitStatus } = get().invitations.find(
-                  (inv) => inv.categoryId === categoryId
+               const { invitation_limit_access } = get().invitations.find(
+                  (inv) => inv.invitation_category_id === categoryId
                );
 
-               const { invitationToken } = get().invitations.find(
-                  (inv) => inv.categoryId === categoryId
+               const { invitation_id } = get().invitations.find(
+                  (inv) => inv.invitation_category_id === categoryId
                );
 
                try {
                   await setInvitationAccessLimitAction(
-                     invitationToken,
-                     owner.id,
-                     !limitStatus
+                     invitation_id,
+                     owner.user_id,
+                     !invitation_limit_access
                   );
 
                   set(
                      produce((state) => {
                         const invitation = state.invitations.find(
-                           (inv) => inv.invitationToken === invitationToken
+                           (inv) => inv.invitation_id === invitation_id
                         );
 
                         if (invitation) {
-                           invitation.limitAccess = !limitStatus;
+                           invitation.invitation_limit_access =
+                              !invitation_limit_access;
                         }
                      })
                   );
@@ -1084,21 +1153,24 @@ const useTaskStore = create(
                }
             },
 
-            // 4. Stop sharing
+            // # Stop sharing
             stopSharingInvitationInStore: async (categoryId) => {
                const owner = get().userInfo;
 
-               const { invitationToken } = get().invitations.find(
-                  (inv) => inv.categoryId === categoryId
+               const { invitation_id } = get().invitations.find(
+                  (inv) => inv.invitation_category_id === categoryId
                );
 
                try {
-                  await stopSharingInvitationAction(invitationToken, owner.id);
+                  await stopSharingInvitationAction(
+                     invitation_id,
+                     owner.user_id
+                  );
 
                   set(
                      produce((state) => {
                         state.invitations = state.invitations.filter(
-                           (inv) => inv.invitationToken !== invitationToken
+                           (inv) => inv.invitation_id !== invitation_id
                         );
                      })
                   );
@@ -1107,20 +1179,20 @@ const useTaskStore = create(
                }
             },
 
-            // Fetch users
-            getUsersByInvitationInStore: async (invitationToken) => {
+            // # Get list's users
+            getUsersByInvitationInStore: async (invitationId) => {
                const owner = get().userInfo;
 
                try {
                   const users = await getUsersByInvitationAction(
-                     invitationToken,
-                     owner.id
+                     invitationId,
+                     owner.user_id
                   );
 
                   set(
                      produce((state) => {
                         const invitation = state.invitations.find(
-                           (inv) => inv.invitationToken === invitationToken
+                           (inv) => inv.invitation_id === invitationId
                         );
 
                         if (invitation) invitation.sharedWith = users;
@@ -1129,6 +1201,80 @@ const useTaskStore = create(
                } catch (error) {
                   console.error(error.message);
                }
+            },
+
+            // # Joining to a list with token
+            joinInvitationInStore: async (invitationId) => {
+               const userInfo = get().userInfo;
+
+               try {
+                  // Request invitation details
+                  const { invitation_id, category } =
+                     await joinInvitationAction(invitationId, userInfo.user_id);
+
+                  // Request tasks by invitation
+                  const tasks = await getTasksByInvitation(
+                     invitationId,
+                     userInfo.user_id
+                  );
+
+                  // Check if the invitation already exists
+                  const existingInvitation = get().sharedWithMe.find(
+                     (item) => item.invitation_id === invitation_id
+                  );
+
+                  if (existingInvitation) {
+                     const releventCatId =
+                        existingInvitation.invitation_category_id;
+
+                     redirect(`tasks/${releventCatId}`);
+                  }
+
+                  // Add new invitation if not existing
+                  set(
+                     produce((state) => {
+                        state.sharedWithMe.push({
+                           invitation_id: invitation_id,
+                           invitation_category_id: category.category_id,
+                           invitation_category_title: category.category_title,
+                           invitation_category_owner_id:
+                              category.category_owner_id,
+                           invitation_tasks: tasks,
+                        });
+
+                        // Add tasks and categories to the store
+                        state.tasksList.push(...tasks);
+                        state.categoriesList.push(category);
+                     })
+                  );
+
+                  return { status: true, message: 'You have joined now!' };
+               } catch (error) {
+                  console.error(error.message);
+                  return { status: false, message: error.message };
+               }
+            },
+
+            // # Get the last shared item from the sharedWithMe list
+            getSharedWithMe: () => {
+               const sharedList = get().sharedWithMe;
+
+               return sharedList.length > 0 ? sharedList : null;
+            },
+
+            /////////////////////////////
+            /////////////////////////////
+            //////// Real  time /////////
+            /////////////////////////////
+            /////////////////////////////
+
+            // # Add task to tasklist from realtime db
+            addTaskFromRealtime: (task) => {
+               set(
+                  produce((state) => {
+                     state.tasksList.push(task);
+                  })
+               );
             },
          }),
          {

@@ -23,8 +23,12 @@ export default function StepItem({ step, task }) {
             ref={stepRef}
             className='flex items-center justify-center bg-accent-50 rounded-md overflow-hidden border border-1 border-gray-200'
          >
-            <StepCompleteBtn taskId={task.id} step={step} className='ml-1' />
-            <StepTitleEditor step={step} taskId={task.id} />
+            <StepCompleteBtn
+               taskId={task.task_id}
+               step={step}
+               className='ml-1'
+            />
+            <StepTitleEditor step={step} taskId={task.task_id} />
 
             <button
                onClick={toggleModal}

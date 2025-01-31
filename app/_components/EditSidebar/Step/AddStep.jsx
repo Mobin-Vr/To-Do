@@ -14,14 +14,14 @@ export default function AddStep({ task }) {
       if (stepInput.trim() === '') return;
 
       const newStep = {
-         id: generateNewUuid(),
-         title: stepInput,
-         isCompleted: false,
-         completedAt: null,
-         createdAt: getDateNowIso(),
+         step_id: generateNewUuid(),
+         step_title: stepInput,
+         step_completed_at: null,
+         step_created_at: getDateNowIso(),
+         is_step_completed: false,
       };
 
-      addStep(task.id, newStep);
+      addStep(task.task_id, newStep);
       setStepInput('');
    }
 
@@ -55,7 +55,9 @@ export default function AddStep({ task }) {
             className={`text-sm font-light bg-inherit outline-none w-full rounded-sm text-start hover:bg-accent-50 focus:bg-white p-2 pl-0 ${
                isTyping ? 'placeholder-gray-500' : 'placeholder-blue-700'
             }`}
-            placeholder={task.steps.length > 0 ? `Add next step` : 'Add step'}
+            placeholder={
+               task.task_steps.length > 0 ? `Add next step` : 'Add step'
+            }
          />
       </form>
    );

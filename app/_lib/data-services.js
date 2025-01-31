@@ -1,10 +1,16 @@
 import { supabase } from './supabase';
+import useTaskStore from '../taskStore';
+
+export function addTaskFromRealtime(newTask) {
+   const addTask = useTaskStore.getState().addTaskFromRealtime;
+   addTask(newTask);
+}
 
 export async function getUser(userEmail) {
    const { data } = await supabase
       .from('users')
       .select('*')
-      .eq('email', userEmail)
+      .eq('user_email', userEmail)
       .single();
 
    // No error here! We handle the possibility of no user in the sign-in
@@ -29,7 +35,7 @@ export async function updateTask(updatedPart, taskId) {
    const { data, error } = await supabase
       .from('tasks')
       .update(updatedPart)
-      .eq('id', taskId)
+      .eq('task_id', taskId)
       .select();
 
    if (error) {
@@ -45,7 +51,7 @@ export async function updateManyTask(updatedPartsArr, taskIdsArr) {
    const { data, error } = await supabase
       .from('tasks')
       .update(updatedPartsArr)
-      .in('id', taskIdsArr);
+      .in('task_id', taskIdsArr);
 
    if (error) {
       console.error(error);
@@ -60,7 +66,7 @@ export async function deleteTask(taskId) {
    const { data, error } = await supabase
       .from('tasks')
       .delete()
-      .eq('id', taskId)
+      .eq('task_id', taskId)
       .select(); // LATER does select work?
 
    if (error) {
@@ -76,7 +82,7 @@ export async function deleteManyTask(categoryId) {
    const { data, error } = await supabase
       .from('tasks')
       .delete()
-      .eq('categoryId', categoryId)
+      .eq('task_category_id', categoryId)
       .select(); // LATER does select work?
 
    if (error) {
@@ -114,7 +120,7 @@ export async function createUser(newUser) {
 
 export async function getCategories() {
    const { data: categories, error } = await supabase
-      .from('task_categories')
+      .from('categories')
       .select('*');
 
    if (error) {
@@ -127,7 +133,7 @@ export async function getCategories() {
 
 export async function addCategory(newCategory) {
    const { data, error } = await supabase
-      .from('task_categories')
+      .from('categories')
       .insert([newCategory])
       .select();
 
@@ -141,9 +147,9 @@ export async function addCategory(newCategory) {
 
 export async function updateCategory(updatedPart, categoryId) {
    const { data, error } = await supabase
-      .from('task_categories')
+      .from('categories')
       .update(updatedPart)
-      .eq('id', categoryId)
+      .eq('category_id', categoryId)
       .select();
 
    if (error) {
@@ -156,9 +162,9 @@ export async function updateCategory(updatedPart, categoryId) {
 
 export async function deleteCategory(categoryId) {
    const { data, error } = await supabase
-      .from('task_categories')
+      .from('categories')
       .delete()
-      .eq('id', categoryId)
+      .eq('category_id', categoryId)
       .select(); // LATER does select work?
 
    if (error) {
@@ -176,8 +182,8 @@ export async function deleteCategory(categoryId) {
 // Creates a new invitation for a category.
 export async function createInvitation(categoryId, ownerId) {
    const { data, error } = await supabase.rpc('create_invitation', {
-      category_id: categoryId,
-      owner_id: ownerId,
+      param_category_id: categoryId,
+      param_owner_id: ownerId,
    });
 
    if (error) {
@@ -188,26 +194,11 @@ export async function createInvitation(categoryId, ownerId) {
    return data;
 }
 
-// Accepts an invitation by adding the user to the category.
-export async function acceptInvitation(invitationToken, userId) {
-   const { error } = await supabase.rpc('accept_invitation', {
-      invitation_token: invitationToken,
-      user_id: userId,
-   });
-
-   if (error) {
-      console.error(error);
-      throw new Error('Failed to accept the invitation');
-   }
-
-   return;
-}
-
 // Allows a user to leave an invitation.
-export async function leaveInvitation(invitationToken, userId) {
+export async function leaveInvitation(invitationId, userId) {
    const { error } = await supabase.rpc('leave_invitation', {
-      invitation_token: invitationToken,
-      user_id: userId,
+      param_invitation_id: invitationId,
+      param_user_id: userId,
    });
 
    if (error) {
@@ -219,15 +210,11 @@ export async function leaveInvitation(invitationToken, userId) {
 }
 
 // Removes a specific user from an invitation.
-export async function removeUserFromInvitation(
-   invitationToken,
-   userId,
-   ownerId
-) {
+export async function removeUserFromInvitation(invitationId, userId, ownerId) {
    const { error } = await supabase.rpc('remove_user_from_invitation', {
-      invitation_token: invitationToken,
-      user_id: userId,
-      owner_id: ownerId,
+      param_invitation_id: invitationId,
+      param_user_id: userId,
+      param_owner_id: ownerId,
    });
 
    if (error) {
@@ -240,14 +227,14 @@ export async function removeUserFromInvitation(
 
 // Updates the access limit for a specific invitation.
 export async function setInvitationAccessLimit(
-   invitationToken,
-   limitStatus,
+   invitationId,
+   limitAccess,
    ownerId
 ) {
    const { error } = await supabase.rpc('set_invitation_access_limit', {
-      invitation_token: invitationToken,
-      invitation_owner_id: ownerId,
-      limit_status: limitStatus,
+      param_invitation_id: invitationId,
+      param_invitation_owner_id: ownerId,
+      param_limit_access: limitAccess,
    });
 
    if (error) {
@@ -259,10 +246,10 @@ export async function setInvitationAccessLimit(
 }
 
 // Fetches all users associated with a specific invitation.
-export async function getUsersByInvitation(invitationToken, ownerId) {
+export async function getUsersByInvitation(invitationId, ownerId) {
    const { data, error } = await supabase.rpc('get_users_by_invitation', {
-      invitation_token: invitationToken,
-      owner_id: ownerId,
+      param_invitation_id: invitationId,
+      param_owner_id: ownerId,
    });
 
    if (error) {
@@ -274,10 +261,10 @@ export async function getUsersByInvitation(invitationToken, ownerId) {
 }
 
 // Stops sharing a category by deleting the invitation and its users.
-export async function stopSharingInvitation(invitationToken, ownerId) {
+export async function stopSharingInvitation(invitationId, ownerId) {
    const { error } = await supabase.rpc('stop_sharing_invitation', {
-      invitation_token: invitationToken,
-      invitation_owner_id: ownerId,
+      param_invitation_id: invitationId,
+      param_invitation_owner_id: ownerId,
    });
 
    if (error) {
@@ -286,4 +273,62 @@ export async function stopSharingInvitation(invitationToken, ownerId) {
    }
 
    return;
+}
+
+// Accepts an invitation by calling the "accept_invitation" RPC function.
+export async function joinInvitation(invitationId, userId) {
+   const { data, error } = await supabase.rpc('join_invitation', {
+      param_invitation_id: invitationId,
+      param_user_id: userId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to accept the invitation');
+   }
+
+   return data; // Data will include invitation token, category id, category name, and category owner id.
+}
+
+// Fetches tasks by invitation token for a specific user.
+export async function getTasksByInvitation(invitationId, userId) {
+   const { data, error } = await supabase.rpc('retrieve_tasks_by_invitation', {
+      param_invitation_id: invitationId,
+      param_user_id: userId,
+   });
+
+   if (error) {
+      console.error(error);
+      throw new Error('Failed to fetch tasks for the given invitation');
+   }
+
+   return data; // Data will include an array of the tasks related to the invitation.
+}
+
+///////////////////
+///////////////////
+//// Real time ////
+///////////////////
+///////////////////
+
+export function listenToTaskChanges() {
+   const taskSubscription = supabase
+      .from('tasks')
+      .on('INSERT', (payload) => {
+         console.log('New task added:', payload.new);
+
+         addTaskFromRealtime(payload.new);
+      })
+      //       .on('UPDATE', (payload) => {
+      //          console.log('Task updated:', payload.new);
+      //
+      //          addTaskToStore(payload.new);
+      //       })
+      //       .on('DELETE', (payload) => {
+      //          console.log('Task deleted:', payload.old);
+      //          removeTaskFromStore(payload.old);
+      //       })
+      .subscribe();
+
+   return taskSubscription;
 }

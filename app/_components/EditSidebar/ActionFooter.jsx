@@ -8,9 +8,9 @@ export default function ActionFooter({
    deleteTaskFromStore,
 }) {
    const timeAgoCreated = getTimeAgo(task.createdAt);
-   const timeAgoCompleted = getTimeAgo(task.completedAt);
+   const timeAgoCompleted = getTimeAgo(task.task_completed_at);
 
-   let ActionFooterText = task.isCompleted
+   let ActionFooterText = task.is_task_completed
       ? `Completed ${timeAgoCompleted}`
       : `Created ${timeAgoCreated}`;
 
@@ -20,7 +20,7 @@ export default function ActionFooter({
       await delay(200);
 
       // 2. Delete the task
-      deleteTaskFromStore(task.id);
+      deleteTaskFromStore(task.task_id);
    }
 
    return (

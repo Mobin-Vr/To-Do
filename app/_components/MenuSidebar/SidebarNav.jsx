@@ -11,9 +11,9 @@ import {
 import SidebarLink from './SidebarLink';
 
 export default function SidebarNav({ tasksList, toggleSidebar }) {
-   const isThereImportant = tasksList.find((task) => task.isStarred);
-   const isThereCompleted = tasksList.find((task) => task.isCompleted);
-   const isTherePlanned = tasksList.find((task) => task.dueDate);
+   const isThereImportant = tasksList.find((task) => task.is_task_starred);
+   const isThereCompleted = tasksList.find((task) => task.is_task_completed);
+   const isTherePlanned = tasksList.find((task) => task.task_due_date);
 
    return (
       <ul className='flex flex-col gap-1 border-b pb-2'>

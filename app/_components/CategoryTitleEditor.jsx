@@ -7,9 +7,13 @@ export default function CategoryTitleEditor({ theCategory, className }) {
       (state) => state.updateCategoryInStore
    );
    // Current value for display
-   const [currentTitle, setCurrentTitle] = useState(theCategory?.title);
+   const [currentTitle, setCurrentTitle] = useState(
+      theCategory?.category_title
+   );
    // Store the previous title value
-   const [previousTitle, setPreviousTitle] = useState(theCategory?.title);
+   const [previousTitle, setPreviousTitle] = useState(
+      theCategory?.category_title
+   );
    const [isTyping, setIsTyping] = useState(false);
 
    useEffect(() => {
@@ -39,7 +43,9 @@ export default function CategoryTitleEditor({ theCategory, className }) {
    // 3. Store the title if it's not empty, otherwise restore the previous one (onBlur)
    function handleBlur() {
       if (currentTitle.trim())
-         updateCategoryInStore(theCategory.id, { title: currentTitle });
+         updateCategoryInStore(theCategory.category_id, {
+            category_title: currentTitle,
+         });
       if (currentTitle.trim() === '') setCurrentTitle(previousTitle);
       setIsTyping(false);
    }

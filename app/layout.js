@@ -8,6 +8,7 @@ import Sidebar from './_components/menuSidebar/Sidebar';
 import UserSignupHandler from './_components/menuSidebar/UserSignupHandler';
 import { currentUser } from '@clerk/nextjs/server';
 import { Toaster } from 'react-hot-toast';
+import TaskRealTimeListener from './_components/TaskRealTimeListener';
 
 const roboto = Roboto({
    subsets: ['latin'],
@@ -35,6 +36,9 @@ export default async function RootLayout({ children }) {
 
                   {/* This component handles checking and creating a new user in the database upon sign-in */}
                   <UserSignupHandler />
+
+                  {/* get new tasks in real time */}
+                  <TaskRealTimeListener />
 
                   <Sidebar />
                </SignedIn>

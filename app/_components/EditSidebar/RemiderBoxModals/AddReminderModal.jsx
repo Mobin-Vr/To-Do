@@ -21,7 +21,7 @@ export default function AddReminderModal({
 
    // update store (id, reminder)
    const handleSelect = (day) => {
-      if (!isForTaskInput) updateReminder(task.id, day); // for sidebar
+      if (!isForTaskInput) updateReminder(task.task_id, day); // for sidebar
       if (isForTaskInput) updateReminder(day); // for task input (just update the locale state before creating a task)
    };
 

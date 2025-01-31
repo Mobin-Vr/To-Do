@@ -14,13 +14,15 @@ export default function AddReminder({ task }) {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
-   const hasReminder = task.reminder ? true : false;
-   const activeText = `Remind me at ${format(task.reminder, 'HH:mm')}`;
+   const hasReminder = task.task_reminder ? true : false;
+   const activeText = `Remind me at ${format(task.task_reminder, 'HH:mm')}`;
 
-   const relativeDay = getRelativeDay(task.reminder);
-   const weekday = relativeDay ? format(task.reminder, 'EEE') : relativeDay;
+   const relativeDay = getRelativeDay(task.task_reminder);
+   const weekday = relativeDay
+      ? format(task.task_reminder, 'EEE')
+      : relativeDay;
 
-   const removeReminder = () => updateReminder(task.id, null);
+   const removeReminder = () => updateReminder(task.task_id, null);
 
    const toggleModal = () => setIsModalOpen(!isModalOpen);
 

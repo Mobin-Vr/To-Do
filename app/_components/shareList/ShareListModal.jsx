@@ -21,8 +21,8 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
    );
 
    const link =
-      invitations.find((inv) => inv.categoryId === theCategoryId)
-         ?.invitationLink || '';
+      invitations.find((inv) => inv.invitation_category_id === theCategoryId)
+         ?.invitation_link || '';
 
    const [currentView, setCurrentView] = useState(
       link ? 'linkCreated' : 'initial'
@@ -32,8 +32,9 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
    function handleCreateLink() {
       startTransition(async () => {
          const wasSuccessful = await createInvitationInStore(theCategoryId);
-         if (wasSuccessful) setCurrentView('linkCreated');
-         if (!wasSuccessful) showToast('Tray again later!');
+         if (wasSuccessful.status) setCurrentView('linkCreated');
+         if (!wasSuccessful.status)
+            showToast(`${wasSuccessful.message}. Tray again later!`);
       });
    }
 

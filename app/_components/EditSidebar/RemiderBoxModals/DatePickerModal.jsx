@@ -14,7 +14,7 @@ export default function DatePickerModal({
 
    function hanldeSave() {
       const due = date.toISOString();
-      if (!isForTaskInput) updateDueDate(task.id, due);
+      if (!isForTaskInput) updateDueDate(task.task_id, due);
       if (isForTaskInput) updateDueDate(due);
       toggleModal();
    }

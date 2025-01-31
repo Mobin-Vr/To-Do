@@ -11,9 +11,9 @@ export default function DateTimePickerModal({
    task,
    isForTaskInput = false,
 }) {
-   const d = task?.reminder ? new Date(task.reminder) : new Date();
+   const d = task?.reminder ? new Date(task.task_reminder) : new Date();
    const t = task?.reminder
-      ? getHourMinString(new Date(task.reminder))
+      ? getHourMinString(new Date(task.task_reminder))
       : getHourMinString(new Date());
 
    const timeInputRef = useRef(null);
@@ -26,7 +26,7 @@ export default function DateTimePickerModal({
 
    function hanldeSave() {
       const due = replaceTimeInIsoDate(date, time);
-      if (!isForTaskInput) updateReminder(task.id, due);
+      if (!isForTaskInput) updateReminder(task.task_id, due);
       if (isForTaskInput) updateReminder(due);
       toggleModal();
    }
