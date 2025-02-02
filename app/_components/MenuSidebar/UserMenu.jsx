@@ -32,7 +32,10 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   onClick={toggleModal}
                   ref={userMenuBtnRef}
                >
-                  <p className='leading-tight text-sm font-normal'>
+                  <p
+                     title={user.fullName}
+                     className='leading-tight text-sm font-normal text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap'
+                  >
                      {user.fullName}
                   </p>
 

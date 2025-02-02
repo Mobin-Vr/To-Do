@@ -57,6 +57,7 @@ export default function MoreOptionsView({
                   className='data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-500'
                />
             </div>
+
             <p className='text-gray-700 text-xs'>
                Toggle to prevent joining new people.
             </p>

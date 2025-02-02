@@ -37,10 +37,10 @@ export default async function RootLayout({ children }) {
                   {/* This component handles checking and creating a new user in the database upon sign-in */}
                   <UserSignupHandler />
 
+                  <Sidebar />
+
                   {/* get new tasks in real time */}
                   <TaskRealTimeListener />
-
-                  <Sidebar />
                </SignedIn>
 
                <main className='h-full overflow-y-hidden sm:flex-1'>

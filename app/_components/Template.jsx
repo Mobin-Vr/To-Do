@@ -1,7 +1,7 @@
 import { defaultCategoryId } from '@/app/_lib/utils';
-import AppHeader from '../AppHeader';
-import TaskInput from '../taskInput/TaskInput';
-import TasksList from '../TasksList';
+import AppHeader from './AppHeader';
+import TasksList from './TasksList';
+import TaskInput from './taskInput/TaskInput';
 
 export default function Template({
    listRef,

@@ -16,7 +16,11 @@ export default function OrdinaryBtn({
       <button
          disabled={disabled}
          onClick={onClick}
-         className={`py-1.5 px-4 rounded-sm ${btnColor[mode]} ${className}`}
+         className={`py-1.5 px-4 rounded-sm ${btnColor[mode]} ${className} ${
+            disabled
+               ? 'cursor-not-allowed bg-gray-300 border border-gray-200 hover:bg-gray-300'
+               : ''
+         }`}
       >
          {text}
          {children}

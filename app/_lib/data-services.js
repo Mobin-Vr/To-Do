@@ -304,31 +304,3 @@ export async function getTasksByInvitation(invitationId, userId) {
 
    return data; // Data will include an array of the tasks related to the invitation.
 }
-
-///////////////////
-///////////////////
-//// Real time ////
-///////////////////
-///////////////////
-
-export function listenToTaskChanges() {
-   const taskSubscription = supabase
-      .from('tasks')
-      .on('INSERT', (payload) => {
-         console.log('New task added:', payload.new);
-
-         addTaskFromRealtime(payload.new);
-      })
-      //       .on('UPDATE', (payload) => {
-      //          console.log('Task updated:', payload.new);
-      //
-      //          addTaskToStore(payload.new);
-      //       })
-      //       .on('DELETE', (payload) => {
-      //          console.log('Task deleted:', payload.old);
-      //          removeTaskFromStore(payload.old);
-      //       })
-      .subscribe();
-
-   return taskSubscription;
-}

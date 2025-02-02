@@ -19,8 +19,6 @@ export default function AddRepeatModal({
    // Update store (id, repeat)
    function handleSelect(period) {
       if (!isForTaskInput) {
-         console.log('nearest: ', task.task_due_date);
-
          const nearestFriday = getWeekendForWeekdays(task.task_due_date);
          updateRepeat(task.task_id, period);
 

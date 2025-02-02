@@ -6,6 +6,7 @@ import { useShallow } from 'zustand/react/shallow';
 import InitialView from './InitialView';
 import LinkCreatedView from './LinkCreatedView';
 import MoreOptionsView from './MoreOptionsView';
+import ManageMembers from './ManageMembers';
 
 export default function SharedListModal({ toggleModal, theCategoryId }) {
    const showToast = useCustomToast();
@@ -24,6 +25,14 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
       invitations.find((inv) => inv.invitation_category_id === theCategoryId)
          ?.invitation_link || '';
 
+   const invitationUsers = invitations.find(
+      (inv) => inv.invitation_category_id === theCategoryId
+   )?.sharedWith;
+
+   const invitationId =
+      invitations.find((inv) => inv.invitation_category_id === theCategoryId)
+         ?.invitation_id || null;
+
    const [currentView, setCurrentView] = useState(
       link ? 'linkCreated' : 'initial'
    );
@@ -41,6 +50,11 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
    const handleMoreOptions = () => {
       setDirection(1); // Forward
       setCurrentView('moreOptions');
+   };
+
+   const handleManageMembers = () => {
+      setDirection(1); // Forward
+      setCurrentView('manageMembers');
    };
 
    const handleBackToLinkCreated = () => {
@@ -104,6 +118,8 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
                >
                   <LinkCreatedView
                      onMoreOptions={handleMoreOptions}
+                     onManageMembers={handleManageMembers}
+                     invitationUsers={invitationUsers}
                      toggleModal={toggleModal}
                      link={link}
                   />
@@ -125,6 +141,25 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
                      toggleModal={toggleModal}
                      link={link}
                      theCategoryId={theCategoryId}
+                  />
+               </motion.div>
+            )}
+
+            {currentView === 'manageMembers' && (
+               <motion.div
+                  key='manageMembers'
+                  variants={slideVariants}
+                  initial='initial'
+                  animate='animate'
+                  exit='exit'
+                  custom={direction}
+                  className='absolute w-full h-full'
+               >
+                  <ManageMembers
+                     onBackToLinkCreated={handleBackToLinkCreated}
+                     toggleModal={toggleModal}
+                     invitationUsers={invitationUsers}
+                     invitationId={invitationId}
                   />
                </motion.div>
             )}

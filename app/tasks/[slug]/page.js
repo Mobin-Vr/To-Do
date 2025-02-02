@@ -1,6 +1,6 @@
 'use client';
 
-import Template from '@/app/_components/_ui/Template';
+import Template from '@/app/_components/Template';
 import { BG_COLORS } from '@/app/_lib/utils';
 import useTaskStore from '@/app/taskStore';
 import { notFound, useParams, useRouter } from 'next/navigation';

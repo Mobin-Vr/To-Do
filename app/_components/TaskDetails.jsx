@@ -7,7 +7,7 @@ function TaskDetails({ task }) {
          : false;
 
    return (
-      <div className='font-light flex items-center gap-2.5 text-xs text-gray-800'>
+      <div className='font-light flex items-center gap-2.5 text-xs text-gray-400'>
          <span>Tasks</span>
          <div className='flex items-center gap-2'>
             {cond && <span className='h-1 w-1 bg-gray-400 mr-0.5'></span>}

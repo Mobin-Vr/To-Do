@@ -14,7 +14,7 @@ export function ModalActionButton({
             disabled ? 'cursor-default' : 'hover:bg-accent-50'
          }`}
       >
-         <div className='flex gap-3'>
+         <div className='flex gap-3 items-center justify-center'>
             {icon}
             <h4 className={`${disabled ? 'text-gray-300' : ''}`}>{label}</h4>
          </div>

@@ -1,20 +1,37 @@
 import { CircleIcon, CompletedIcon, TickCircleIcon } from '@/public/icons';
 import useTaskStore from '../../taskStore';
 
-export default function CompleteBtn({ task, compBtnRef, className }) {
+const btnStyles = `
+   .btnStyles {
+      color: var(--default-text-color);
+   }
+
+   .btnStyles:hover {
+      color: var(--hover-text-color);
+   }
+`;
+
+export default function CompleteBtn({ task, compBtnRef, className, bgColor }) {
    const toggleCompleted = useTaskStore((state) => state.toggleCompleted);
+
    return (
       <button
+         style={{ '--hover-text-color': bgColor[3] }}
          ref={compBtnRef}
          onClick={() => toggleCompleted(task.task_id)}
-         className={`group bg-transparent relative transition-all cursor-default duration-300 ease-in-out ${className} ${
+         className={`btnStyles group bg-transparent relative transition-all cursor-default duration-200 ease-in-out ${className} ${
             task.is_task_completed
-               ? 'line-through text-gray-300 decoration-gray-300 decoration-2'
+               ? 'line-through decoration-gray-300 decoration-2'
                : ''
          }`}
       >
          {task.is_task_completed ? (
-            <CompletedIcon />
+            <span
+               className='btnStyles'
+               style={{ '--default-text-color': bgColor[3] }}
+            >
+               <CompletedIcon />
+            </span>
          ) : (
             <>
                <span className='block group-hover:hidden'>
@@ -26,6 +43,8 @@ export default function CompleteBtn({ task, compBtnRef, className }) {
                </span>
             </>
          )}
+
+         <style>{btnStyles}</style>
       </button>
    );
 }

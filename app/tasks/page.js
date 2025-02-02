@@ -2,9 +2,10 @@
 
 import { HomeIcon } from '@/public/icons';
 import { useEffect, useRef } from 'react';
-import Template from '../_components/_ui/Template';
+
 import { BG_COLORS, defaultCategoryId } from '../_lib/utils';
 import useTaskStore from '../taskStore';
+import Template from '../_components/Template';
 
 export default function Page() {
    const categoriesList = useTaskStore((state) => state.categoriesList);

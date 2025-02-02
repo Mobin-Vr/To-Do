@@ -20,11 +20,12 @@ export default function UserStatus({ user }) {
 
    return (
       <p
+         title={isOnline ? user?.primaryEmailAddress?.emailAddress : ''}
          className={`text-gray-600 leading-tight ${
             isOnline
                ? 'text-[0.715rem] font-extralight'
                : 'text-[0.7rem] font-light'
-         } flex gap-1 items-center justify-center`}
+         } flex gap-1 items-center justify-center text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap`}
       >
          <span
             className={`h-[0.4rem] w-[0.4rem] ${statusIndicator} rounded-full`}

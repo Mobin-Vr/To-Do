@@ -36,7 +36,7 @@ const initialState = {
    categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
-   invitations: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [users]}
+   invitations: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
    sharedWithMe: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
 };
 
@@ -1264,15 +1264,61 @@ const useTaskStore = create(
 
             /////////////////////////////
             /////////////////////////////
-            //////// Real  time /////////
+            //////// Real time /////////
             /////////////////////////////
             /////////////////////////////
 
-            // # Add task to tasklist from realtime db
+            // # Add task to taskslist from realtime db
             addTaskFromRealtime: (task) => {
                set(
                   produce((state) => {
-                     state.tasksList.push(task);
+                     const existed = state.tasksList.find(
+                        (item) => item.task_id === task.task_id
+                     );
+
+                     if (!existed) state.tasksList.push(task);
+                  })
+               );
+            },
+
+            // # Update task in taskslist from realtime db
+            updateTaskFromRealtime: (updatedTask) => {
+               set(
+                  produce((state) => {
+                     const taskIndex = state.tasksList.findIndex(
+                        (item) => item.task_id === updatedTask.task_id
+                     );
+
+                     if (taskIndex !== -1)
+                        state.tasksList[taskIndex] = updatedTask;
+                  })
+               );
+            },
+
+            // # Delete task from taskslist from realtime db
+            deleteTaskFromRealtime: (deletedTask) => {
+               set(
+                  produce((state) => {
+                     state.tasksList = state.tasksList.filter(
+                        (task) => task.task_id !== deletedTask.task_id
+                     );
+                  })
+               );
+            },
+
+            // # Add joined user to the invation.sharedWith, from realtime db
+            addUserFromRealtime: (invitationId, user) => {
+               set(
+                  produce((state) => {
+                     const theInvitation = state.invitations.find(
+                        (inv) => inv.invitation_id === invitationId
+                     );
+
+                     const existed = theInvitation?.sharedWith.find(
+                        (item) => item.user_id === user.user_id
+                     );
+
+                     if (!existed) theInvitation.sharedWith.push(user);
                   })
                );
             },

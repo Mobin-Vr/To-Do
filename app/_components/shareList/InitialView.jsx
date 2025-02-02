@@ -26,8 +26,6 @@ export default function InitialView({ onCreateLink, toggleModal, isPending }) {
                </p>
             </div>
 
-            {/* LATER user lists */}
-
             <div>
                <div className='flex justify-between items-center'>
                   <OrdinaryBtn

@@ -168,16 +168,17 @@ export const PlusIcon = ({ size = '21px', color = '#000000' }) => (
 // Circle Icon
 export const CircleIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
+      fill='currentColor'
+      aria-hidden='true'
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
+      focusable='false'
    >
       <path
-         id='Vector'
-         d='M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12Z'
-         stroke='currentColor'
+         d='M10 3a7 7 0 100 14 7 7 0 000-14zm-8 7a8 8 0 1116 0 8 8 0 01-16 0z'
+         fill='currentColor'
       ></path>
    </svg>
 );
@@ -185,16 +186,17 @@ export const CircleIcon = ({ size = '20px', color = '#586570' }) => (
 // Tick Circle Icon
 export const TickCircleIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 24 24'
-      fill='none'
+      fill='currentColor'
+      aria-hidden='true'
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
+      focusable='false'
    >
       <path
-         id='Vector'
-         d='M15 10L11 14L9 12M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z'
-         stroke='currentColor'
+         d='M10 2a8 8 0 110 16 8 8 0 010-16zm0 1a7 7 0 100 14 7 7 0 000-14zm3.36 4.65c.17.17.2.44.06.63l-.06.07-4 4a.5.5 0 01-.64.07l-.07-.06-2-2a.5.5 0 01.63-.77l.07.06L9 11.3l3.65-3.65c.2-.2.51-.2.7 0z'
+         fill='currentColor'
       ></path>
    </svg>
 );
@@ -202,15 +204,17 @@ export const TickCircleIcon = ({ size = '20px', color = '#586570' }) => (
 // Completed Circle Icon
 export const CompletedIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
-      width={size}
-      height={size}
-      viewBox='0 0 1024 1024'
-      xmlns='http://www.w3.org/2000/svg'
       fill='currentColor'
+      aria-hidden='true'
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
+      xmlns='http://www.w3.org/2000/svg'
+      focusable='false'
    >
       <path
+         d='M10 2a8 8 0 110 16 8 8 0 010-16zm3.36 5.65a.5.5 0 00-.64-.06l-.07.06L9 11.3 7.35 9.65l-.07-.06a.5.5 0 00-.7.7l.07.07 2 2 .07.06c.17.11.4.11.56 0l.07-.06 4-4 .07-.08a.5.5 0 00-.06-.63z'
          fill='currentColor'
-         d='M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm-55.808 536.384-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.272 38.272 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336L456.192 600.384z'
       ></path>
    </svg>
 );
@@ -246,18 +250,20 @@ export const XIcon = ({ size = '16px', color = '#000000' }) => (
 );
 
 // Dot Icon
-export const DotIcon = ({ size = '12px', color = '#586570' }) => (
+export const DotIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
+      aria-label=''
       fill='currentColor'
-      height={size}
+      aria-hidden='true'
       width={size}
-      id='Layer_1'
-      data-name='Layer 1'
+      height={size}
+      viewBox='0 0 20 20'
       xmlns='http://www.w3.org/2000/svg'
-      viewBox='0 0 16 16'
-      stroke='currentColor'
    >
-      <path d='M8,6.5A1.5,1.5,0,1,1,6.5,8,1.5,1.5,0,0,1,8,6.5ZM.5,8A1.5,1.5,0,1,0,2,6.5,1.5,1.5,0,0,0,.5,8Zm12,0A1.5,1.5,0,1,0,14,6.5,1.5,1.5,0,0,0,12.5,8Z'></path>
+      <path
+         d='M10 3C10.828 3 11.5 3.672 11.5 4.5C11.5 5.328 10.828 6 10 6C9.172 6 8.5 5.328 8.5 4.5C8.5 3.672 9.172 3 10 3ZM10 9C10.828 9 11.5 9.672 11.5 10.5C11.5 11.328 10.828 12 10 12C9.172 12 8.5 11.328 8.5 10.5C8.5 9.672 9.172 9 10 9ZM10 15C10.828 15 11.5 15.672 11.5 16.5C11.5 17.328 10.828 18 10 18C9.172 18 8.5 17.328 8.5 16.5C8.5 15.672 9.172 15 10 15Z'
+         fill='currentColor'
+      ></path>
    </svg>
 );
 
@@ -299,19 +305,19 @@ export const StarIcon = ({ size = '20px', color = '#000000' }) => (
 );
 
 // Full Star Icon
-export const FullStarIcon = ({ size = '14px', color = '#586570' }) => (
+export const FullStarIcon = ({ size = '20px', color = '#586570' }) => (
    <svg
-      xmlns='http://www.w3.org/2000/svg'
-      width={size}
-      height={size}
-      viewBox='0 0 64 64'
-      enableBackground='new 0 0 64 64'
       fill='currentColor'
-      strokeWidth='0.4'
+      aria-hidden='true'
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
+      xmlns='http://www.w3.org/2000/svg'
+      focusable='false'
    >
       <path
+         d='M9.1 2.9a1 1 0 011.8 0l1.93 3.91 4.31.63a1 1 0 01.56 1.7l-3.12 3.05.73 4.3a1 1 0 01-1.45 1.05L10 15.51l-3.86 2.03a1 1 0 01-1.45-1.05l.74-4.3L2.3 9.14a1 1 0 01.56-1.7l4.31-.63L9.1 2.9z'
          fill='currentColor'
-         d='M63.893,24.277c-0.238-0.711-0.854-1.229-1.595-1.343l-19.674-3.006L33.809,1.15 C33.479,0.448,32.773,0,31.998,0s-1.48,0.448-1.811,1.15l-8.815,18.778L1.698,22.935c-0.741,0.113-1.356,0.632-1.595,1.343 c-0.238,0.71-0.059,1.494,0.465,2.031l14.294,14.657L11.484,61.67c-0.124,0.756,0.195,1.517,0.822,1.957 c0.344,0.243,0.747,0.366,1.151,0.366c0.332,0,0.666-0.084,0.968-0.25l17.572-9.719l17.572,9.719c0.302,0.166,0.636,0.25,0.968,0.25 c0.404,0,0.808-0.123,1.151-0.366c0.627-0.44,0.946-1.201,0.822-1.957l-3.378-20.704l14.294-14.657 C63.951,25.771,64.131,24.987,63.893,24.277z'
       ></path>
    </svg>
 );
@@ -753,5 +759,60 @@ export const ShareIcon = ({ size = '20px', color = '#000000' }) => (
          d='M9 2a4 4 0 100 8 4 4 0 000-8zM6 6a3 3 0 116 0 3 3 0 01-6 0zm-2 5a2 2 0 00-2 2c0 1.7.83 2.97 2.13 3.8A9.14 9.14 0 009 18c.41 0 .82-.02 1.21-.06A5.5 5.5 0 019.6 17 12 12 0 019 17a8.16 8.16 0 01-4.33-1.05A3.36 3.36 0 013 13a1 1 0 011-1h5.6c.18-.36.4-.7.66-1H4zm10.5 8a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0-7c.28 0 .5.22.5.5V14h1.5a.5.5 0 010 1H15v1.5a.5.5 0 01-1 0V15h-1.5a.5.5 0 010-1H14v-1.5c0-.28.22-.5.5-.5z'
          fill='currentColor'
       ></path>
+   </svg>
+);
+
+// Users Icon
+export const USersIcon = ({ size = '20px', color = '#000000' }) => (
+   <svg
+      fill='currentColor'
+      aria-hidden='true'
+      width='20'
+      height='20'
+      viewBox='0 0 20 20'
+      xmlns='http://www.w3.org/2000/svg'
+   >
+      <path
+         d='M4.5 6.75a2.25 2.25 0 114.5 0 2.25 2.25 0 01-4.5 0zM6.75 3.5a3.25 3.25 0 100 6.5 3.25 3.25 0 000-6.5zm5.69 11.65c.53.21 1.21.35 2.06.35 1.88 0 2.92-.67 3.47-1.43a2.92 2.92 0 00.53-1.5v-.07c0-.83-.67-1.5-1.5-1.5h-4.63c.24.29.42.63.53 1H17c.28 0 .5.22.5.5v.1l-.04.22c-.04.18-.13.42-.3.66-.33.46-1.04 1.02-2.66 1.02-.73 0-1.28-.11-1.69-.28-.08.28-.2.6-.37.93zM1.5 13c0-1.1.9-2 2-2H10a2 2 0 012 2V13.08a1.43 1.43 0 01-.01.18 3.95 3.95 0 01-.67 1.8C10.62 16.09 9.26 17 6.75 17c-2.51 0-3.87-.92-4.57-1.93a3.95 3.95 0 01-.68-1.99V13zm1 .06v.1l.06.33c.07.27.2.64.45 1C3.49 15.2 4.5 16 6.75 16s3.26-.8 3.74-1.5a2.95 2.95 0 00.5-1.42l.01-.02V13a1 1 0 00-1-1H3.5a1 1 0 00-1 1v.06zM13 7.5a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM14.5 5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z'
+         fill='currentColor'
+      ></path>
+   </svg>
+);
+
+// Copy Icon
+export const CopyIcon = ({ size = '12px', color = '#000000' }) => (
+   <svg
+      width={size}
+      height={size}
+      viewBox='0 0 24 24'
+      fill='none'
+      xmlns='http://www.w3.org/2000/svg'
+   >
+      <path
+         d='M3 16V4C3 2.89543 3.89543 2 5 2H15M9 22H18C19.1046 22 20 21.1046 20 20V8C20 6.89543 19.1046 6 18 6H9C7.89543 6 7 6.89543 7 8V20C7 21.1046 7.89543 22 9 22Z'
+         stroke='currentColor'
+         strokeWidth='2'
+         strokeLinecap='round'
+         strokeLinejoin='round'
+      ></path>
+   </svg>
+);
+
+// Success Icon
+export const SuccessIcon = ({ size = '16px', color = '#000000' }) => (
+   <svg
+      xmlns='http://www.w3.org/2000/svg'
+      width={size}
+      height={size}
+      fill='none'
+      viewBox='0 0 24 24'
+      stroke='currentColor'
+   >
+      <path
+         strokeLinecap='round'
+         strokeLinejoin='round'
+         strokeWidth={2}
+         d='M5 13l4 4L19 7'
+      />
    </svg>
 );
