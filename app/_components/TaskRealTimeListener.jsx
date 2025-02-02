@@ -11,12 +11,22 @@ export default function TaskRealTimeListener() {
       updateTaskFromRealtime,
       deleteTaskFromRealtime,
       addUserFromRealtime,
+      removeUserWhenNotOwner,
+      removeUserWhenOwner,
+      getInvitations,
+      getSharedWithMe,
+      userInfo,
    } = useTaskStore(
       useShallow((state) => ({
          addTaskFromRealtime: state.addTaskFromRealtime,
          updateTaskFromRealtime: state.updateTaskFromRealtime,
          deleteTaskFromRealtime: state.deleteTaskFromRealtime,
          addUserFromRealtime: state.addUserFromRealtime,
+         removeUserWhenNotOwner: state.removeUserWhenNotOwner,
+         removeUserWhenOwner: state.removeUserWhenOwner,
+         getInvitations: state.getInvitations,
+         getSharedWithMe: state.getSharedWithMe,
+         userInfo: state.userInfo,
       }))
    );
 
@@ -32,7 +42,6 @@ export default function TaskRealTimeListener() {
                table: 'tasks',
             },
             (payload) => {
-               console.log('New task added:', payload.new);
                addTaskFromRealtime(payload.new);
             }
          )
@@ -44,7 +53,6 @@ export default function TaskRealTimeListener() {
                table: 'tasks',
             },
             (payload) => {
-               console.log('Task updated:', payload.new);
                updateTaskFromRealtime(payload.new);
             }
          )
@@ -56,7 +64,6 @@ export default function TaskRealTimeListener() {
                table: 'tasks',
             },
             (payload) => {
-               console.log('Task deleted:', payload.old);
                deleteTaskFromRealtime(payload.old);
             }
          )
@@ -68,8 +75,6 @@ export default function TaskRealTimeListener() {
                table: 'collaborators',
             },
             async (payload) => {
-               console.log('New user added to collaborator:', payload.new);
-
                // Fetch user info using the user_id from the collaborator
                const { data: user, error } = await supabase
                   .from('users')
@@ -86,16 +91,52 @@ export default function TaskRealTimeListener() {
                addUserFromRealtime(payload.new.invitation_id, user);
             }
          )
+         .on(
+            'postgres_changes',
+            {
+               event: 'DELETE',
+               schema: 'public',
+               table: 'collaborators',
+            },
+            async (payload) => {
+               const { invitation_id: invitationId, user_id: userId } =
+                  payload.old;
+
+               // Find the invitation and shared category
+               const invitation = getInvitations()?.find(
+                  (inv) => inv.invitation_id === invitationId
+               );
+
+               const sharedCategory = getSharedWithMe()?.find(
+                  (list) => list.invitation_id === invitationId
+               );
+
+               console.log('invitationId:', invitationId);
+               console.log('sharedWithMe:', getSharedWithMe());
+               console.log('sharedCategory:', sharedCategory);
+
+               // Check if the requester is the owner
+               const isOwner =
+                  invitation?.invitation_owner_id === userInfo.user_id;
+
+               // Check if the requester is a user in sharedWithMe
+               const isUser =
+                  sharedCategory?.invitation_owner_id !== userInfo.user_id &&
+                  sharedCategory !== undefined;
+
+               // Remove the user from the store
+               console.log('isOwner:', isOwner);
+               console.log('isUser:', isUser);
+
+               if (isOwner) removeUserWhenOwner(invitationId, userId);
+               if (isUser) removeUserWhenNotOwner(invitationId);
+            }
+         )
          .subscribe();
 
       // Cleanup subscription when the component is unmounted
       return () => taskChannel.unsubscribe();
-   }, [
-      addTaskFromRealtime,
-      updateTaskFromRealtime,
-      deleteTaskFromRealtime,
-      addUserFromRealtime,
-   ]);
+   }, []);
 
    return null;
 }

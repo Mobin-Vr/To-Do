@@ -5,8 +5,6 @@ export default function InvitationUsersList({
    onRemoveUser,
    invitationId,
 }) {
-   console.log('111: ', invitationId);
-
    return (
       <ul className='py-1.5 divide-y rounded-lg flex flex-col'>
          {invitationUsers.map((user, i) => (

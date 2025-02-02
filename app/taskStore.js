@@ -36,8 +36,8 @@ const initialState = {
    categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
-   invitations: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
-   sharedWithMe: [], // each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
+   invitations: [], // this is just for owner: each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
+   sharedWithMe: [], // this is for the second user: each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
 };
 
 const useTaskStore = create(
@@ -649,7 +649,7 @@ const useTaskStore = create(
 
             /////////////////////////////
             /////////////////////////////
-            //////// Step ///////////
+            /////////// Step ////////////
             /////////////////////////////
             /////////////////////////////
 
@@ -1106,9 +1106,10 @@ const useTaskStore = create(
                         );
 
                         if (invitation) {
-                           invitation.sharedWith = invitation.sharedWith.filter(
-                              (user) => user.user_id !== userId
-                           );
+                           invitation.sharedWith =
+                              invitation?.sharedWith.filter(
+                                 (user) => user.user_id !== userId
+                              );
                         }
                      })
                   );
@@ -1236,7 +1237,6 @@ const useTaskStore = create(
                         state.sharedWithMe.push({
                            invitation_id: invitation_id,
                            invitation_category_id: category.category_id,
-                           invitation_category_title: category.category_title,
                            invitation_category_owner_id:
                               category.category_owner_id,
                            invitation_tasks: tasks,
@@ -1260,6 +1260,13 @@ const useTaskStore = create(
                const sharedList = get().sharedWithMe;
 
                return sharedList.length > 0 ? sharedList : null;
+            },
+
+            // # Get the last invitations object
+            getInvitations: () => {
+               const invitations = get().invitations;
+
+               return invitations.length > 0 ? invitations : null;
             },
 
             /////////////////////////////
@@ -1318,7 +1325,68 @@ const useTaskStore = create(
                         (item) => item.user_id === user.user_id
                      );
 
-                     if (!existed) theInvitation.sharedWith.push(user);
+                     if (!existed) theInvitation?.sharedWith.push(user);
+                  })
+               );
+            },
+
+            // Function to remove the user when the requester is the owner
+            removeUserWhenOwner: (invitationId, userId) => {
+               set(
+                  produce((state) => {
+                     // Find the invitation by invitationId
+                     const invitation = state.invitations.find(
+                        (inv) => inv.invitation_id === invitationId
+                     );
+
+                     if (invitation) {
+                        console.log('owner');
+                        // Remove the user from the sharedWith list
+                        invitation.sharedWith = invitation.sharedWith.filter(
+                           (item) => item.user_id !== userId
+                        );
+
+                        // Remove the user's tasks from tasksList
+                        state.tasksList = state.tasksList.filter(
+                           (task) => task.task_owner_id !== userId
+                        );
+                     }
+                  })
+               );
+            },
+
+            // Function to remove the user when the requester is not the owner
+            removeUserWhenNotOwner: (invitationId) => {
+               set(
+                  produce((state) => {
+                     const theSharedCat = state.sharedWithMe.find(
+                        (l) => l.invitation_id === invitationId
+                     );
+
+                     if (theSharedCat) {
+                        console.log('user');
+                        // Remove the user's tasks from tasksList
+                        state.tasksList = state.tasksList.filter(
+                           (task) =>
+                              task.task_category_id !==
+                              theSharedCat.invitation_category_id
+                        );
+
+                        // Remove the category from categoriesList
+                        state.categoriesList = state.categoriesList.filter(
+                           (cat) =>
+                              cat.category_id !==
+                              theSharedCat.invitation_category_id
+                        );
+
+                        // Remove the entire invitation object from sharedWithMe
+                        state.sharedWithMe = state.sharedWithMe.filter(
+                           (sharedItem) =>
+                              sharedItem.invitation_id !== invitationId
+                        );
+                     }
+
+                     redirect(`/tasks`);
                   })
                );
             },
