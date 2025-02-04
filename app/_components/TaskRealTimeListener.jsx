@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 import { supabase } from '../_lib/supabase';
 import useTaskStore from '../taskStore';
 import { useShallow } from 'zustand/react/shallow';
-import { getUserById } from '../_lib/data-services';
+import { getCategoryInvId, getUserById } from '../_lib/data-services';
+import { defaultCategoryId } from '../_lib/utils';
 
 export default function TaskRealTimeListener() {
    const {
@@ -31,6 +32,18 @@ export default function TaskRealTimeListener() {
       }))
    );
 
+   const invitations = getInvitations() || [];
+   const sharedLists = getSharedWithMe() || [];
+
+   // Categories where the user is the owner or a collaborator
+   const userOwnedInvitationIds = invitations.map((inv) => inv.invitation_id);
+   const sharedInvitationIds = sharedLists.map((list) => list.invitation_id);
+
+   const relevantInvitationIds = Array.from(
+      // eslint-disable-next-line no-undef
+      new Set([...userOwnedInvitationIds, ...sharedInvitationIds])
+   );
+
    useEffect(() => {
       // Make the useEffect async
       const taskChannel = supabase
@@ -42,8 +55,20 @@ export default function TaskRealTimeListener() {
                schema: 'public',
                table: 'tasks',
             },
-            (payload) => {
-               addTaskFromRealtime(payload.new);
+            async (payload) => {
+               const invId = await getCategoryInvId(
+                  payload.new.task_category_id
+               );
+
+               const isRelevant = relevantInvitationIds.includes(
+                  invId.invitation_id
+               );
+
+               if (
+                  payload.new.task_category_id !== defaultCategoryId &&
+                  isRelevant
+               )
+                  addTaskFromRealtime(payload.new);
             }
          )
          .on(
@@ -53,8 +78,20 @@ export default function TaskRealTimeListener() {
                schema: 'public',
                table: 'tasks',
             },
-            (payload) => {
-               updateTaskFromRealtime(payload.new);
+            async (payload) => {
+               const invId = await getCategoryInvId(
+                  payload.new.task_category_id
+               );
+
+               const isRelevant = relevantInvitationIds.includes(
+                  invId.invitation_id
+               );
+
+               if (
+                  payload.new.task_category_id !== defaultCategoryId &&
+                  isRelevant
+               )
+                  updateTaskFromRealtime(payload.new);
             }
          )
          .on(
@@ -64,8 +101,20 @@ export default function TaskRealTimeListener() {
                schema: 'public',
                table: 'tasks',
             },
-            (payload) => {
-               deleteTaskFromRealtime(payload.old);
+            async (payload) => {
+               const invId = await getCategoryInvId(
+                  payload.new.task_category_id
+               );
+
+               const isRelevant = relevantInvitationIds.includes(
+                  invId.invitation_id
+               );
+
+               if (
+                  payload.old.task_category_id !== defaultCategoryId &&
+                  isRelevant
+               )
+                  deleteTaskFromRealtime(payload.old);
             }
          )
          .on(
@@ -111,10 +160,6 @@ export default function TaskRealTimeListener() {
                const isUser =
                   sharedCategory?.invitation_owner_id !== userInfo.user_id &&
                   sharedCategory !== undefined;
-
-               // Remove the user from the store
-               console.log('isOwner:', isOwner);
-               console.log('isUser:', isUser);
 
                if (isOwner) removeUserWhenOwner(invitationId, userId);
                if (isUser) removeUserWhenNotOwner(invitationId);

@@ -1340,7 +1340,6 @@ const useTaskStore = create(
                      );
 
                      if (invitation) {
-                        console.log('owner');
                         // Remove the user from the sharedWith list
                         invitation.sharedWith = invitation.sharedWith.filter(
                            (item) => item.user_id !== userId
@@ -1364,7 +1363,6 @@ const useTaskStore = create(
                      );
 
                      if (theSharedCat) {
-                        console.log('user');
                         // Remove the user's tasks from tasksList
                         state.tasksList = state.tasksList.filter(
                            (task) =>

@@ -320,3 +320,19 @@ export async function getUserById(userId) {
 
    return data;
 }
+
+// Fetch the category's inv id by categoryId
+export async function getCategoryInvId(categoryId) {
+   const { data, error } = await supabase
+      .from('invitations')
+      .select('invitation_id')
+      .eq('invitation_category_id', categoryId)
+      .single();
+
+   if (error) {
+      console.error('Error fetching invitaton id:', error);
+      return null;
+   }
+
+   return data;
+}
