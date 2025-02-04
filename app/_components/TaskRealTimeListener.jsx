@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { supabase } from '../_lib/supabase';
 import useTaskStore from '../taskStore';
 import { useShallow } from 'zustand/react/shallow';
+import { getUserById } from '../_lib/data-services';
 
 export default function TaskRealTimeListener() {
    const {
@@ -75,17 +76,9 @@ export default function TaskRealTimeListener() {
                table: 'collaborators',
             },
             async (payload) => {
-               // Fetch user info using the user_id from the collaborator
-               const { data: user, error } = await supabase
-                  .from('users')
-                  .select('*')
-                  .eq('user_id', payload.new.user_id)
-                  .single();
-
-               if (error) {
-                  console.error('Error fetching user:', error);
-                  return;
-               }
+               // Fetch user info related to the new collaborator
+               const user = await getUserById(payload.new.user_id);
+               if (!user) return;
 
                // Add the new user to the store
                addUserFromRealtime(payload.new.invitation_id, user);
@@ -102,7 +95,6 @@ export default function TaskRealTimeListener() {
                const { invitation_id: invitationId, user_id: userId } =
                   payload.old;
 
-               // Find the invitation and shared category
                const invitation = getInvitations()?.find(
                   (inv) => inv.invitation_id === invitationId
                );
@@ -110,10 +102,6 @@ export default function TaskRealTimeListener() {
                const sharedCategory = getSharedWithMe()?.find(
                   (list) => list.invitation_id === invitationId
                );
-
-               console.log('invitationId:', invitationId);
-               console.log('sharedWithMe:', getSharedWithMe());
-               console.log('sharedCategory:', sharedCategory);
 
                // Check if the requester is the owner
                const isOwner =
@@ -136,6 +124,7 @@ export default function TaskRealTimeListener() {
 
       // Cleanup subscription when the component is unmounted
       return () => taskChannel.unsubscribe();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    return null;

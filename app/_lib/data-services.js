@@ -304,3 +304,19 @@ export async function getTasksByInvitation(invitationId, userId) {
 
    return data; // Data will include an array of the tasks related to the invitation.
 }
+
+// Fetch user by user_id
+export async function getUserById(userId) {
+   const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+   if (error) {
+      console.error('Error fetching user:', error);
+      return null;
+   }
+
+   return data;
+}

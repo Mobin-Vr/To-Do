@@ -1,13 +1,14 @@
 'use client';
 
-import { useCallback, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { useCallback, useEffect } from 'react';
 
 import { createUser, getUser } from '@/app/_lib/data-services';
 import useTaskStore from '@/app/taskStore';
 
 export default function UserSignupHandler() {
    const { user } = useUser();
+
    const setUserInfo = useTaskStore((state) => state.setUserInfo);
 
    // Use useCallback to prevent unnecessary re-renders

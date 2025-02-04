@@ -28,6 +28,7 @@ export function generateNewUuid() {
 
 // Produce a delay
 export function delay(ms) {
+   // eslint-disable-next-line no-undef
    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
