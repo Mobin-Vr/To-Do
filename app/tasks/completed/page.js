@@ -1,6 +1,6 @@
 'use client';
 
-import { InfinityIcon, TickCircleIcon } from '@/public/icons';
+import { TickCircleIcon } from '@/public/icons';
 import { useEffect, useRef } from 'react';
 
 import { useShallow } from 'zustand/react/shallow';
@@ -9,10 +9,10 @@ import { BG_COLORS, defaultCategoryId } from '../../_lib/configs';
 import useTaskStore from '../../taskStore';
 
 export default function Page() {
-   const { tasksList, categoriesList } = useTaskStore(
+   const { tasksList, getCategoriesList } = useTaskStore(
       useShallow((state) => ({
          tasksList: state.tasksList,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
       }))
    );
 
@@ -22,7 +22,7 @@ export default function Page() {
 
    const bgColor = BG_COLORS['/completed'];
 
-   const theCategory = categoriesList?.find(
+   const theCategory = getCategoriesList()?.find(
       (cat) => cat.category_id === defaultCategoryId
    );
 

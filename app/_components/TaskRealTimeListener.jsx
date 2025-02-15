@@ -12,11 +12,12 @@ export default function TaskRealTimeListener() {
    const {
       addTaskFromRealtime,
       updateTaskFromRealtime,
+      updateCategoryNameFromRealTime,
       deleteTaskFromRealtime,
       addUserFromRealtime,
       removeUserWhenNotOwner,
       removeUserWhenOwner,
-      categoriesList,
+      getCategoriesList,
       getInvitations,
       getSharedWithMe,
       getUserInfo,
@@ -24,11 +25,12 @@ export default function TaskRealTimeListener() {
       useShallow((state) => ({
          addTaskFromRealtime: state.addTaskFromRealtime,
          updateTaskFromRealtime: state.updateTaskFromRealtime,
+         updateCategoryNameFromRealTime: state.updateCategoryNameFromRealTime,
          deleteTaskFromRealtime: state.deleteTaskFromRealtime,
          addUserFromRealtime: state.addUserFromRealtime,
          removeUserWhenNotOwner: state.removeUserWhenNotOwner,
          removeUserWhenOwner: state.removeUserWhenOwner,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
          getInvitations: state.getInvitations,
          getSharedWithMe: state.getSharedWithMe,
          getUserInfo: state.getUserInfo,
@@ -48,19 +50,14 @@ export default function TaskRealTimeListener() {
    );
 
    useEffect(() => {
-      // Make the useEffect async
       const taskChannel = supabase
          .channel('realtime posts')
          .on(
             'postgres_changes',
-            {
-               event: 'INSERT',
-               schema: 'public',
-               table: 'tasks',
-            },
+            { event: 'INSERT', schema: 'public', table: 'tasks' },
             async (payload) => {
                const isShared =
-                  categoriesList.find(
+                  getCategoriesList().find(
                      (cat) => cat.category_id === payload.new.task_category_id
                   )?.has_category_invitation ?? false;
 
@@ -81,14 +78,10 @@ export default function TaskRealTimeListener() {
          )
          .on(
             'postgres_changes',
-            {
-               event: 'UPDATE',
-               schema: 'public',
-               table: 'tasks',
-            },
+            { event: 'UPDATE', schema: 'public', table: 'tasks' },
             async (payload) => {
                const isShared =
-                  categoriesList.find(
+                  getCategoriesList().find(
                      (cat) => cat.category_id === payload.new.task_category_id
                   )?.has_category_invitation ?? false;
 
@@ -108,14 +101,10 @@ export default function TaskRealTimeListener() {
          )
          .on(
             'postgres_changes',
-            {
-               event: 'DELETE',
-               schema: 'public',
-               table: 'tasks',
-            },
+            { event: 'DELETE', schema: 'public', table: 'tasks' },
             async (payload) => {
                const isShared =
-                  categoriesList.find(
+                  getCategoriesList().find(
                      (cat) => cat.category_id === payload.old.task_category_id
                   )?.has_category_invitation ?? false;
 
@@ -136,14 +125,12 @@ export default function TaskRealTimeListener() {
          )
          .on(
             'postgres_changes',
-            {
-               event: 'INSERT',
-               schema: 'public',
-               table: 'collaborators',
-            },
+            { event: 'INSERT', schema: 'public', table: 'collaborators' },
             async (payload) => {
                const { invitation_id: invitationId, user_id: userId } =
                   payload.new;
+
+               if (getUserInfo().user_id === userId) return; // there is no need to add owner to members list
 
                const invitation = getInvitations()?.find(
                   (inv) => inv.invitation_id === invitationId
@@ -166,11 +153,7 @@ export default function TaskRealTimeListener() {
          )
          .on(
             'postgres_changes',
-            {
-               event: 'DELETE',
-               schema: 'public',
-               table: 'collaborators',
-            },
+            { event: 'DELETE', schema: 'public', table: 'collaborators' },
             async (payload) => {
                const { invitation_id: invitationId, user_id: userId } =
                   payload.old;
@@ -197,6 +180,21 @@ export default function TaskRealTimeListener() {
                   await removeUserWhenNotOwner(invitationId);
                   redirect(`/tasks`);
                }
+            }
+         )
+         .on(
+            'postgres_changes',
+            { event: 'UPDATE', schema: 'public', table: 'categories' },
+            async (payload) => {
+               const {
+                  category_id: categoryId,
+                  category_owner_id: userId,
+                  category_title: categoryTitle,
+               } = payload.new;
+
+               if (getUserInfo().user_id === userId) return; // there is no need to add for owner
+
+               updateCategoryNameFromRealTime(categoryId, categoryTitle);
             }
          )
          .subscribe();

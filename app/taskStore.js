@@ -978,6 +978,7 @@ const useTaskStore = create(
                // This will get all relevent tasks on every reload (shared + owned)
                const tasks = await getRelevantTasksAction(userId);
                const categories = await getCategories(userId);
+               console.log(tasks);
 
                //  Filter out tasks that already exist in the tasksList
                const newTasks = tasks.filter(
@@ -1069,6 +1070,10 @@ const useTaskStore = create(
 
             getUserInfo: () => {
                return get().userInfo;
+            },
+
+            getCategoriesList: () => {
+               return get().categoriesList;
             },
 
             //////////////////////////////////////
@@ -1424,6 +1429,25 @@ const useTaskStore = create(
                   })
                );
             },
+
+            // update category name for none owner collborators
+            updateCategoryNameFromRealTime: (categoryId, newName) =>
+               set(
+                  produce((state) => {
+                     const category = state.categoriesList.find(
+                        (cat) => cat.category_id === categoryId
+                     );
+
+                     const sharedCategory = state.sharedWithMe.find(
+                        (list) => list.invitation_category_id === categoryId
+                     );
+
+                     if (sharedCategory)
+                        sharedCategory.category_title = newName;
+
+                     if (category) category.category_title = newName;
+                  })
+               ),
          }),
          {
             name: 'todo[tasks-store]', // Key name for storage

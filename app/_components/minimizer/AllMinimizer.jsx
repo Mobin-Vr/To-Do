@@ -6,7 +6,7 @@ export default function AllMinimizer({
    listRef,
    bgColor,
    handleToggleSidebar,
-   categoriesList,
+   getCategoriesList,
    listName,
 }) {
    const defaultTasks = tasks.filter(
@@ -17,7 +17,7 @@ export default function AllMinimizer({
       (task) => task.task_category_id !== defaultCategoryId
    );
 
-   const customLists = categoriesList.filter(
+   const customLists = getCategoriesList().filter(
       (cat) => cat.category_id !== defaultCategoryId
    );
 

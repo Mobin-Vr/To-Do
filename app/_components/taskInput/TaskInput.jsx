@@ -16,10 +16,10 @@ export default function TaskInput({
    categoryId,
    listName,
 }) {
-   const { addTaskToStore, userInfo } = useTaskStore(
+   const { addTaskToStore, getUserInfo } = useTaskStore(
       useShallow((state) => ({
          addTaskToStore: state.addTaskToStore,
-         userInfo: state.userInfo,
+         getUserInfo: state.getUserInfo,
       }))
    );
 
@@ -45,7 +45,7 @@ export default function TaskInput({
 
       const newItem = {
          task_id: generateNewUuid(),
-         task_owner_id: userInfo.user_id,
+         task_owner_id: getUserInfo().user_id,
          task_title: taskInput,
          task_category_id: categoryId,
          task_category_title: catTitleCond,

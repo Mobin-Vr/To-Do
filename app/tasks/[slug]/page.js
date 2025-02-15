@@ -14,15 +14,16 @@ export default function Page({}) {
    const listRef = useRef(null);
    const bgColor = BG_COLORS['/slug'];
 
-   const { deleteCategoryFromStore, tasksList, categoriesList } = useTaskStore(
-      useShallow((state) => ({
-         deleteCategoryFromStore: state.deleteCategoryFromStore,
-         tasksList: state.tasksList,
-         categoriesList: state.categoriesList,
-      }))
-   );
+   const { deleteCategoryFromStore, tasksList, getCategoriesList } =
+      useTaskStore(
+         useShallow((state) => ({
+            deleteCategoryFromStore: state.deleteCategoryFromStore,
+            tasksList: state.tasksList,
+            getCategoriesList: state.getCategoriesList,
+         }))
+      );
 
-   const theCategory = categoriesList?.find(
+   const theCategory = getCategoriesList()?.find(
       (cat) => cat.category_id === slugId
    );
 

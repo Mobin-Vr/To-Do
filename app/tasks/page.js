@@ -9,10 +9,10 @@ import Template from '../_components/Template';
 import { useShallow } from 'zustand/react/shallow';
 
 export default function Page() {
-   const { tasksList, categoriesList } = useTaskStore(
+   const { tasksList, getCategoriesList } = useTaskStore(
       useShallow((state) => ({
          tasksList: state.tasksList,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
       }))
    );
 
@@ -20,7 +20,7 @@ export default function Page() {
       (task) => task.task_category_id === defaultCategoryId
    );
 
-   const theCategory = categoriesList?.find(
+   const theCategory = getCategoriesList()?.find(
       (cat) => cat.category_id === defaultCategoryId
    );
 

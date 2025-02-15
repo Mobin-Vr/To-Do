@@ -11,14 +11,14 @@ import useTaskStore from '../../taskStore';
 export default function Page() {
    const listRef = useRef(null);
 
-   const { tasksList, categoriesList } = useTaskStore(
+   const { tasksList, getCategoriesList } = useTaskStore(
       useShallow((state) => ({
          tasksList: state.tasksList,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
       }))
    );
 
-   const theCategory = categoriesList?.find(
+   const theCategory = getCategoriesList()?.find(
       (cat) => cat.category_id === defaultCategoryId
    );
 

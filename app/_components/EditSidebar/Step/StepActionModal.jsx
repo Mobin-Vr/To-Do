@@ -5,12 +5,12 @@ import { useShallow } from 'zustand/react/shallow';
 import { ModalActionButton } from '../remiderBoxModals/ModalActionBtn';
 
 export default function StepActionModal({ task, step }) {
-   const { updateStep, removeStep, addTaskToStore, userInfo } = useTaskStore(
+   const { updateStep, removeStep, addTaskToStore, getUserInfo } = useTaskStore(
       useShallow((state) => ({
          updateStep: state.updateStep,
          removeStep: state.removeStep,
          addTaskToStore: state.addTaskToStore,
-         userInfo: state.userInfo,
+         getUserInfo: state.getUserInfo,
       }))
    );
 
@@ -27,7 +27,7 @@ export default function StepActionModal({ task, step }) {
    function handlePromote() {
       const promotedStep = {
          task_id: step.step_id,
-         task_owner_id: userInfo.user_id,
+         task_owner_id: getUserInfo().user_id,
          task_title: step.step_title,
          task_categoryId: task.task_category_id,
          task_note: '',

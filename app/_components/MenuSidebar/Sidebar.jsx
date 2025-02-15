@@ -14,13 +14,16 @@ import TaskSearch from './TaskSearch';
 import UserMenu from './UserMenu';
 
 export default function Sidebar() {
+   const sidebarRef = useRef(null);
+   const menuButtonRef = useRef(null);
    const { user } = useUser();
+
    const {
       isSidebarOpen,
       toggleSidebar,
       tasksList,
       categoriesList,
-      userInfo,
+      getUserInfo,
       addCategoryToStore,
    } = useTaskStore(
       useShallow((state) => ({
@@ -28,13 +31,12 @@ export default function Sidebar() {
          toggleSidebar: state.toggleSidebar,
          tasksList: state.tasksList,
          categoriesList: state.categoriesList,
-         userInfo: state.userInfo,
+         getUserInfo: state.getUserInfo,
          addCategoryToStore: state.addCategoryToStore,
       }))
    );
 
-   const sidebarRef = useRef(null);
-   const menuButtonRef = useRef(null);
+   console.log('sidebar');
 
    // Handle clicks outside of the sidebar and menu button
    useEffect(() => {
@@ -100,7 +102,7 @@ export default function Sidebar() {
 
          <div className='sticky bottom-0 bg-gray-50 border-t border-t-gray-200 w-full'>
             <NewListBtn
-               userInfo={userInfo}
+               getUserInfo={getUserInfo}
                addCategoryToStore={addCategoryToStore}
             />
          </div>

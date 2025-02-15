@@ -30,9 +30,7 @@ export default function InitialView({ onCreateLink, toggleModal, isPending }) {
                <div className='flex justify-between items-center'>
                   <OrdinaryBtn
                      onClick={onCreateLink}
-                     text={`${
-                        isPending ? 'Creating' : 'Create'
-                     } invitation link`}
+                     text={`${isPending ? '' : 'Create invitation links'}`}
                      mode='secondary'
                      disabled={isPending}
                      className='font-thin w-full text-sm mb-3 flex justify-around'

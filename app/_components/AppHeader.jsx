@@ -19,15 +19,19 @@ export default function AppHeader({
 }) {
    const { bgColor, listName, listIcon, theCategory } = listConfig;
 
-   const { userInfo } = useTaskStore(
+   const { getUserInfo } = useTaskStore(
       useShallow((state) => ({
-         userInfo: state.userInfo,
+         getUserInfo: state.getUserInfo,
       }))
    );
 
-   const cond =
+   const isCategoryOwner =
       theCategoryId !== defaultCategoryId &&
-      theCategory.category_owner_id === userInfo.user_id;
+      theCategory.category_owner_id === getUserInfo().user_id;
+
+   const isEditable =
+      theCategoryId !== defaultCategoryId &&
+      theCategory.category_owner_id === getUserInfo().user_id;
 
    return (
       <div
@@ -54,17 +58,20 @@ export default function AppHeader({
 
                   {theCategoryId === defaultCategoryId ? (
                      listName
-                  ) : (
+                  ) : isEditable ? (
                      <CategoryTitleEditor theCategory={theCategory} />
+                  ) : (
+                     listName
                   )}
                </h1>
 
-               {cond && (
+               {isCategoryOwner && (
                   <>
                      <ShareBtn
                         theCategoryId={theCategoryId}
                         bgColor={bgColor}
                      />
+
                      <DeleteBtn
                         onClick={handleDeleteCategory}
                         bgColor={bgColor}

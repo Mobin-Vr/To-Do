@@ -9,10 +9,10 @@ import { BG_COLORS, defaultCategoryId } from '../../_lib/configs';
 import useTaskStore from '../../taskStore';
 
 export default function Page() {
-   const { tasksList, categoriesList } = useTaskStore(
+   const { tasksList, getCategoriesList } = useTaskStore(
       useShallow((state) => ({
          tasksList: state.tasksList,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
       }))
    );
 
@@ -22,7 +22,7 @@ export default function Page() {
 
    const bgColor = BG_COLORS['/all'];
 
-   const theCategory = categoriesList?.find(
+   const theCategory = getCategoriesList()?.find(
       (cat) => cat.category_id === defaultCategoryId
    );
 

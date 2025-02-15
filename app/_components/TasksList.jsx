@@ -23,7 +23,7 @@ export default function TasksList({
       setActiveTask,
       sortMethod,
       sortMethodForShared,
-      categoriesList,
+      getCategoriesList,
    } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
@@ -32,7 +32,7 @@ export default function TasksList({
          setActiveTask: state.setActiveTask,
          sortMethod: state.sortMethod,
          sortMethodForShared: state.sortMethodForShared,
-         categoriesList: state.categoriesList,
+         getCategoriesList: state.getCategoriesList,
       }))
    );
 
@@ -136,7 +136,7 @@ export default function TasksList({
                listRef={listRef}
                bgColor={bgColor}
                handleToggleSidebar={handleToggleSidebar}
-               categoriesList={categoriesList}
+               getCategoriesList={getCategoriesList}
                listName={listName}
             />
          )}
