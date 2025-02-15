@@ -2,7 +2,7 @@ import { ChevronIcon } from '@/public/icons';
 import { getTimeAgo } from '@/app/_lib/utils';
 import useTaskStore from '@/app/taskStore';
 
-export default function UserStatus({ user }) {
+export default function UserStatus({ user, showIcon = true }) {
    const { isConnected, isOnline, lastOnline } = useTaskStore(
       (state) => state.conectionStatus
    );
@@ -21,17 +21,18 @@ export default function UserStatus({ user }) {
    return (
       <p
          title={isOnline ? user?.primaryEmailAddress?.emailAddress : ''}
-         className={`text-gray-600 leading-tight ${
+         className={`text-gray-500 leading-tight ${
             isOnline
                ? 'text-[0.715rem] font-extralight'
                : 'text-[0.7rem] font-light'
          } flex gap-1 items-center justify-center text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap`}
       >
          <span
-            className={`h-[0.4rem] w-[0.4rem] ${statusIndicator} rounded-full`}
+            className={`h-[0.5rem] w-[0.5rem] ${statusIndicator} rounded-full`}
          ></span>
+
          {statusText}
-         {isOnline && <ChevronIcon />}
+         {isOnline && showIcon && <ChevronIcon />}
       </p>
    );
 }

@@ -2,13 +2,19 @@ import { generateNewUuid, getDateNowIso } from '@/app/_lib/utils';
 import useTaskStore from '@/app/taskStore';
 import { PlusIcon } from '@/public/icons';
 import { redirect } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function NewListBtn({
    className,
    userInfo,
    addCategoryToStore,
 }) {
-   const toggleSidebar = useTaskStore((state) => state.toggleSidebar);
+   const { toggleSidebar, toggleTitleFocus } = useTaskStore(
+      useShallow((state) => ({
+         toggleSidebar: state.toggleSidebar,
+         toggleTitleFocus: state.toggleTitleFocus,
+      }))
+   );
 
    function handleNewList() {
       const uuId = generateNewUuid();
@@ -23,13 +29,15 @@ export default function NewListBtn({
       };
 
       addCategoryToStore(newCategory);
+      toggleTitleFocus(true);
       toggleSidebar();
+
       redirect(`/tasks/${uuId}`);
    }
    return (
       <button
          onClick={handleNewList}
-         className={`flex gap-3 text-sm text-gray-800 items-center  hover:bg-accent-50 py-1.5 pl-1 rounded-sm ${className}`}
+         className={`flex gap-3 text-sm w-full text-gray-800 items-center  hover:bg-accent-50 p-1 mt-1 rounded-sm ${className}`}
       >
          <PlusIcon color='#000' />
          <span>New list</span>

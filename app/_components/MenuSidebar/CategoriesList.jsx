@@ -1,9 +1,9 @@
-import { defaultCategoryId } from '@/app/_lib/utils';
+import { defaultCategoryId } from '@/app/_lib/configs';
 import CategoryItem from './CategoryItem';
 
 export default function CategoriesList({ categoriesList, toggleSidebar }) {
    return (
-      <ul className=' pt-2'>
+      <ul className='flex flex-col gap-1 pt-2'>
          {categoriesList
             .filter((cat) => cat.category_id !== defaultCategoryId)
             .map((cat) => (

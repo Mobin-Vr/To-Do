@@ -1,19 +1,21 @@
 'use client';
 
 import { useShallow } from 'zustand/react/shallow';
-import { defaultCategoryId } from '../_lib/utils';
+import { defaultCategoryId } from '../_lib/configs';
 import useTaskStore from '../taskStore';
 import DeleteBtn from './_ui/DeleteBtn';
 import MenuBtn from './_ui/MenuBtn';
 import SortMethodBtn from './_ui/SortMethodBtn';
 import CategoryTitleEditor from './CategoryTitleEditor';
 import ShareBtn from './shareList/ShareBtn';
+import { getFormattedDate } from '../_lib/utils';
 
 export default function AppHeader({
    listConfig,
    className,
    handleDeleteCategory,
    theCategoryId,
+   query,
 }) {
    const { bgColor, listName, listIcon, theCategory } = listConfig;
 
@@ -24,49 +26,79 @@ export default function AppHeader({
    );
 
    const cond =
-      theCategory.category_id !== defaultCategoryId &&
+      theCategoryId !== defaultCategoryId &&
       theCategory.category_owner_id === userInfo.user_id;
 
    return (
       <div
          className={`${className}`}
-         style={{ backgroundColor: bgColor[0], opacity: 0.99 }}
+         style={{ backgroundColor: bgColor.mainBackground, opacity: 0.99 }}
       >
          <MenuBtn
             className='mt-6 -translate-x-1 -translate-y-1'
-            color={bgColor[3]}
+            bgColor={bgColor}
          />
 
-         <div
-            className='flex justify-between items-center sm:mt-10'
-            style={{ color: bgColor[3] }}
-         >
-            <h1
-               className='text-3xl font-medium flex gap-3 items-center'
-               style={{ color: bgColor[3] }}
+         {listName !== 'Search' && (
+            <div
+               className={`flex items-center sm:mt-10 ${
+                  listName === 'Search' ? 'justify-center' : 'justify-between'
+               }`}
+               style={{ color: bgColor.primaryText }}
             >
-               {listIcon}
+               <h1
+                  className='text-3xl font-medium flex gap-3 items-center ml-1 mt-3 leading-tight text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap'
+                  title={query}
+               >
+                  {listIcon}
 
-               {theCategory.category_id === defaultCategoryId ? (
-                  listName
-               ) : (
-                  <CategoryTitleEditor theCategory={theCategory} />
+                  {theCategoryId === defaultCategoryId ? (
+                     listName
+                  ) : (
+                     <CategoryTitleEditor theCategory={theCategory} />
+                  )}
+               </h1>
+
+               {cond && (
+                  <>
+                     <ShareBtn
+                        theCategoryId={theCategoryId}
+                        bgColor={bgColor}
+                     />
+                     <DeleteBtn
+                        onClick={handleDeleteCategory}
+                        bgColor={bgColor}
+                     />
+                  </>
                )}
-            </h1>
 
-            {cond && (
-               <>
-                  <ShareBtn theCategoryId={theCategoryId} />
-                  <DeleteBtn onClick={handleDeleteCategory} />
-               </>
-            )}
-            <SortMethodBtn />
-         </div>
+               <SortMethodBtn bgColor={bgColor} />
+            </div>
+         )}
 
          {listName === 'My Day' && (
-            <span className='text-xs' style={{ color: bgColor[4] }}>
-               Friday, January 10
+            <span
+               className='text-sm font-extralight ml-1'
+               style={{ color: bgColor.ternaryText }}
+            >
+               {getFormattedDate()}
             </span>
+         )}
+
+         {listName === 'Search' && (
+            <div
+               className='ml-1 mt-1.5 leading-tight text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap'
+               title={query}
+               style={{ color: bgColor.primaryText }}
+            >
+               <span className='text-sm font-extralight text-accent-200 block'>
+                  Results for
+               </span>
+
+               <span className='text-2xl font-normal leading-none'>
+                  {query}
+               </span>
+            </div>
          )}
       </div>
    );

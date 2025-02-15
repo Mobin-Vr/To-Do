@@ -19,13 +19,10 @@ export default function StarBtn({ task, starBtnRef, className, bgColor }) {
          ref={starBtnRef}
          className={`btnStyles h-4 w-4 p-0 border-none cursor-pointer text-lg ml-2 transition-colors duration-200 ${className}`}
          onClick={() => toggleStarred(task.task_id)}
-         style={{ '--hover-text-color': bgColor[3] }}
+         style={{ '--hover-text-color': bgColor.iconColor }}
       >
          {task.is_task_starred ? (
-            <span
-               className='btnStyles'
-               style={{ '--default-text-color': bgColor[3] }}
-            >
+            <span className='btnStyles' style={{ color: bgColor.iconColor }}>
                <FullStarIcon />
             </span>
          ) : (
@@ -33,6 +30,8 @@ export default function StarBtn({ task, starBtnRef, className, bgColor }) {
                <StarIcon />
             </span>
          )}
+
+         <style>{btnStyles}</style>
       </button>
    );
 }

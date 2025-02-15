@@ -1,3 +1,5 @@
+'use server';
+
 import {
    joinInvitation,
    createInvitation,
@@ -7,7 +9,12 @@ import {
    removeUserFromInvitation,
    setInvitationAccessLimit,
    stopSharingInvitation,
+   getRelevantTasks,
 } from './data-services';
+
+//////////////////////////////////
+////// Invitation Actions ////////
+//////////////////////////////////
 
 export async function createInvitationAction(categoryId, ownerId) {
    try {
@@ -75,7 +82,7 @@ export async function joinInvitationAction(invitationId, userId) {
    try {
       return await joinInvitation(invitationId, userId);
    } catch (err) {
-      console.error('Error accepting invitation:', err.message);
+      console.error(err.message);
       throw err;
    }
 }
@@ -84,7 +91,20 @@ export async function getTasksByInvitationAction(invitationId, userId) {
    try {
       return await getTasksByInvitation(invitationId, userId);
    } catch (err) {
-      console.error('Error fetching tasks for invitation:', err.message);
+      console.error(err.message);
+      throw err;
+   }
+}
+
+//////////////////////////////////
+///////// Other Actions //////////
+//////////////////////////////////
+
+export async function getRelevantTasksAction(userId) {
+   try {
+      return await getRelevantTasks(userId);
+   } catch (err) {
+      console.error(err.message);
       throw err;
    }
 }

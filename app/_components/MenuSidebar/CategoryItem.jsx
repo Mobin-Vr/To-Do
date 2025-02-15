@@ -20,7 +20,7 @@ export default function CategoryItem({ category, toggleSidebar }) {
          title={category.category_title}
          categoryId={category.category_id}
          onClick={toggleSidebar}
-         hasCollab={true}
+         hasCollab={hasCollab}
       >
          <span className='text-blue-600'>
             <ListIcon />

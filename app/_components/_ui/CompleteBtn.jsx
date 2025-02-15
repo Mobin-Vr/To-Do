@@ -11,27 +11,29 @@ const btnStyles = `
    }
 `;
 
-export default function CompleteBtn({ task, compBtnRef, className, bgColor }) {
+export default function CompleteBtn({ task, className, bgColor }) {
    const toggleCompleted = useTaskStore((state) => state.toggleCompleted);
+
+   const handleCompleteClick = () => {
+      if (!task.is_task_completed) {
+         const dingSound = new Audio('/success-sound.mp3');
+         dingSound
+            .play()
+            .catch((error) => console.error('Failed to play sound:', error));
+      }
+      toggleCompleted(task.task_id);
+   };
 
    return (
       <button
-         style={{ '--hover-text-color': bgColor[3] }}
-         ref={compBtnRef}
-         onClick={() => toggleCompleted(task.task_id)}
-         className={`btnStyles group bg-transparent relative transition-all cursor-default duration-200 ease-in-out ${className} ${
-            task.is_task_completed
-               ? 'line-through decoration-gray-300 decoration-2'
-               : ''
-         }`}
+         style={{ '--hover-text-color': bgColor.iconColor }}
+         onClick={handleCompleteClick}
+         className={`btnStyles group bg-transparent relative transition-all cursor-default duration-200 ease-in-out ${className}`}
       >
          {task.is_task_completed ? (
-            <span
-               className='btnStyles'
-               style={{ '--default-text-color': bgColor[3] }}
-            >
+            <div className='btnStyles' style={{ color: bgColor.iconColor }}>
                <CompletedIcon />
-            </span>
+            </div>
          ) : (
             <>
                <span className='block group-hover:hidden'>

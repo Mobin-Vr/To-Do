@@ -3,13 +3,19 @@
 import { CircleIcon, PlusIcon } from '@/public/icons';
 import { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { generateNewUuid, getDateNowIso } from '../../_lib/utils';
+import { checkIfToday, generateNewUuid, getDateNowIso } from '../../_lib/utils';
 import useTaskStore from '../../taskStore';
 import InputAddDue from './InputAddDue';
 import InputAddReminder from './InputAddReminder';
 import InputAddRepeat from './InputAddRepeat';
+import { defaultCategoryId } from '@/app/_lib/configs';
 
-export default function TaskInput({ bgColor, className, categoryId }) {
+export default function TaskInput({
+   bgColor,
+   className,
+   categoryId,
+   listName,
+}) {
    const { addTaskToStore, userInfo } = useTaskStore(
       useShallow((state) => ({
          addTaskToStore: state.addTaskToStore,
@@ -28,11 +34,21 @@ export default function TaskInput({ bgColor, className, categoryId }) {
       e.preventDefault();
       if (taskInput.trim() === '') return;
 
+      const catTitleCond =
+         categoryId === defaultCategoryId ? 'Tasks' : listName;
+
+      const myDayCond =
+         checkIfToday(taskDueDate) ||
+         checkIfToday(taskReminder) ||
+         listName === 'My Day' ||
+         (listName === 'Planned' && !taskDueDate && !taskReminder);
+
       const newItem = {
          task_id: generateNewUuid(),
          task_owner_id: userInfo.user_id,
          task_title: taskInput,
          task_category_id: categoryId,
+         task_category_title: catTitleCond,
          task_note: '',
          task_due_date: taskDueDate,
          task_reminder: taskReminder,
@@ -41,9 +57,9 @@ export default function TaskInput({ bgColor, className, categoryId }) {
          task_created_at: getDateNowIso(),
          task_completed_at: null,
          task_updated_at: null,
-         is_task_starred: false,
+         is_task_starred: listName === 'Important',
          is_task_completed: false,
-         is_task_in_myday: false,
+         is_task_in_myday: myDayCond,
       };
 
       addTaskToStore(newItem);
@@ -61,7 +77,7 @@ export default function TaskInput({ bgColor, className, categoryId }) {
    return (
       <div
          className={`relative ${className}`}
-         style={{ backgroundColor: bgColor[0] }}
+         style={{ backgroundColor: bgColor.mainBackground }}
       >
          <form
             className='flex items-center h-[2.9rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
@@ -77,6 +93,7 @@ export default function TaskInput({ bgColor, className, categoryId }) {
                onChange={(e) => setTaskInput(e.target.value)}
                onFocus={handleFocus}
                onBlur={handleBlur}
+               style={{ backgroundColor: bgColor.toggleBackground }}
                className={`px-10 text-sm font-light outline-none w-full h-full rounded-sm ${
                   isTyping ? 'placeholder-gray-500' : 'placeholder-gray-800'
                }`}
@@ -107,8 +124,6 @@ export default function TaskInput({ bgColor, className, categoryId }) {
                   taskRepeat={taskRepeat}
                   className='absolute right-10 top-3.5'
                />
-
-               {/* LATER Add category */}
             </>
          )}
       </div>

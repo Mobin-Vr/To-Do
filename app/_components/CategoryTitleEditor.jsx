@@ -1,20 +1,28 @@
 import useTaskStore from '@/app/taskStore';
 import { useEffect, useRef, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 export default function CategoryTitleEditor({ theCategory, className }) {
    const textareaRef = useRef(null);
-   const updateCategoryInStore = useTaskStore(
-      (state) => state.updateCategoryInStore
-   );
+
+   const { updateCategoryInStore, editTitleWhileCreating, toggleTitleFocus } =
+      useTaskStore(
+         useShallow((state) => ({
+            updateCategoryInStore: state.updateCategoryInStore,
+            editTitleWhileCreating: state.editTitleWhileCreating,
+            toggleTitleFocus: state.toggleTitleFocus,
+         }))
+      );
+
    // Current value for display
    const [currentTitle, setCurrentTitle] = useState(
       theCategory?.category_title
    );
+
    // Store the previous title value
    const [previousTitle, setPreviousTitle] = useState(
       theCategory?.category_title
    );
-   const [isTyping, setIsTyping] = useState(false);
 
    useEffect(() => {
       if (textareaRef.current) {
@@ -23,10 +31,17 @@ export default function CategoryTitleEditor({ theCategory, className }) {
       }
    }, [theCategory?.title]);
 
+   // Focus on textarea only when it has just created
+   useEffect(() => {
+      if (textareaRef.current && editTitleWhileCreating) {
+         textareaRef.current.focus();
+         toggleTitleFocus(false);
+      }
+   }, []);
+
    // 1. Save the current value when input is focused (onFocus)
    function handleFocus() {
       setPreviousTitle(currentTitle);
-      setIsTyping(true);
       textareaRef.current?.select();
    }
 
@@ -47,7 +62,6 @@ export default function CategoryTitleEditor({ theCategory, className }) {
             category_title: currentTitle,
          });
       if (currentTitle.trim() === '') setCurrentTitle(previousTitle);
-      setIsTyping(false);
    }
 
    return (
@@ -59,6 +73,7 @@ export default function CategoryTitleEditor({ theCategory, className }) {
          value={currentTitle}
          onChange={handleUpdateTitle}
          maxLength={150}
+         spellCheck={false}
          className={`bg-inherit outline-none overflow-hidden ${className}`}
       />
    );

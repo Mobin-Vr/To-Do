@@ -1,39 +1,45 @@
-import { useEffect, useState } from 'react';
-import { delay, sortTasks } from '../_lib/utils';
-import CompletedToggle from './CompletedToggle';
-import EditSidebar from './EditSidebar/EditSidebar';
-import TaskGroup from './TaskGroup';
-import useTaskStore from '../taskStore';
-import { useShallow } from 'zustand/react/shallow';
+'use client';
 
-export default function TasksList({ listRef, bgColor, categoryId }) {
+import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
+import { delay } from '../_lib/utils';
+import useTaskStore from '../taskStore';
+import DefaultMinimizer from './minimizer/DefaultMinimizer';
+import PlannedMinimizer from './minimizer/PlannedMinimizer';
+import AllMinimizer from './minimizer/AllMinimizer';
+import { defaultCategoryId } from '../_lib/configs';
+
+export default function TasksList({
+   listRef,
+   bgColor,
+   categoryId,
+   tasks,
+   listName,
+}) {
    const {
       toggleEditSidebar,
       isEditSidebarOpen,
-      tasksList,
       activeTask,
       setActiveTask,
       sortMethod,
+      sortMethodForShared,
+      categoriesList,
    } = useTaskStore(
       useShallow((state) => ({
          toggleEditSidebar: state.toggleEditSidebar,
          isEditSidebarOpen: state.isEditSidebarOpen,
-         tasksList: state.tasksList,
          activeTask: state.activeTask,
          setActiveTask: state.setActiveTask,
          sortMethod: state.sortMethod,
+         sortMethodForShared: state.sortMethodForShared,
+         categoriesList: state.categoriesList,
       }))
    );
 
-   const [isCompletedVisible, setCompletedVisible] = useState(false);
-   // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
-
-   /* Without this useEffect, activeTask would only update when handleToggleSidebar runs. This causes the activeTask to become stale if tasksList changes elsewhere. This useEffect ensures activeTask dynamically updates whenever tasksList changes, keeping the UI in sync with the latest state. */
+   // Refer to the comment "2"
    useEffect(() => {
-      setActiveTask(
-         tasksList.find((task) => task.task_id === activeTask?.task_id)
-      );
-   }, [tasksList, activeTask, setActiveTask]);
+      setActiveTask(tasks.find((task) => task.task_id === activeTask?.task_id));
+   }, [tasks, activeTask, setActiveTask]);
 
    // Handle outside clicks
    useEffect(() => {
@@ -66,7 +72,7 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
 
       if (isEditSidebarOpen && cond) {
          toggleEditSidebar();
-         setActiveTask(tasksList[0]); // Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
+         setActiveTask(tasks[0]); // Refer to the comment "1"
       }
 
       if (isEditSidebarOpen && !cond) {
@@ -77,48 +83,76 @@ export default function TasksList({ listRef, bgColor, categoryId }) {
       }
    }
 
-   if (tasksList.length === 0 && categoryId) return null;
+   if (tasks?.length === 0 && categoryId) return null;
 
-   const tasks = tasksList.filter(
-      (task) => task.task_category_id === categoryId
-   ); // only the relevent tasks not all categories
-
-   const completedTasks = tasks.filter((task) => task.is_task_completed);
-   const uncompletedTasks = tasks.filter((task) => !task.is_task_completed);
-
-   const sortedCompletedTasks = sortTasks(completedTasks, sortMethod);
-   const sortedUncompletedTasks = sortTasks(uncompletedTasks, sortMethod);
+   const cond =
+      listName === 'Tasks' ||
+      listName === 'My Day' ||
+      listName === 'Important' ||
+      categoryId !== defaultCategoryId;
 
    return (
       <div>
-         <TaskGroup
-            tasks={sortedUncompletedTasks}
-            listRef={listRef}
-            bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
-         />
-         {completedTasks.length > 0 && (
-            <>
-               <CompletedToggle
-                  isCompletedVisible={isCompletedVisible}
-                  completedCount={completedTasks.length}
-                  onClick={() => setCompletedVisible(!isCompletedVisible)}
-                  bgColor={bgColor}
-               />
+         {cond && (
+            <DefaultMinimizer
+               tasks={tasks}
+               listRef={listRef}
+               bgColor={bgColor}
+               listName={listName}
+               handleToggleSidebar={handleToggleSidebar}
+               sortMethod={
+                  categoryId === defaultCategoryId
+                     ? sortMethod
+                     : sortMethodForShared
+               }
+            />
+         )}
 
-               {isCompletedVisible && (
-                  <TaskGroup
-                     tasks={sortedCompletedTasks}
-                     listRef={listRef}
-                     bgColor={bgColor}
-                     handleToggleSidebar={handleToggleSidebar}
-                  />
-               )}
-            </>
+         {listName === 'Search' && (
+            <DefaultMinimizer
+               tasks={tasks}
+               listRef={listRef}
+               bgColor={bgColor}
+               sortMethod={sortMethod}
+               handleToggleSidebar={handleToggleSidebar}
+               isVisibleByDefault={true}
+               listName={listName}
+            />
+         )}
+
+         {listName === 'Planned' && (
+            <PlannedMinimizer
+               tasks={tasks}
+               listRef={listRef}
+               bgColor={bgColor}
+               handleToggleSidebar={handleToggleSidebar}
+               listName={listName}
+            />
+         )}
+
+         {(listName === 'All' || listName === 'Completed') && (
+            <AllMinimizer
+               tasks={tasks}
+               listRef={listRef}
+               bgColor={bgColor}
+               handleToggleSidebar={handleToggleSidebar}
+               categoriesList={categoriesList}
+               listName={listName}
+            />
          )}
 
          {/* It has some BUG  */}
-         {/* <EditSidebar task={activeTask} className='edit-sidebar' /> */}
+         {/* <EditSidebar
+            task={activeTask}
+            className='edit-sidebar'
+            bgColor={bgColor}
+         /> */}
       </div>
    );
 }
+
+/* Comments: 
+* 1. Why not set activeTask to null? Using null would require conditional rendering of the sidebar, causing a flicker during the transition. Assigning the first task ensures smooth animations.
+
+* 2. Without this useEffect, activeTask would only update when handleToggleSidebar runs. This causes the activeTask to become stale if tasks changes elsewhere. This useEffect ensures activeTask dynamically updates whenever tasks changes, keeping the UI in sync with the latest state. 
+*/

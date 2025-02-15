@@ -10,7 +10,7 @@ import ReminderBox from './reminderBox/ReminderBox';
 import TaskOverView from './TaskOverView';
 import CloseBtn from '../_ui/CloseBtn';
 
-export default function EditSidebar({ className, task }) {
+export default function EditSidebar({ className, task, bgColor }) {
    const {
       isEditSidebarOpen,
       deleteTaskFromStore,
@@ -35,7 +35,7 @@ export default function EditSidebar({ className, task }) {
             <CloseBtn />
 
             <div className='flex flex-col gap-2.5 justify-self-start flex-1'>
-               <TaskOverView task={task} />
+               <TaskOverView task={task} bgColor={bgColor} />
                <AddToMyDay task={task} />
                <ReminderBox task={task} />
                <AddFile />

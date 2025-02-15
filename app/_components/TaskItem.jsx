@@ -32,16 +32,17 @@ export default function TaskItem({
    listRef,
    bgColor,
    handleToggleSidebar,
+   listName,
 }) {
    return (
       <li
          ref={listRef}
          id={task.task_id}
          onClick={(e) => handleToggleSidebar(task, e)}
-         className='task-item min-h-fit text-gray-400' // for click handeling
+         className='task-item min-h-12 text-gray-400' // for click handeling
          style={{
-            '--default-bg-color': bgColor[1],
-            '--hover-bg-color': bgColor[2],
+            '--default-bg-color': bgColor.taskBackground,
+            '--hover-bg-color': bgColor.taskHover,
          }}
       >
          <div className='flex justify-between items-start px-2'>
@@ -58,7 +59,7 @@ export default function TaskItem({
                   className='text-sm font-normal whitespace-pre-wrap break-words h-fit overflow-hidden w-[95%] text-black'
                />
 
-               <TaskDetails task={task} />
+               <TaskDetails task={task} listName={listName} />
             </div>
 
             {/* Added class to identify the buttons for click handling */}

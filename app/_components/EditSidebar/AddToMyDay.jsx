@@ -7,7 +7,7 @@ function AddToMyDay({ task }) {
 
    function toggleAdded() {
       // if is added should not be removed by clicking on box btn
-      if (!task.is_task_in_mayday) toggleAddedToMyDay(task.task_id);
+      if (!task.is_task_in_myday) toggleAddedToMyDay(task.task_id);
    }
 
    function clearAdded() {
@@ -21,7 +21,7 @@ function AddToMyDay({ task }) {
             activeText='Added to My Day'
             icon='SunIcon'
             size='20px'
-            isDateSet={task.is_task_in_mayday}
+            isDateSet={task.is_task_in_myday}
             toggleModal={toggleAdded} // CHANGE the name is not relevent! but its just a click on btn
             clearDate={clearAdded} // reset the box to default with x btn
          />

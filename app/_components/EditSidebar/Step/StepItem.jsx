@@ -6,12 +6,12 @@
 
 import { DotIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
-import StepCompleteBtn from './StepCompleteBtn';
-import StepTitleEditor from './StepTitleEditor';
 import ModalTemplate from '../../_ui/ModalTemplate';
 import StepActionModal from './StepActionModal';
+import StepCompleteBtn from './StepCompleteBtn';
+import StepTitleEditor from './StepTitleEditor';
 
-export default function StepItem({ step, task }) {
+export default function StepItem({ step, task, bgColor }) {
    const stepRef = useRef(null);
    const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,6 +27,7 @@ export default function StepItem({ step, task }) {
                taskId={task.task_id}
                step={step}
                className='ml-1'
+               bgColor={bgColor}
             />
             <StepTitleEditor step={step} taskId={task.task_id} />
 

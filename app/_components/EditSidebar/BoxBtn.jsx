@@ -1,4 +1,4 @@
-import { DEFAULT_COLOR } from '@/app/_lib/utils';
+import { DEFAULT_COLOR } from '@/app/_lib/configs';
 import {
    CalendarIcon,
    ClockIcon,

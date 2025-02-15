@@ -1,9 +1,42 @@
 import { supabase } from './supabase';
-import useTaskStore from '../taskStore';
 
-export function addTaskFromRealtime(newTask) {
-   const addTask = useTaskStore.getState().addTaskFromRealtime;
-   addTask(newTask);
+// export function addTaskFromRealtime(newTask) {
+//    const addTask = useTaskStore.getState().addTaskFromRealtime;
+//    addTask(newTask);
+// } LATER is it needed?
+
+// LATER remove all error senetence and just pass the error just like joinInvattaion
+
+// Fetch user by user_id
+export async function getUserById(userId) {
+   const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+   if (error) {
+      console.error('Error fetching user:', error);
+      return null;
+   }
+
+   return data;
+}
+
+// Fetch the category's inv id by categoryId
+export async function getCategoryInvId(categoryId) {
+   const { data, error } = await supabase
+      .from('invitations')
+      .select('invitation_id')
+      .eq('invitation_category_id', categoryId)
+      .single();
+
+   if (error) {
+      console.error('Error fetching invitaton id:', error);
+      return null;
+   }
+
+   return data;
 }
 
 export async function getUser(userEmail) {
@@ -14,7 +47,6 @@ export async function getUser(userEmail) {
       .single();
 
    // No error here! We handle the possibility of no user in the sign-in
-
    return data;
 }
 
@@ -93,8 +125,12 @@ export async function deleteManyTask(categoryId) {
    return data;
 }
 
-export async function getTasks() {
-   const { data: tasks, error } = await supabase.from('tasks').select('*');
+// LATER unused
+export async function getTasks(userId) {
+   const { data: tasks, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .eq('task_owner_id', userId);
 
    if (error) {
       console.error(error);
@@ -118,10 +154,11 @@ export async function createUser(newUser) {
    return data;
 }
 
-export async function getCategories() {
+export async function getCategories(userId) {
    const { data: categories, error } = await supabase
       .from('categories')
-      .select('*');
+      .select('*')
+      .eq('category_owner_id', userId);
 
    if (error) {
       console.error(error);
@@ -275,7 +312,6 @@ export async function stopSharingInvitation(invitationId, ownerId) {
    return;
 }
 
-// Accepts an invitation by calling the "accept_invitation" RPC function.
 export async function joinInvitation(invitationId, userId) {
    const { data, error } = await supabase.rpc('join_invitation', {
       param_invitation_id: invitationId,
@@ -283,11 +319,11 @@ export async function joinInvitation(invitationId, userId) {
    });
 
    if (error) {
-      console.error(error);
-      throw new Error('Failed to accept the invitation');
+      console.error('Error:', error.message);
+      throw new Error(error);
    }
 
-   return data; // Data will include invitation token, category id, category name, and category owner id.
+   return data;
 }
 
 // Fetches tasks by invitation token for a specific user.
@@ -305,34 +341,19 @@ export async function getTasksByInvitation(invitationId, userId) {
    return data; // Data will include an array of the tasks related to the invitation.
 }
 
-// Fetch user by user_id
-export async function getUserById(userId) {
-   const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+/**
+ * Fetches tasks for a user based on their invitations and owned tasks.
+ * It also checks if the user is in the collaborators table, retrieves related categories from invitations, and returns tasks from those categories as well as tasks owned by the user.
+ */
+export async function getRelevantTasks(userId) {
+   const { data, error } = await supabase.rpc('get_shared_tasks_by_user_id', {
+      param_user_id: userId,
+   });
 
    if (error) {
-      console.error('Error fetching user:', error);
-      return null;
+      console.error('Error:', error.message);
+      throw new Error(error.message);
    }
 
-   return data;
-}
-
-// Fetch the category's inv id by categoryId
-export async function getCategoryInvId(categoryId) {
-   const { data, error } = await supabase
-      .from('invitations')
-      .select('invitation_id')
-      .eq('invitation_category_id', categoryId)
-      .single();
-
-   if (error) {
-      console.error('Error fetching invitaton id:', error);
-      return null;
-   }
-
-   return data;
+   return data; // Data will include an array of the tasks
 }

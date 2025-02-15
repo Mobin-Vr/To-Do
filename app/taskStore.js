@@ -2,27 +2,25 @@ import { produce } from 'immer';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import {
-   addCategory,
-   addTask,
-   deleteCategory,
-   deleteManyTask,
-   deleteTask,
-   getCategories,
-   getTasks,
-   getTasksByInvitation,
-   updateCategory,
-   updateTask,
-} from './_lib/data-services';
-import { defaultCategory, getDateNowIso } from './_lib/utils';
-import {
-   joinInvitationAction,
    createInvitationAction,
+   getRelevantTasksAction,
    getUsersByInvitationAction,
+   joinInvitationAction,
    removeUserFromInvitationAction,
    setInvitationAccessLimitAction,
    stopSharingInvitationAction,
-} from './_lib/invitationActions';
-import { redirect } from 'next/navigation';
+} from './_lib/Actions';
+import { defaultCategory } from './_lib/configs';
+import {
+   addCategory,
+   addTask,
+   deleteCategory,
+   deleteTask,
+   getCategories,
+   updateCategory,
+   updateTask,
+} from './_lib/data-services';
+import { checkIfToday, getDateNowIso } from './_lib/utils';
 
 const initialState = {
    isSidebarOpen: false,
@@ -36,8 +34,10 @@ const initialState = {
    categoriesList: [defaultCategory], // we can push more
    changeLog: [],
    sortMethod: 'importance',
+   sortMethodForShared: 'creationDate',
    invitations: [], // this is just for owner: each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
    sharedWithMe: [], // this is for the second user: each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
+   editTitleWhileCreating: false, // Auto-focus the textarea for renaming only when creating a new list.
 };
 
 const useTaskStore = create(
@@ -54,9 +54,11 @@ const useTaskStore = create(
             tasksList: initialState.tasksList,
             changeLog: initialState.changeLog,
             sortMethod: initialState.sortMethod,
+            sortMethodForShared: initialState.sortMethodForShared,
             categoriesList: initialState.categoriesList,
             invitations: initialState.invitations,
             sharedWithMe: initialState.sharedWithMe,
+            editTitleWhileCreating: initialState.editTitleWhileCreating,
 
             // # Toggle sidebar
             toggleSidebar: () => {
@@ -157,64 +159,6 @@ const useTaskStore = create(
                // Synchronizing with the database
                const onlineStatus = get().conectionStatus.isOnline;
                if (onlineStatus) await deleteTask(id);
-            },
-
-            // # Delete multiple tasks by category
-            deleteTasksByCategory: async (categoryId) => {
-               set(
-                  produce((state) => {
-                     const tasksToDelete = state.tasksList.filter(
-                        (task) => task.task_category_id === categoryId
-                     );
-
-                     const taskIdsToDelete = tasksToDelete.map(
-                        (task) => task.task_id
-                     );
-
-                     // Set an active task if the active task is deleted
-                     if (taskIdsToDelete.includes(state.activeTask?.task_id)) {
-                        const remainingTasks = state.tasksList.filter(
-                           (task) => task.task_category_id !== categoryId
-                        );
-                        state.activeTask =
-                           remainingTasks.length > 0
-                              ? remainingTasks[0] // Choose the first remaining task as active
-                              : {};
-                     }
-
-                     // Filter out the tasks to be deleted from the local store
-                     state.tasksList = state.tasksList.filter(
-                        (task) => task.task_category_id !== categoryId
-                     );
-
-                     // Add to change log only if offline
-                     if (state.offlineLogMode) {
-                        // Remove if exist a record in log with the same ID and TYPE
-                        state.changeLog = state.changeLog.filter(
-                           (log) =>
-                              !(
-                                 log.type === 'delete-by-category' &&
-                                 log.id === categoryId
-                              )
-                        );
-
-                        // Save the chenges log
-                        state.changeLog.push({
-                           type: 'delete-by-category',
-                           id: categoryId,
-                           logTime: getDateNowIso(),
-                           task: tasksToDelete,
-                        });
-                     }
-                  })
-               );
-
-               // Synchronizing with the database
-               const onlineStatus = get().conectionStatus.isOnline;
-
-               if (onlineStatus) {
-                  await deleteManyTask(categoryId); // Call the API method for deleting multiple tasks
-               }
             },
 
             // # Toggle to completed or uncompleted
@@ -386,6 +330,7 @@ const useTaskStore = create(
                      const task = state.tasksList.find(
                         (task) => task.task_id === id
                      );
+
                      const updateTime = getDateNowIso();
                      const isoDate =
                         reminder === null
@@ -397,6 +342,10 @@ const useTaskStore = create(
                         task.task_reminder = isoDate;
                         task.task_updated_at = updateTime;
                      }
+
+                     // If the date is today, add it to "My Day"
+                     const isToday = checkIfToday(isoDate);
+                     if (isToday) task.is_task_in_myday = true;
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -453,6 +402,10 @@ const useTaskStore = create(
                         task.task_due_date = isoDate;
                         task.task_updated_at = updateTime;
                      }
+
+                     // If the date is today, add it to "My Day"
+                     const isToday = checkIfToday(isoDate);
+                     if (isToday) task.is_task_in_myday = true;
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -550,11 +503,12 @@ const useTaskStore = create(
                      const task = state.tasksList.find(
                         (task) => task.task_id === id
                      );
+
                      const updateTime = getDateNowIso();
 
                      // Update the task from LC
                      if (task) {
-                        task.is_task_in_mayday = !task.is_task_in_mayday;
+                        task.is_task_in_myday = !task.is_task_in_myday;
                         task.task_updated_at = updateTime;
                      }
 
@@ -587,7 +541,7 @@ const useTaskStore = create(
                if (onlineStatus) {
                   await updateTask(
                      {
-                        is_task_in_mayday: task.is_task_in_mayday,
+                        is_task_in_myday: task.is_task_in_myday,
                         task_updated_at: task.task_updated_at,
                      },
                      task.task_id
@@ -645,6 +599,13 @@ const useTaskStore = create(
                      task.task_id
                   );
                }
+            },
+
+            // # Get the last tasklist
+            getTaskList: () => {
+               const tasksList = get().tasksList;
+
+               return tasksList.length > 0 ? tasksList : null;
             },
 
             /////////////////////////////
@@ -933,30 +894,76 @@ const useTaskStore = create(
             deleteCategoryFromStore: async (id) => {
                set(
                   produce((state) => {
+                     // Remove the category from the list
                      state.categoriesList = state.categoriesList.filter(
                         (cat) => cat.category_id !== id
                      );
 
+                     // Filter out tasks related to the deleted category
+                     const tasksToDelete = state.tasksList.filter(
+                        (task) => task.task_category_id === id
+                     );
+
+                     state.tasksList = state.tasksList.filter(
+                        (task) => task.task_category_id !== id
+                     );
+
+                     // Set a new active task if the current one was deleted
+                     if (
+                        state.activeTask?.task_id &&
+                        tasksToDelete.some(
+                           (t) => t.task_id === state.activeTask.task_id
+                        )
+                     ) {
+                        state.activeTask =
+                           state.tasksList.length > 0 ? state.tasksList[0] : {};
+                     }
+
+                     // Add changes to the offline log if offline mode is enabled
                      if (state.offlineLogMode) {
+                        // Remove existing logs related to this category
                         state.changeLog = state.changeLog.filter(
                            (log) =>
-                              !(log.type === 'delete-category' && log.id === id)
+                              log.id !== id ||
+                              ![
+                                 'delete-category',
+                                 'delete-by-category',
+                              ].includes(log.type)
                         );
 
+                        // Save category deletion log
                         state.changeLog.push({
                            type: 'delete-category',
                            id,
                            logTime: getDateNowIso(),
                         });
+
+                        // Save task deletion log if there are deleted tasks
+                        if (tasksToDelete.length > 0) {
+                           state.changeLog.push({
+                              type: 'delete-by-category',
+                              id,
+                              logTime: getDateNowIso(),
+                              task: tasksToDelete,
+                           });
+                        }
                      }
                   })
                );
 
-               const onlineStatus = get().conectionStatus.isOnline;
-               if (onlineStatus) {
-                  await deleteCategory(id);
+               // Synchronize with the database if online
+               if (get().conectionStatus.isOnline) {
+                  await deleteCategory(id); // Delete multiple tasks by category only from the store. Tasks in the database will be deleted automatically due to cascading when the category is deleted, so there is no need.
                }
             },
+
+            // Toggles the focus state for the title when creating a new list.
+            toggleTitleFocus: (bool) =>
+               set(
+                  produce((state) => {
+                     state.editTitleWhileCreating = bool;
+                  })
+               ),
 
             //////////////////////////
             //////////////////////////
@@ -966,13 +973,31 @@ const useTaskStore = create(
 
             // # Fetching tasks from DB and Synchronizing localeStorage with the database
             syncLcWithDb: async () => {
-               const tasks = await getTasks();
-               const categories = await getCategories();
+               const userId = get().userInfo.user_id;
+
+               // This will get all relevent tasks on every reload (shared + owned)
+               const tasks = await getRelevantTasksAction(userId);
+               const categories = await getCategories(userId);
+
+               //  Filter out tasks that already exist in the tasksList
+               const newTasks = tasks.filter(
+                  (task) =>
+                     !get().tasksList.some((t) => t.task_id === task.task_id)
+               );
+
+               // Filter out categories that already exist in the categoriesList
+               const newCategories = categories.filter(
+                  (category) =>
+                     !get().categoriesList.some(
+                        (c) => c.category_id === category.category_id
+                     )
+               );
 
                set(
                   produce((state) => {
-                     state.tasksList = tasks;
-                     state.categoriesList = categories;
+                     //  Add only the new tasks and categories to the lists
+                     state.tasksList.push(...newTasks);
+                     state.categoriesList.push(...newCategories);
                   })
                );
             },
@@ -1037,8 +1062,13 @@ const useTaskStore = create(
                set(
                   produce((state) => {
                      state.sortMethod = sortMethod;
+                     state.sortMethodForShared = sortMethod;
                   })
                );
+            },
+
+            getUserInfo: () => {
+               return get().userInfo;
             },
 
             //////////////////////////////////////
@@ -1066,6 +1096,12 @@ const useTaskStore = create(
 
                   set(
                      produce((state) => {
+                        const theCat = state.categoriesList.find(
+                           (cat) => cat.category_id === categoryId
+                        );
+
+                        if (theCat) theCat.has_category_invitation = true;
+
                         state.invitations.push({
                            invitation_id: token,
                            invitation_category_id: categoryId,
@@ -1170,6 +1206,12 @@ const useTaskStore = create(
 
                   set(
                      produce((state) => {
+                        const theCat = state.categoriesList.find(
+                           (cat) => cat.category_id === categoryId
+                        );
+
+                        if (theCat) theCat.has_category_invitation = false;
+
                         state.invitations = state.invitations.filter(
                            (inv) => inv.invitation_id !== invitation_id
                         );
@@ -1209,33 +1251,29 @@ const useTaskStore = create(
                const userInfo = get().userInfo;
 
                try {
-                  // Request invitation details
-                  const { invitation_id, category } =
-                     await joinInvitationAction(invitationId, userInfo.user_id);
-
-                  // Request tasks by invitation
-                  const tasks = await getTasksByInvitation(
-                     invitationId,
-                     userInfo.user_id
-                  );
-
                   // Check if the invitation already exists
                   const existingInvitation = get().sharedWithMe.find(
-                     (item) => item.invitation_id === invitation_id
+                     (item) => item.invitation_id === invitationId
                   );
 
                   if (existingInvitation) {
-                     const releventCatId =
-                        existingInvitation.invitation_category_id;
-
-                     redirect(`tasks/${releventCatId}`);
+                     return {
+                        status: true,
+                        categoryId: existingInvitation.invitation_category_id,
+                     };
                   }
+
+                  // Request invitation details and relevent tasks
+                  const { category, tasks } = await joinInvitationAction(
+                     invitationId,
+                     userInfo.user_id
+                  );
 
                   // Add new invitation if not existing
                   set(
                      produce((state) => {
                         state.sharedWithMe.push({
-                           invitation_id: invitation_id,
+                           invitation_id: invitationId,
                            invitation_category_id: category.category_id,
                            invitation_category_owner_id:
                               category.category_owner_id,
@@ -1248,7 +1286,7 @@ const useTaskStore = create(
                      })
                   );
 
-                  return { status: true, message: 'You have joined now!' };
+                  return { status: true, categoryId: category.category_id };
                } catch (error) {
                   console.error(error.message);
                   return { status: false, message: error.message };
@@ -1363,7 +1401,7 @@ const useTaskStore = create(
                      );
 
                      if (theSharedCat) {
-                        // Remove the user's tasks from tasksList
+                        // Remove the category's tasks from tasksList
                         state.tasksList = state.tasksList.filter(
                            (task) =>
                               task.task_category_id !==
@@ -1383,8 +1421,6 @@ const useTaskStore = create(
                               sharedItem.invitation_id !== invitationId
                         );
                      }
-
-                     redirect(`/tasks`);
                   })
                );
             },

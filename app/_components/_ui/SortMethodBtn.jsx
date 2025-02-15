@@ -4,8 +4,9 @@ import useTaskStore from '../../taskStore';
 import SortMethodModal from './SortMethodModal';
 import ModalTemplate from './ModalTemplate';
 
-function SortMethodBtn({}) {
+function SortMethodBtn({ bgColor }) {
    const sortRef = useRef(null);
+   const [hover, setHover] = useState(false);
    const [isModalOpen, setIsModalOpen] = useState(false);
    const setSortMethod = useTaskStore((state) => state.setSortMethod);
 
@@ -15,7 +16,12 @@ function SortMethodBtn({}) {
       <div ref={sortRef} className='relative'>
          <button
             onClick={toggleModal}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
             className='p-1 rounded-sm flex items-center justify-center hover:bg-gray-300'
+            style={{
+               backgroundColor: hover ? bgColor.buttonHover : 'transparent',
+            }}
          >
             <SortIcon />
          </button>

@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SharedListModal from './ShareListModal';
 import ModalTemplate from '../_ui/ModalTemplate';
 
-export default function ShareBtn({ theCategoryId }) {
+export default function ShareBtn({ theCategoryId, bgColor }) {
    const [isModalOpen, setIsModalOpen] = useState(false);
+   const [hover, setHover] = useState(false);
 
    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -21,7 +22,12 @@ export default function ShareBtn({ theCategoryId }) {
          {/* Button to toggle modal */}
          <button
             onClick={toggleModal}
-            className='p-1 rounded-sm flex items-center justify-center hover:bg-gray-300'
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            className='p-1 rounded-sm flex items-center justify-center '
+            style={{
+               backgroundColor: hover ? bgColor.buttonHover : 'transparent',
+            }}
          >
             <ShareIcon />
          </button>

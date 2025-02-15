@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import useTaskStore from '@/app/taskStore';
-import { defaultCategoryId } from '@/app/_lib/utils';
+import { defaultCategoryId } from '@/app/_lib/configs';
 import { UsersIcon } from '@/public/icons';
 
 const SidebarLink = ({
@@ -24,21 +24,26 @@ const SidebarLink = ({
       if (!tasksList) return 0;
 
       if (title === 'My Day')
-         return tasksList.filter((task) => task.is_task_in_mayday).length;
+         return tasksList.filter((task) => task.is_task_in_myday).length;
 
       if (title === 'Important')
          return tasksList.filter((task) => task.is_task_starred).length;
 
       if (title === 'Planned')
-         return tasksList.filter((task) => task.task_due_date !== null).length;
+         return tasksList.filter(
+            (task) =>
+               task.is_task_in_myday || task.task_reminder || task.task_due_date
+         ).length;
 
-      if (title === 'All') return 0;
-      // if (title === 'All') tasksList.length; LATER CHANGE after adding new list
+      if (title === 'All') return tasksList.length;
 
       if (title === 'Completed')
          return tasksList.filter((task) => task.is_task_completed).length;
 
-      if (title === 'Tasks') return tasksList.length;
+      if (title === 'Tasks')
+         return tasksList.filter(
+            (task) => task.task_category_id === defaultCategoryId
+         ).length;
 
       if (categoryId !== defaultCategoryId)
          return tasksList.filter((task) => task.task_category_id === categoryId)

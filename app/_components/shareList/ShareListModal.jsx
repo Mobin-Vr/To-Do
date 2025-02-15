@@ -41,7 +41,9 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
    function handleCreateLink() {
       startTransition(async () => {
          const wasSuccessful = await createInvitationInStore(theCategoryId);
+
          if (wasSuccessful.status) setCurrentView('linkCreated');
+
          if (!wasSuccessful.status)
             showToast(`${wasSuccessful.message}. Tray again later!`);
       });

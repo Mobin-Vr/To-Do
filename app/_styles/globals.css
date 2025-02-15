@@ -21,16 +21,84 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 ::-webkit-scrollbar-track {
-   background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-   background: #727272;
+   background: #f1f1f154;
    border-radius: 10px;
 }
 
+::-webkit-scrollbar-thumb {
+   background: #929292;
+   border-radius: 10px;
+   opacity: 0;
+   visibility: hidden;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-   background: #696969;
+   opacity: 1;
+   visibility: visible;
+}
+
+/* Sidebar scrrol bar */
+
+.sidebar::-webkit-scrollbar {
+   width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+   background: #f1f1f1;
+   border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+   background: #c4c4c4;
+   border-radius: 10px;
+   opacity: 0;
+   visibility: hidden;
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb {
+   opacity: 1;
+   visibility: visible;
+}
+
+/*  */
+
+.cl-cardBox {
+   height: 100%;
+   width: 100%;
+}
+
+.cl-footer {
+   display: none;
+}
+
+.cl-profileSection {
+   flex-grow: 1;
+}
+
+.cl-userProfile-root {
+   max-width: 40rem;
+   height: 95%;
+   width: 95%;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+.cl-navbar {
+   display: none;
+}
+
+.cl-navbarMobileMenuRow {
+   height: 50px;
+}
+
+.cl-navbarMobileMenuButton {
+   display: none;
+}
+
+.cl-userButtonTrigger {
+   border: 2px solid white;
+   pointer-events: none;
 }
 
 @layer base {

@@ -3,7 +3,11 @@ import {
    addDays,
    addHours,
    formatDistanceToNow,
+   isBefore,
+   isPast,
    isSameDay,
+   isToday,
+   isTomorrow,
    parseISO,
    roundToNearestMinutes,
    startOfDay,
@@ -60,8 +64,8 @@ export function getRoundedTime(mode = 'today') {
 
 // Returns the input date if it's a weekday, otherwise returns the previous Friday.
 export function getWeekendForWeekdays(inputDate) {
-   // Parse the ISO date format
-   const date = parseISO(inputDate);
+   //  const date = parseISO(inputDate);
+   const date = inputDate;
    const dayOfWeek = date.getDay();
 
    // Check if the date falls on a weekday
@@ -147,30 +151,55 @@ export function replaceTimeInIsoDate(inputDate, timeString) {
    return date.toISOString();
 }
 
-// Route background color settings
-// [ 0  , 1   ,  2     , 3   , 4  ]
-// [bg1, bg2, bg-hover, txt1, txt2]
+export function getFormattedDate() {
+   const options = { weekday: 'long', month: 'long', day: 'numeric' };
 
-export const BG_COLORS = {
-   '/slug': ['#dfedf9', '#f6f6f6', '#fbfbfb', '#3063ab  ', '#6B7280 '],
-   '/tasks': ['#dfedf9', '#f6f6f6', '#fbfbfb', '#3063ab  ', '#6B7280 '],
-   '/all': ['#c4514c', '#f6f6f6', '#6b7280', '#fff', '#fff'],
-};
+   return new Date().toLocaleDateString('en-US', options);
+}
 
-export const DEFAULT_COLOR = {
-   blue: '#286fd4',
-   current: '#586570',
-};
+export function getShortFormattedDate() {
+   const options = { weekday: 'short', month: 'short', day: 'numeric' };
 
-// Timer interval (in seconds) for checking the database connection health
-export const HEALTH_CHECK_TIMER = 300;
+   return new Date().toLocaleDateString('en-US', options);
+}
 
-export const defaultCategoryId = '00000000-0000-0000-0000-000000000000';
-export const defaultCategory = {
-   category_id: defaultCategoryId,
-   category_title: 'default',
-   category_owner_id: null,
-   category_created_at: null,
-   has_category_collaborator: false,
-   has_category_invatation: false,
-};
+export function categorizePlannedTasks(tasks) {
+   const today = new Date();
+
+   const pastTasks = [];
+   const todayTasks = [];
+   const futureTasks = [];
+
+   tasks.forEach((task) => {
+      const dueDate = task.task_due_date ? task.task_due_date : null;
+
+      const reminderDate = task.task_reminder ? task.task_reminder : null;
+
+      const isTaskForToday =
+         (dueDate && isToday(dueDate)) ||
+         (reminderDate && isToday(reminderDate)) ||
+         task.is_task_in_myday;
+
+      if (isTaskForToday) todayTasks.push(task);
+      else if (
+         (dueDate && isBefore(dueDate, today)) ||
+         (reminderDate && isBefore(reminderDate, today))
+      )
+         pastTasks.push(task);
+      else futureTasks.push(task);
+   });
+
+   return { pastTasks, todayTasks, futureTasks };
+}
+
+export function checkIfToday(date) {
+   return isToday(new Date(date));
+}
+
+export function checkIfTomorrow(date) {
+   return isTomorrow(new Date(date));
+}
+
+export function hasDatePassed(dateString) {
+   return isPast(new Date(dateString));
+}

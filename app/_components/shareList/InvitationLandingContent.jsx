@@ -13,25 +13,17 @@ export default function InvitationLandingContent({ token }) {
    const showToast = useCustomToast();
    const { user } = useUser();
 
-   const { joinInvitationInStore, getSharedWithMe } = useTaskStore(
+   const { joinInvitationInStore } = useTaskStore(
       useShallow((state) => ({
          joinInvitationInStore: state.joinInvitationInStore,
-         getSharedWithMe: state.getSharedWithMe,
       }))
    );
 
    async function handleJoin() {
-      const wasSuccessful = await joinInvitationInStore(token);
+      const res = await joinInvitationInStore(token);
 
-      if (!wasSuccessful.status) showToast(wasSuccessful.message);
-
-      if (wasSuccessful.status) {
-         const categoryId = getSharedWithMe().find(
-            (arr) => arr.invitation_id === token
-         )?.invitation_category_id;
-
-         redirect(`/tasks/${categoryId}`);
-      }
+      if (res.status === true) redirect(`/tasks/${res.categoryId}`);
+      else showToast(res.message);
    }
 
    return (

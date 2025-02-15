@@ -1,19 +1,17 @@
 import { ClerkProvider, SignedIn } from '@clerk/nextjs';
-import { Roboto } from 'next/font/google';
-import './_styles/globals.css';
-
+import { Roboto_Flex } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import HealthStatusSync from './_components/HealthStatusSync';
-
 import Sidebar from './_components/menuSidebar/Sidebar';
 import UserSignupHandler from './_components/menuSidebar/UserSignupHandler';
-import { currentUser } from '@clerk/nextjs/server';
-import { Toaster } from 'react-hot-toast';
+import ReminderHandler from './_components/ReminderHandler';
 import TaskRealTimeListener from './_components/TaskRealTimeListener';
+import './_styles/globals.css';
 
-const roboto = Roboto({
+const roboto = Roboto_Flex({
    subsets: ['latin'],
-   weight: ['300', '400', '500', '700'],
-   style: ['normal', 'italic'],
+   axes: ['wght'],
+   display: 'swap',
 });
 
 export const metadata = {
@@ -41,6 +39,9 @@ export default async function RootLayout({ children }) {
 
                   {/* get new tasks in real time */}
                   <TaskRealTimeListener />
+
+                  {/* handle reminders */}
+                  <ReminderHandler />
                </SignedIn>
 
                <main className='h-full overflow-y-hidden sm:flex-1'>

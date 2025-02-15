@@ -6,7 +6,7 @@ export default function StepTitleEditor({ step, taskId, className }) {
    const updateStep = useTaskStore((state) => state.updateStep);
    const [isTyping, setIsTyping] = useState(false);
    // Current value for display
-   const [currentTitle, setCurrentTitle] = useState(step.title);
+   const [currentTitle, setCurrentTitle] = useState(step.step_title);
    // Store the previous title value
    const [previousTitle, setPreviousTitle] = useState(step.title);
 
@@ -50,10 +50,11 @@ export default function StepTitleEditor({ step, taskId, className }) {
          onChange={handleUpdateTitle}
          maxLength={150}
          className={`bg-inherit outline-none resize-none whitespace-pre-wrap break-words overflow-hidden content-center py-2 w-full mx-2 text-sm font-light ${className} ${
-            step.isCompleted && !isTyping ? 'line-through text-gray-800' : ''
+            step.is_step_completed && !isTyping
+               ? 'line-through text-gray-800'
+               : ''
          }`}
          rows={1}
       />
-      //  {/* <Border className='w-full' /> */}
    );
 }

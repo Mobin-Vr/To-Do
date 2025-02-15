@@ -30,7 +30,7 @@ export default function ModalTemplate({
    return (
       <div
          ref={modalRef}
-         className={`absolute bg-gray-100 rounded-md shadow-2xl z-40 text-sm font-normal text-gray-600 border border-1 border-gray-200 overflow-hidden ${className}`}
+         className={`absolute bg-white rounded-xl shadow-2xl z-40 text-sm font-normal text-gray-800 border border-1 border-gray-300 overflow-hidden ${className}`}
       >
          {children}
       </div>

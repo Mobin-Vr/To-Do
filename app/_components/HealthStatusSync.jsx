@@ -1,31 +1,14 @@
 'use client';
 
-/**
- * HealthStatusSync is a custom hook used to manage the synchronization of tasks with the database based on the connection status.
- * It tracks the online/offline state of the app and checks the database health periodically.
- * - When the app is online, it syncs changes (from the change log) with the database.
- * - If the app is offline, it toggles the offline logging mode and logs tasks for later syncing.
- * - It updates the connection status in the global state (using Zustand) whenever the connection or online status changes.
- *
- * Key features:
- * - Syncs tasks (add, update, delete) with the database when online.
- * - Handles toggling of offline logging mode based on online status.
- * - Periodically checks the database health and updates the status.
- * - Uses event listeners to track the browser's online/offline status.
- *
- * This component does not render any UI but manages syncing and connection logic.
- */
-
 import { useCallback, useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { addTask, deleteTask, updateManyTask } from '../_lib/data-services';
 import { checkDatabaseHealth } from '../_lib/healthCheck';
-import { getDateNowIso, HEALTH_CHECK_TIMER } from '../_lib/utils';
+import { getDateNowIso } from '../_lib/utils';
 import useTaskStore from '../taskStore';
 
 export default function HealthStatusSync() {
-   // Track connection and online status locally
-   const [isConnected, setIsConnected] = useState(navigator.onLine);
+   const [isConnected, setIsConnected] = useState(false);
    const [isOnline, setIsOnline] = useState(true);
    const [lastOnline, setLastOnline] = useState(null);
 
@@ -49,12 +32,18 @@ export default function HealthStatusSync() {
       }))
    );
 
+   useEffect(() => {
+      if (typeof window !== 'undefined') {
+         setIsConnected(navigator.onLine);
+      }
+   }, []);
+
    // Sync local changes (changeLog) with the database
    const syncData = useCallback(async () => {
       // Exit if already syncing
       if (isSyncing) return;
 
-      // If ther is no log first get the data from cloud and replace that data in lc and then EXIT
+      // If there is no log first get the data from cloud and replace that data in lc and then EXIT
       if (!changeLog.length) {
          await syncLcWithDb();
          return;
@@ -115,6 +104,7 @@ export default function HealthStatusSync() {
       } finally {
          toggleIsSyncing(false); // Mark syncing as complete
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [clearLog, changeLog, isSyncing, toggleIsSyncing]);
 
    // Handle connection and online status checks
@@ -142,8 +132,7 @@ export default function HealthStatusSync() {
       updateConnectionStatus({ isConnected, isOnline, lastOnline });
    }, [isConnected, isOnline, lastOnline, updateConnectionStatus]);
 
-   /* Toggle offline logging based on online status.
-     When offlineLogMode is on, tasks are logged for later syncing after being recorded in the store. */
+   /* Toggle offline logging based on online status. Refer to the comment "1" */
    useEffect(() => {
       toggleOfflineLogMode(!isOnline);
    }, [isOnline, toggleOfflineLogMode]);
@@ -159,14 +148,35 @@ export default function HealthStatusSync() {
       };
    }, [handleConnectionStatus]);
 
-   // Periodically check connection status
+   //Check connection status on mount
    useEffect(() => {
-      const interval = setInterval(
-         handleConnectionStatus,
-         HEALTH_CHECK_TIMER * 1000
-      );
-      return () => clearInterval(interval);
-   }, [handleConnectionStatus]);
+      handleConnectionStatus();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
 
-   return null; // This component does not render any UI
+   return null;
 }
+
+/*
+ * 1. When offlineLogMode is on, tasks are logged for later syncing after being recorded in the store.
+ */
+
+/**
+ * HealthStatusSync used to manage the synchronization of tasks with the database based on the connection status.
+ 
+ * It tracks the online/offline state of the app and checks the database health periodically.
+
+ * When the app is online, it syncs changes (from the change log) with the database.
+
+ * If the app is offline, it toggles the offline logging mode and logs tasks for later syncing.
+
+ * It updates the connection status in the global state (using Zustand) whenever the connection or online status changes.
+
+ * Key features:
+  - Syncs tasks (add, update, delete) with the database when online.
+  - Handles toggling of offline logging mode based on online status.
+  - Periodically checks the database health and updates the status.
+  - Uses event listeners to track the browser's online/offline status.
+
+ * This component does not render any UI but manages syncing and connection logic.
+ */

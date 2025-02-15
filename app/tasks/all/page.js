@@ -1,30 +1,44 @@
 'use client';
 
-import { BG_COLORS } from '@/app/_lib/utils';
 import { InfinityIcon } from '@/public/icons';
-import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
-import Template from '../../_components/_ui/Template';
+
+import { useShallow } from 'zustand/react/shallow';
+import Template from '../../_components/Template';
+import { BG_COLORS, defaultCategoryId } from '../../_lib/configs';
 import useTaskStore from '../../taskStore';
 
 export default function Page() {
-   const pathname = usePathname();
-   const bgColor = BG_COLORS[pathname];
+   const { tasksList, categoriesList } = useTaskStore(
+      useShallow((state) => ({
+         tasksList: state.tasksList,
+         categoriesList: state.categoriesList,
+      }))
+   );
+
+   const listRef = useRef(null);
+
+   const tasks = tasksList;
+
+   const bgColor = BG_COLORS['/all'];
+
+   const theCategory = categoriesList?.find(
+      (cat) => cat.category_id === defaultCategoryId
+   );
 
    const listConfig = {
       bgColor,
       listName: 'All',
-      listIcon: <InfinityIcon size='24px' color={bgColor[3]} />,
+      listIcon: <InfinityIcon size='32px' color={bgColor.primaryText} />,
+      theCategory,
+      tasks,
    };
-
-   const tasksList = useTaskStore((state) => state.tasksList);
-   const listRef = useRef(null);
 
    useEffect(() => {
       if (listRef.current) {
          listRef.current.scrollIntoView({ behavior: 'smooth' });
       }
-   }, [tasksList.length]);
+   }, [tasks.length]);
 
    return <Template listRef={listRef} listConfig={listConfig} />;
 }

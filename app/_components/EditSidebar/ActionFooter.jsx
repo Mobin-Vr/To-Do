@@ -1,5 +1,4 @@
 import { delay, getTimeAgo } from '@/app/_lib/utils';
-import { TrashIcon } from '@/public/icons';
 import DeleteBtn from '../_ui/DeleteBtn';
 
 export default function ActionFooter({
@@ -7,7 +6,7 @@ export default function ActionFooter({
    toggleEditSidebar,
    deleteTaskFromStore,
 }) {
-   const timeAgoCreated = getTimeAgo(task.createdAt);
+   const timeAgoCreated = getTimeAgo(task.task_created_at);
    const timeAgoCompleted = getTimeAgo(task.task_completed_at);
 
    let ActionFooterText = task.is_task_completed

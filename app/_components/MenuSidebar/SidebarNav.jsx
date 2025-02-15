@@ -22,7 +22,9 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
             title='My Day'
             onClick={toggleSidebar}
          >
-            <SunIcon />
+            <span className='text-yellow-600'>
+               <SunIcon />
+            </span>
          </SidebarLink>
 
          {isThereImportant && (
@@ -31,7 +33,9 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
                title='Important'
                onClick={toggleSidebar}
             >
-               <MenuStarIcon color='#ac395d' size='20px' />
+               <span className='text-red-600'>
+                  <MenuStarIcon size='19' />
+               </span>
             </SidebarLink>
          )}
 
@@ -41,12 +45,16 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
                title='Planned'
                onClick={toggleSidebar}
             >
-               <TodayCalendarIcon color='#166f6b' size='18px' />
+               <span className='text-green-600'>
+                  <TodayCalendarIcon />
+               </span>
             </SidebarLink>
          )}
 
          <SidebarLink href='/tasks/all' title='All' onClick={toggleSidebar}>
-            <InfinityIcon />
+            <span className='text-red-600'>
+               <InfinityIcon />
+            </span>
          </SidebarLink>
 
          {isThereCompleted && (
@@ -55,12 +63,16 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
                title='Completed'
                onClick={toggleSidebar}
             >
-               <TickCircleIcon color='#c5514c' />
+               <span className='text-red-600'>
+                  <TickCircleIcon size='19' />
+               </span>
             </SidebarLink>
          )}
 
          <SidebarLink href='/tasks' title='Tasks' onClick={toggleSidebar}>
-            <HomeIcon />
+            <span className='text-blue-600'>
+               <HomeIcon size='19' />
+            </span>
          </SidebarLink>
       </ul>
    );
