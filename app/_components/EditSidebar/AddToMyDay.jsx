@@ -20,7 +20,6 @@ function AddToMyDay({ task }) {
             text='Add to My Day'
             activeText='Added to My Day'
             icon='SunIcon'
-            size='20px'
             isDateSet={task.is_task_in_myday}
             toggleModal={toggleAdded} // CHANGE the name is not relevent! but its just a click on btn
             clearDate={clearAdded} // reset the box to default with x btn

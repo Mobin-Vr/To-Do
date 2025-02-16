@@ -14,7 +14,7 @@ export default function AlarmToast({
       <div
          className={`${
             t.visible ? 'animate-enter' : 'animate-leave'
-         } max-w-sm shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 bg-gray-700 text-gray-100 p-3 flex flex-col items-center justify-center opacity-95 gap-4 w-full h-full`}
+         } max-w-sm shadow-lg rounded-md pointer-events-auto ring-1 ring-black ring-opacity-5 bg-gray-700 text-gray-100 p-3 flex flex-col items-center justify-center opacity-95 gap-4 w-full h-full`}
       >
          <div className='flex flex-col items-center'>
             <strong className='text-xs border-b-2 border-b-gray-500 mb-1.5'>

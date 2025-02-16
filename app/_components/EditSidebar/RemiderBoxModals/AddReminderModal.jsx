@@ -1,17 +1,17 @@
 import { getRoundedTime } from '@/app/_lib/utils';
 import {
-   TimerCalendarIcon,
-   TodayClockIcon,
-   TomorrowClockIcon,
+   PickReminderIcon,
+   TodayReminderIcon,
+   TomorrowReminderIcon,
 } from '@/public/icons';
 import { format, isSameDay } from 'date-fns';
 import { ModalActionButton } from './ModalActionBtn';
 
 export default function AddReminderModal({
    updateReminder,
-   task,
    isForTaskInput = false,
    toggleModalDatePicker,
+   task,
 }) {
    const today = isSameDay(new Date(), getRoundedTime('today'))
       ? getRoundedTime('today')
@@ -28,7 +28,7 @@ export default function AddReminderModal({
    return (
       <>
          <ModalActionButton
-            icon={<TodayClockIcon size='14px' />}
+            icon={<TodayReminderIcon />}
             label='Later Today'
             time={format(today, 'HH:mm')}
             disabled={today ? false : true}
@@ -36,7 +36,7 @@ export default function AddReminderModal({
          />
 
          <ModalActionButton
-            icon={<TomorrowClockIcon size='14px' />}
+            icon={<TomorrowReminderIcon />}
             label='Tomorrow'
             time={format(tomorrow, 'HH:mm')}
             className='border-b border-gray-100'
@@ -44,7 +44,7 @@ export default function AddReminderModal({
          />
 
          <ModalActionButton
-            icon={<TimerCalendarIcon size='14px' />}
+            icon={<PickReminderIcon />}
             label='Pick a date & time'
             className=''
             onClick={toggleModalDatePicker}

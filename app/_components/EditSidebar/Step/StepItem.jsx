@@ -1,12 +1,6 @@
-/* 
-   We used 'closest' instead of 'ref' because 'ref' can sometimes fail to detect clicks, especially if React hasn't updated the DOM yet. 
-   'closest' allows us to check if the clicked element is inside a specific DOM element, which is more reliable for handling outside clicks, 
-   ensuring the sidebar closes properly when clicked outside, regardless of React's DOM state.
-*/
-
 import { DotIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
-import ModalTemplate from '../../_ui/ModalTemplate';
+import ModalTemplateCloseAble from '../../_ui/ModalTemplateCloseAble';
 import StepActionModal from './StepActionModal';
 import StepCompleteBtn from './StepCompleteBtn';
 import StepTitleEditor from './StepTitleEditor';
@@ -38,14 +32,15 @@ export default function StepItem({ step, task, bgColor }) {
                <DotIcon size='10px' />
             </button>
 
-            <ModalTemplate
+            <ModalTemplateCloseAble
                parentRef={stepRef}
                isModalOpen={isModalOpen}
                toggleModal={toggleModal}
-               className='top-12 left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
+               justify='-50%'
+               className='left-1/2 top-10 w-56 text-xs font-normal'
             >
                <StepActionModal task={task} step={step} />
-            </ModalTemplate>
+            </ModalTemplateCloseAble>
          </li>
       </div>
    );

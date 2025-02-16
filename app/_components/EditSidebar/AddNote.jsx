@@ -22,7 +22,7 @@ function AddNote({ updateNote, task, isEditSidebarOpen }) {
             onChange={(e) => handleNote(e.target.value)}
             placeholder='Add note'
             maxLength={300}
-            className='w-full bg-inherit placeholder:text-gray-700 outline-none resize-none'
+            className='w-full bg-inherit placeholder:text-black outline-none resize-none'
          />
       </BoxTemplate>
    );

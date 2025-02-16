@@ -6,7 +6,7 @@ export default function InvitationUsersList({
    invitationId,
 }) {
    return (
-      <ul className='py-1.5 divide-y rounded-lg flex flex-col'>
+      <ul className='py-1.5 divide-y rounded-md flex flex-col'>
          {invitationUsers.map((user, i) => (
             <User
                key={user.user_id}
@@ -45,7 +45,7 @@ function User({ number, user, onRemoveUser, invitationId }) {
 
          <button
             onClick={() => onRemoveUser(invitationId, user.user_id)}
-            className='flex items-center justify-center ml-auto hover:bg-gray-300 h-full aspect-square p-1 rounded-sm text-red-600'
+            className='flex items-center justify-center ml-auto hover:bg-gray-300 h-full aspect-square p-1 rounded-md text-red-600'
          >
             <XIcon />
          </button>

@@ -24,7 +24,7 @@ export default function ShareBtn({ theCategoryId, bgColor }) {
             onClick={toggleModal}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            className='p-1 rounded-sm flex items-center justify-center '
+            className='p-1 rounded-md flex items-center justify-center '
             style={{
                backgroundColor: hover ? bgColor.buttonHover : 'transparent',
             }}

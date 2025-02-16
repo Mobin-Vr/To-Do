@@ -2,11 +2,11 @@ import { getRelativeDay } from '@/app/_lib/utils';
 import useTaskStore from '@/app/taskStore';
 import { format } from 'date-fns';
 import { useRef, useState } from 'react';
-import ModalTemplate from '../../_ui/ModalTemplate';
 import ModalTemplateCloseAble from '../../_ui/ModalTemplateCloseAble';
 import BoxBtn from '../BoxBtn';
 import AddDueModal from '../remiderBoxModals/AddDueModal';
 import DatePickerModal from '../remiderBoxModals/DatePickerModal';
+import ModalTemplate from '../../_ui/ModalTemplate';
 
 export default function AddDue({ task }) {
    const AddDueRef = useRef(null);
@@ -15,10 +15,14 @@ export default function AddDue({ task }) {
    const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
    const hasDueDate = task.task_due_date ? true : false;
-   const relativeDay = getRelativeDay(task.task_due_date);
-   const activeText = `Due ${
-      relativeDay ? relativeDay : format(task.task_due_date, 'MMM, dd')
-   }`;
+   const relativeDay = task.task_due_date
+      ? getRelativeDay(task.task_due_date)
+      : '';
+
+   const activeText =
+      relativeDay === null
+         ? `Due ${format(task.task_due_date, 'MMM, dd')}`
+         : relativeDay;
 
    const removeDueDate = () => updateDueDate(task.task_id, null);
 
@@ -33,36 +37,37 @@ export default function AddDue({ task }) {
             text='Add due date'
             activeText={activeText}
             icon='CalendarIcon'
-            size='18px'
             isDateSet={hasDueDate}
             toggleModal={toggleModal}
             clearDate={removeDueDate}
          />
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={AddDueRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
+            justify='-50%'
+            className='left-1/2 w-56 text-xs font-normal'
          >
             <AddDueModal
                toggleModal={toggleModalDatePicker}
                updateDueDate={updateDueDate}
                task={task}
             />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
 
-         <ModalTemplateCloseAble
+         <ModalTemplate
             isModalOpen={isDatePickerModalOpen}
             toggleModal={toggleModalDatePicker}
-            className='bottom-12 left-1/2 -translate-x-1/2 w-auto text-xs font-normal'
+            justify='-50%'
+            className='bottom-12 left-1/2 w-auto text-xs font-normal'
          >
             <DatePickerModal
                updateDueDate={updateDueDate}
                toggleModal={toggleModalDatePicker}
                task={task}
             />
-         </ModalTemplateCloseAble>
+         </ModalTemplate>
       </div>
    );
 }

@@ -15,7 +15,9 @@ export default function AddReminder({ task }) {
    const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
    const hasReminder = task.task_reminder ? true : false;
-   const activeText = `Remind me at ${format(task.task_reminder, 'HH:mm')}`;
+   const activeText = `Remind me at ${
+      task.task_reminder ? format(task.task_reminder, 'HH:mm') : ''
+   }`;
 
    const relativeDay = getRelativeDay(task.task_reminder);
    const weekday = relativeDay
@@ -34,38 +36,39 @@ export default function AddReminder({ task }) {
          <BoxBtn
             text='Remind me'
             activeText={activeText}
-            icon='ClockIcon'
-            size='18px'
+            icon='BellIcon'
             weekday={weekday}
             isDateSet={hasReminder}
             toggleModal={toggleModal}
             clearDate={removeReminder}
          />
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={AddReminder}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='left-1/2 -translate-x-1/2 w-56 text-xs font-normal'
+            justify='-50%'
+            className='left-1/2 w-56 text-xs font-normal'
          >
             <AddReminderModal
                toggleModalDatePicker={toggleModalDatePicker}
                updateReminder={updateReminder}
                task={task}
             />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
 
-         <ModalTemplateCloseAble
+         <ModalTemplate
             isModalOpen={isDatePickerModalOpen}
             toggleModal={toggleModalDatePicker}
-            className='bottom-12 left-1/2 -translate-x-1/2 w-auto text-xs font-normal'
+            justify='-50%'
+            className='bottom-12 left-1/2 w-auto text-xs font-normal'
          >
             <DateTimePickerModal
                updateReminder={updateReminder}
                toggleModal={toggleModalDatePicker}
                task={task}
             />
-         </ModalTemplateCloseAble>
+         </ModalTemplate>
       </div>
    );
 }

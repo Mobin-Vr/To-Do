@@ -6,6 +6,8 @@ export default function ActionFooter({
    toggleEditSidebar,
    deleteTaskFromStore,
 }) {
+   if (!task.task_created_at) return;
+
    const timeAgoCreated = getTimeAgo(task.task_created_at);
    const timeAgoCompleted = getTimeAgo(task.task_completed_at);
 
@@ -24,11 +26,13 @@ export default function ActionFooter({
 
    return (
       <div className='flex items-center gap-4 h-12 border border-t-1 border-gray-200 text-gray-700 p-3 font-light justify-between relative'>
-         <span className='w-full text-center'>{ActionFooterText}</span>
+         <span className='w-full text-center text-[0.8rem]'>
+            {ActionFooterText}
+         </span>
 
          <DeleteBtn
             onClick={handleDelete}
-            className='absolute right-0 h-full aspect-square flex justify-center items-center hover:bg-accent-200 rounded-sm transition-all duration-300'
+            className='absolute right-0 h-full aspect-square flex justify-center items-center hover:bg-accent-200 rounded-md transition-all duration-300'
          />
       </div>
    );

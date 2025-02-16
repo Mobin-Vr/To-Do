@@ -1,7 +1,7 @@
 import {
    AlphabetIcon,
    StarIcon,
-   TimerCalendarIcon,
+   PickReminderIcon,
    TodayCalendarIcon,
 } from '@/public/icons';
 import { ModalActionButton } from '../EditSidebar/remiderBoxModals/ModalActionBtn';
@@ -26,7 +26,7 @@ export default function SortMethodModal({ setSortMethod }) {
          />
 
          <ModalActionButton
-            icon={<TimerCalendarIcon size='16px' />}
+            icon={<PickReminderIcon size='16px' />}
             label='Due date'
             onClick={() => handleSelect('dueDate')}
          />

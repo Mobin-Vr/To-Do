@@ -65,7 +65,8 @@ export function getRoundedTime(mode = 'today') {
 // Returns the input date if it's a weekday, otherwise returns the previous Friday.
 export function getWeekendForWeekdays(inputDate) {
    //  const date = parseISO(inputDate);
-   const date = inputDate;
+   const date = new Date(inputDate);
+
    const dayOfWeek = date.getDay();
 
    // Check if the date falls on a weekday
@@ -79,7 +80,7 @@ export function getWeekendForWeekdays(inputDate) {
 }
 
 export function isWeekday(dateString) {
-   const date = parseISO(dateString);
+   const date = new Date(dateString);
    const dayOfWeek = date.getDay();
    return dayOfWeek >= 1 && dayOfWeek <= 5;
 }

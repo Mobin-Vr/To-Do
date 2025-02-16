@@ -46,12 +46,12 @@ export default function LinkCreatedView({
                      <input
                         readOnly
                         value={link}
-                        className='inputRef px-2 py-1.5 rounded-sm bg-gray-200 text-nowrap overflow-hidden outline-none w-full h-full'
+                        className='inputRef px-2 py-1.5 rounded-md bg-gray-200 text-nowrap overflow-hidden outline-none w-full h-full'
                      />
 
                      <button
                         onClick={copyToClipboard}
-                        className='absolute right-0 font-thin text-sm h-full  aspect-square flex justify-center items-center text-white bg-gray-600 border border-gray-200 hover:bg-gray-700 rounded-sm'
+                        className='absolute right-0 font-thin text-sm h-full  aspect-square flex justify-center items-center text-white bg-gray-600 border border-gray-200 hover:bg-gray-700 rounded-md'
                      >
                         {isCopied ? <SuccessIcon /> : <CopyIcon />}
                      </button>

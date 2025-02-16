@@ -2,13 +2,13 @@
 
 import { useShallow } from 'zustand/react/shallow';
 import { defaultCategoryId } from '../_lib/configs';
+import { getFormattedDate } from '../_lib/utils';
 import useTaskStore from '../taskStore';
 import DeleteBtn from './_ui/DeleteBtn';
 import MenuBtn from './_ui/MenuBtn';
 import SortMethodBtn from './_ui/SortMethodBtn';
 import CategoryTitleEditor from './CategoryTitleEditor';
 import ShareBtn from './shareList/ShareBtn';
-import { getFormattedDate } from '../_lib/utils';
 
 export default function AppHeader({
    listConfig,
@@ -72,10 +72,7 @@ export default function AppHeader({
                         bgColor={bgColor}
                      />
 
-                     <DeleteBtn
-                        onClick={handleDeleteCategory}
-                        bgColor={bgColor}
-                     />
+                     <DeleteBtn onClick={handleDeleteCategory} />
                   </>
                )}
 
@@ -86,7 +83,7 @@ export default function AppHeader({
          {listName === 'My Day' && (
             <span
                className='text-sm font-extralight ml-1'
-               style={{ color: bgColor.ternaryText }}
+               style={{ color: bgColor.primaryText }}
             >
                {getFormattedDate()}
             </span>

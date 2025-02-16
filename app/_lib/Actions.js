@@ -100,6 +100,7 @@ export async function getTasksByInvitationAction(invitationId, userId) {
 ///////// Other Actions //////////
 //////////////////////////////////
 
+// This function retrieves all tasks owned by the user and additionally returns tasks related to categories from invitations the user has received. It first returns the user's own tasks, then loops through invitations to fetch shared tasks.
 export async function getRelevantTasksAction(userId) {
    try {
       return await getRelevantTasks(userId);

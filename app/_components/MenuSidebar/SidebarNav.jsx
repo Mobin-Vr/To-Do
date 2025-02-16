@@ -7,6 +7,7 @@ import {
    SunIcon,
    TickCircleIcon,
    TodayCalendarIcon,
+   WeeklyIcon,
 } from '@/public/icons';
 import SidebarLink from './SidebarLink';
 
@@ -46,7 +47,7 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
                onClick={toggleSidebar}
             >
                <span className='text-green-600'>
-                  <TodayCalendarIcon />
+                  <WeeklyIcon />
                </span>
             </SidebarLink>
          )}

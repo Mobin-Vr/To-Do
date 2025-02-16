@@ -341,10 +341,7 @@ export async function getTasksByInvitation(invitationId, userId) {
    return data; // Data will include an array of the tasks related to the invitation.
 }
 
-/**
- * Fetches tasks for a user based on their invitations and owned tasks.
- * It also checks if the user is in the collaborators table, retrieves related categories from invitations, and returns tasks from those categories as well as tasks owned by the user.
- */
+// This function retrieves all tasks owned by the user and additionally returns tasks related to categories from invitations the user has received. It first returns the user's own tasks, then loops through invitations to fetch shared tasks.
 export async function getRelevantTasks(userId) {
    const { data, error } = await supabase.rpc('get_shared_tasks_by_user_id', {
       param_user_id: userId,

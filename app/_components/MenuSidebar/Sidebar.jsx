@@ -36,8 +36,6 @@ export default function Sidebar() {
       }))
    );
 
-   console.log('sidebar');
-
    // Handle clicks outside of the sidebar and menu button
    useEffect(() => {
       function handleClickOutside(event) {
@@ -68,7 +66,7 @@ export default function Sidebar() {
    return (
       <div
          ref={sidebarRef}
-         className={`fixed top-0 left-0 bottom-0 w-3/5 bg-gray-50 text-black py-6 px-4 transform transition-transform ease-in-out duration-300 flex flex-col justify-between sm:translate-x-0 sm:static md:max-w-72 sm:max-w-64 z-20 h-full shadow-2xl border border-gray-300 rounded-md ${
+         className={`fixed top-0 left-0 bottom-0 w-3/5 bg-sidebar-main text-black py-6 px-4 transform transition-transform ease-in-out duration-300 flex flex-col justify-between sm:translate-x-0 sm:static md:max-w-72 sm:max-w-64 z-20 h-full shadow-2xl border border-gray-300 rounded-md ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
          }`}
       >

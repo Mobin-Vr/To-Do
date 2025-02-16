@@ -27,21 +27,21 @@ export default function AddDueModal({
    return (
       <>
          <ModalActionButton
-            icon={<TodayCalendarIcon size='16px' />}
+            icon={<TodayCalendarIcon />}
             label='Today'
             time={format(today, 'EEE')}
             onClick={() => handleSelect(today)}
          />
 
          <ModalActionButton
-            icon={<TomorrowCalendarIcon size='16px' />}
+            icon={<TomorrowCalendarIcon />}
             label='Tomorrow'
             time={format(tomorrow, 'EEE')}
             onClick={() => handleSelect(tomorrow)}
          />
 
          <ModalActionButton
-            icon={<NextWeekCalendarIcon size='16px' />}
+            icon={<NextWeekCalendarIcon />}
             label='Next week'
             time={format(nextWeek, 'EEE')}
             className='border-b border-gray-100'
@@ -49,7 +49,7 @@ export default function AddDueModal({
          />
 
          <ModalActionButton
-            icon={<PeakCalendarIcon size='16px' />}
+            icon={<PeakCalendarIcon />}
             label='Pick a date'
             onClick={() => toggleModal()}
          />

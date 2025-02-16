@@ -26,7 +26,7 @@ function UserMenu({ user, createClerkPasskey, className }) {
                <UserButton appearance={userButtonAppearance} />
 
                <button
-                  className='flex flex-col overflow-hidden'
+                  className='flex flex-col items-start overflow-hidden'
                   ref={userMenuBtnRef}
                   onClick={toggleModal}
                >
@@ -40,7 +40,6 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   <UserStatus user={user} />
                </button>
 
-               {/* Animate modal with backdrop */}
                <AnimatePresence>
                   {isModalOpen && (
                      <>
@@ -54,7 +53,7 @@ function UserMenu({ user, createClerkPasskey, className }) {
 
                         {/* Modal */}
                         <motion.div
-                           className='fixed top-14 left-3 z-50 min-w-[17rem] w-fit bg-white rounded-xl text-xs font-light shadow-2xl overflow-hidden'
+                           className='fixed top-14 left-3 z-50 min-w-[17rem] w-fit bg-white rounded-md text-xs font-light shadow-2xl overflow-hidden'
                            initial={{ opacity: 0, scale: 0.9, y: -20 }}
                            animate={{ opacity: 1, scale: 1, y: 0 }}
                            exit={{ opacity: 0, scale: 0.9, y: -20 }}

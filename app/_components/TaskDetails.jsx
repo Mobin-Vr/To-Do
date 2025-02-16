@@ -1,9 +1,11 @@
 import {
    BellIcon,
-   CalendarIcon,
+   DailyIcon,
    NoteIcon,
-   RefreshCw,
+   SyncIcon,
    SunIcon,
+   WeeklyIcon,
+   DateIcon,
 } from '@/public/icons';
 import { defaultCategoryId } from '../_lib/configs';
 import {
@@ -73,7 +75,7 @@ function TaskDetails({ task, listName }) {
             {task.task_due_date &&
                (hasDatePassed(task.task_due_date) ? (
                   <span className='flex gap-0.5 items-center text-red-600'>
-                     <CalendarIcon size='12px' /> Overdue
+                     <DateIcon size='12px' /> Overdue
                   </span>
                ) : (
                   <span
@@ -81,7 +83,7 @@ function TaskDetails({ task, listName }) {
                         checkIfToday(task.task_due_date) ? 'text-blue-600' : ''
                      }`}
                   >
-                     <CalendarIcon size='12px' />
+                     <DateIcon size='12px' />
                      {checkIfToday(task.task_due_date)
                         ? 'Today'
                         : checkIfTomorrow(task.task_due_date)
@@ -91,8 +93,8 @@ function TaskDetails({ task, listName }) {
                ))}
 
             {task.task_repeat && (
-               <span>
-                  <RefreshCw size='12px' />
+               <span className='mt-0.5'>
+                  <SyncIcon size='13px' />
                </span>
             )}
 

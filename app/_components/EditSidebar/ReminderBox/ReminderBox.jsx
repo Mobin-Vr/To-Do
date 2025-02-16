@@ -6,7 +6,7 @@ import AddRepeat from './AddRepeat';
 
 export default function ReminderBox({ task }) {
    return (
-      <BoxTemplate className='flex flex-col justify-center py-1'>
+      <BoxTemplate className='flex flex-col justify-center'>
          <AddReminder task={task} />
          <Border />
 

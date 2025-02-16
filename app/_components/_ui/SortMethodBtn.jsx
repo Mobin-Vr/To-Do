@@ -1,8 +1,8 @@
 import { SortIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import useTaskStore from '../../taskStore';
+import ModalTemplateCloseAble from './ModalTemplateCloseAble';
 import SortMethodModal from './SortMethodModal';
-import ModalTemplate from './ModalTemplate';
 
 function SortMethodBtn({ bgColor }) {
    const sortRef = useRef(null);
@@ -18,7 +18,7 @@ function SortMethodBtn({ bgColor }) {
             onClick={toggleModal}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
-            className='p-1 rounded-sm flex items-center justify-center hover:bg-gray-300'
+            className='p-1 rounded-md flex items-center justify-center hover:bg-gray-300'
             style={{
                backgroundColor: hover ? bgColor.buttonHover : 'transparent',
             }}
@@ -26,14 +26,14 @@ function SortMethodBtn({ bgColor }) {
             <SortIcon />
          </button>
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={sortRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
             className='top-8 right-0 w-40 text-xs font-normal'
          >
             <SortMethodModal setSortMethod={setSortMethod} />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
       </div>
    );
 }

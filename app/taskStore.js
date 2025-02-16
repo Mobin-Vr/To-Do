@@ -21,6 +21,7 @@ import {
    updateTask,
 } from './_lib/data-services';
 import { checkIfToday, getDateNowIso } from './_lib/utils';
+import { isToday } from 'date-fns';
 
 const initialState = {
    isSidebarOpen: false,
@@ -343,10 +344,6 @@ const useTaskStore = create(
                         task.task_updated_at = updateTime;
                      }
 
-                     // If the date is today, add it to "My Day"
-                     const isToday = checkIfToday(isoDate);
-                     if (isToday) task.is_task_in_myday = true;
-
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
                         // Remove if exist a record in log with the same ID and TYPE
@@ -391,6 +388,7 @@ const useTaskStore = create(
                      const task = state.tasksList.find(
                         (task) => task.task_id === id
                      );
+
                      const updateTime = getDateNowIso();
                      const isoDate =
                         dueDate === null
@@ -401,11 +399,9 @@ const useTaskStore = create(
                      if (task) {
                         task.task_due_date = isoDate;
                         task.task_updated_at = updateTime;
-                     }
 
-                     // If the date is today, add it to "My Day"
-                     const isToday = checkIfToday(isoDate);
-                     if (isToday) task.is_task_in_myday = true;
+                        if (isoDate === null) task.task_repeat = null; // Set repeat to null as, well when the due date becomes null.
+                     }
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -437,7 +433,7 @@ const useTaskStore = create(
                   await updateTask(
                      {
                         task_due_date: task.task_due_date,
-                        updatedAt: task.task_updated_at,
+                        task_updated_at: task.task_updated_at,
                      },
                      task.task_id
                   );
@@ -977,8 +973,8 @@ const useTaskStore = create(
 
                // This will get all relevent tasks on every reload (shared + owned)
                const tasks = await getRelevantTasksAction(userId);
+
                const categories = await getCategories(userId);
-               console.log(tasks);
 
                //  Filter out tasks that already exist in the tasksList
                const newTasks = tasks.filter(

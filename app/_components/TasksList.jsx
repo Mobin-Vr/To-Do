@@ -8,6 +8,7 @@ import DefaultMinimizer from './minimizer/DefaultMinimizer';
 import PlannedMinimizer from './minimizer/PlannedMinimizer';
 import AllMinimizer from './minimizer/AllMinimizer';
 import { defaultCategoryId } from '../_lib/configs';
+import EditSidebar from './EditSidebar/EditSidebar';
 
 export default function TasksList({
    listRef,
@@ -142,11 +143,12 @@ export default function TasksList({
          )}
 
          {/* It has some BUG  */}
-         {/* <EditSidebar
-            task={activeTask}
+         <EditSidebar
+            task={activeTask || {}}
             className='edit-sidebar'
             bgColor={bgColor}
-         /> */}
+            listName={listName}
+         />
       </div>
    );
 }

@@ -1,5 +1,5 @@
 import {
-   RefreshCw,
+   SyncIcon,
    SettingsIcon,
    SignOutIcon,
    UserRoundCog,
@@ -50,7 +50,7 @@ export default function ProfileModal({ user }) {
             </div>
          </div>
 
-         <div className='bg-white overflow-hidden text-black rounded-xl'>
+         <div className='bg-white overflow-hidden text-black rounded-md'>
             <div className='h-24 bg-white border-b border-b-gray-100'></div>
             <div className='py-2 border-b border-gray-100 flex flex-col justify-center'>
                <Link
@@ -83,7 +83,7 @@ export default function ProfileModal({ user }) {
                   className='py-2 px-4 flex items-center gap-3 hover:bg-accent-50 w-full'
                   onClick={handleSyncingClick}
                >
-                  <RefreshCw size='14px' />
+                  <SyncIcon size='14px' />
                   <h4>Syncing</h4>
                </button>
             </div>

@@ -53,8 +53,8 @@ const SidebarLink = ({
    return (
       <Link href={href} onClick={onClick}>
          <li
-            className={`relative flex items-center justify-between py-2 px-3 text-gray-700 font-normal text-sm hover:bg-accent-50 hover:rounded-lg transition-all duration-300 ${
-               isActive ? 'bg-accent-50 rounded-lg' : ''
+            className={`relative flex items-center justify-between py-2 px-3 text-gray-700 font-normal text-sm hover:bg-sidebar-hover hover:rounded-lg transition-all duration-300 ${
+               isActive ? 'bg-sidebar-hover rounded-md' : ''
             }`}
          >
             <div className='flex gap-2'>
@@ -76,7 +76,7 @@ const SidebarLink = ({
                </span>
             </div>
             {isActive && (
-               <div className='absolute left-0 h-[50%] border-l-[3px] rounded-xl border-blue-500'></div>
+               <div className='absolute left-0 h-[50%] border-l-[3px] rounded-md border-blue-500'></div>
             )}
          </li>
       </Link>

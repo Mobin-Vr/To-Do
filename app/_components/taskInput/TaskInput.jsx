@@ -57,8 +57,8 @@ export default function TaskInput({
          task_created_at: getDateNowIso(),
          task_completed_at: null,
          task_updated_at: null,
-         is_task_starred: listName === 'Important',
          is_task_completed: false,
+         is_task_starred: listName === 'Important',
          is_task_in_myday: myDayCond,
       };
 
@@ -94,7 +94,7 @@ export default function TaskInput({
                onFocus={handleFocus}
                onBlur={handleBlur}
                style={{ backgroundColor: bgColor.toggleBackground }}
-               className={`px-10 text-sm font-light outline-none w-full h-full rounded-sm ${
+               className={`px-10 text-sm font-light outline-none w-full h-full rounded-md ${
                   isTyping ? 'placeholder-gray-500' : 'placeholder-gray-800'
                }`}
                placeholder={

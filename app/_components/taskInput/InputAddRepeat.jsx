@@ -1,4 +1,4 @@
-import { RefreshCw } from '@/public/icons';
+import { SyncIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
 import InputBtnTempl from '../_ui/InputBtnTempl';
 import ModalTemplate from '../_ui/ModalTemplate';
@@ -20,7 +20,7 @@ export default function InputAddRepeat({
       <div ref={AddRepeatRef}>
          <InputBtnTempl
             className={`${className}`}
-            icon={<RefreshCw size='16px' color='#222' />}
+            icon={<SyncIcon size='16px' color='#222' />}
             onClick={toggleModal}
          />
 

@@ -8,7 +8,6 @@ function AddFile() {
          <BoxBtn
             disabled={true}
             icon='PaperClipIcon'
-            size='18px'
             text='Add file / Coming soon ...'
          />
       </BoxTemplate>
