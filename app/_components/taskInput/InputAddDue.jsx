@@ -20,34 +20,34 @@ export default function InputAddDue({ setTaskDueDate, className }) {
       <div ref={AddDueRef}>
          <InputBtnTempl
             className={`${className}`}
-            icon={<CalendarIcon size='16px' color='#222' />}
+            icon={<CalendarIcon />}
             onClick={toggleModal}
          />
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={AddDueRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='bottom-[5.3rem] right-6 w-auto text-xs font-normal'
+            className='bottom-[3rem] -right-3.5 w-auto text-xs font-normal'
          >
             <AddDueModal
                updateDueDate={setTaskDueDate}
                toggleModal={toggleModalDatePicker}
                isForTaskInput={true}
             />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
 
-         <ModalTemplateCloseAble
+         <ModalTemplate
             isModalOpen={isDatePickerModalOpen}
             toggleModal={toggleModalDatePicker}
-            className='bottom-[5.3rem] right-6 w-auto text-xs font-normal'
+            className='bottom-[3rem] -right-3.5 w-auto text-xs font-normal'
          >
             <DatePickerModal
                updateDueDate={setTaskDueDate}
                toggleModal={toggleModalDatePicker}
                isForTaskInput={true}
             />
-         </ModalTemplateCloseAble>
+         </ModalTemplate>
       </div>
    );
 }

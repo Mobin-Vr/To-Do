@@ -143,15 +143,20 @@ export const HomeIcon = ({ size = '20', color = '#4270b1' }) => (
 );
 
 // Plus Icon
-export const PlusIcon = ({ size = '21px', color = '#000000' }) => (
+export const PlusIcon = ({ size = '20', color = 'currentColor' }) => (
    <svg
       width={size}
       height={size}
-      viewBox='0 0 24 24'
-      fill='none'
+      viewBox='0 0 20 20'
+      fill={color}
+      aria-hidden='true'
+      aria-label=''
       xmlns='http://www.w3.org/2000/svg'
    >
-      <path d='M4 12H20M12 4V20' stroke='currentColor'></path>
+      <path
+         d='M10 2.5a.5.5 0 00-1 0V9H2.5a.5.5 0 000 1H9v6.5a.5.5 0 001 0V10h6.5a.5.5 0 000-1H10V2.5z'
+         fill={color}
+      ></path>
    </svg>
 );
 

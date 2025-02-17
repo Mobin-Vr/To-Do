@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import InputBtnTempl from '../_ui/InputBtnTempl';
 import ModalTemplate from '../_ui/ModalTemplate';
 import AddRepeatModal from '../EditSidebar/remiderBoxModals/AddRepeatModal';
+import ModalTemplateCloseAble from '../_ui/ModalTemplateCloseAble';
 
 export default function InputAddRepeat({
    setTaskRepeat,
@@ -20,15 +21,15 @@ export default function InputAddRepeat({
       <div ref={AddRepeatRef}>
          <InputBtnTempl
             className={`${className}`}
-            icon={<SyncIcon size='16px' color='#222' />}
+            icon={<SyncIcon />}
             onClick={toggleModal}
          />
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={AddRepeatRef}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='bottom-[5.3rem] right-6 w-auto text-xs font-normal'
+            className='bottom-[3rem] -right-3.5 w-auto text-xs font-normal'
          >
             <AddRepeatModal
                updateDueDate={setTaskDueDate}
@@ -37,7 +38,7 @@ export default function InputAddRepeat({
                taskDueDate={taskDueDate}
                taskRepeat={taskRepeat}
             />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
       </div>
    );
 }

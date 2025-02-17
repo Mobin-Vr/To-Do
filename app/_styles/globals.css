@@ -101,6 +101,26 @@ input[type='time']::-webkit-calendar-picker-indicator {
    pointer-events: none;
 }
 
+.custom-placeholder::placeholder {
+   font-weight: 100;
+}
+
+.custom-placeholder::-webkit-input-placeholder {
+   font-weight: 200;
+}
+
+.custom-placeholder:-moz-placeholder {
+   font-weight: 200;
+}
+
+.custom-placeholder::-moz-placeholder {
+   font-weight: 200;
+}
+
+.custom-placeholder:-ms-input-placeholder {
+   font-weight: 200;
+}
+
 @layer base {
    :root {
       --background: 0 0% 100%;

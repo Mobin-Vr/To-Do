@@ -1,9 +1,9 @@
-import { ClockIcon } from '@/public/icons';
+import { BellIcon } from '@/public/icons';
 import { useRef, useState } from 'react';
-import AddReminderModal from '../EditSidebar/remiderBoxModals/AddReminderModal';
-import ModalTemplate from '../_ui/ModalTemplate';
 import InputBtnTempl from '../_ui/InputBtnTempl';
+import ModalTemplate from '../_ui/ModalTemplate';
 import ModalTemplateCloseAble from '../_ui/ModalTemplateCloseAble';
+import AddReminderModal from '../EditSidebar/remiderBoxModals/AddReminderModal';
 import DateTimePickerModal from '../EditSidebar/remiderBoxModals/DateTimePickerModal';
 
 export default function InputAddReminder({ setTaskReminder, className }) {
@@ -20,34 +20,34 @@ export default function InputAddReminder({ setTaskReminder, className }) {
       <div ref={AddReminder}>
          <InputBtnTempl
             className={`${className}`}
-            icon={<ClockIcon size='16px' color='#222' />}
+            icon={<BellIcon />}
             onClick={toggleModal}
          />
 
-         <ModalTemplate
+         <ModalTemplateCloseAble
             parentRef={AddReminder}
             isModalOpen={isModalOpen}
             toggleModal={toggleModal}
-            className='bottom-[5.3rem] right-6 w-auto text-xs font-normal'
+            className='bottom-[3rem] -right-3.5 w-auto text-xs font-normal'
          >
             <AddReminderModal
                updateReminder={setTaskReminder}
                toggleModalDatePicker={toggleModalDatePicker}
                isForTaskInput={true}
             />
-         </ModalTemplate>
+         </ModalTemplateCloseAble>
 
-         <ModalTemplateCloseAble
+         <ModalTemplate
             isModalOpen={isDatePickerModalOpen}
             toggleModal={toggleModalDatePicker}
-            className='bottom-[5.3rem] right-6 w-auto text-xs font-normal'
+            className='bottom-[3rem] -right-3.5 w-auto text-xs font-normal'
          >
             <DateTimePickerModal
                updateReminder={setTaskReminder}
                toggleModal={toggleModalDatePicker}
                isForTaskInput={true}
             />
-         </ModalTemplateCloseAble>
+         </ModalTemplate>
       </div>
    );
 }

@@ -84,7 +84,11 @@ export default function TaskInput({
             onSubmit={handleSubmit}
          >
             <button className='absolute left-9 cursor-pointer'>
-               {isTyping ? <CircleIcon /> : <PlusIcon />}
+               {isTyping || taskInput.length > 0 ? (
+                  <CircleIcon />
+               ) : (
+                  <PlusIcon />
+               )}
             </button>
 
             <input
@@ -94,7 +98,7 @@ export default function TaskInput({
                onFocus={handleFocus}
                onBlur={handleBlur}
                style={{ backgroundColor: bgColor.toggleBackground }}
-               className={`px-10 text-sm font-light outline-none w-full h-full rounded-md ${
+               className={`custom-placeholder px-10 pr-28 text-sm font-light outline-none w-full h-full rounded-md ${
                   isTyping ? 'placeholder-gray-500' : 'placeholder-gray-800'
                }`}
                placeholder={
@@ -106,25 +110,18 @@ export default function TaskInput({
          </form>
 
          {taskInput.length > 0 && (
-            <>
-               <InputAddReminder
-                  setTaskReminder={setTaskReminder}
-                  className='absolute right-[6rem] top-3.5'
-               />
+            <div className='flex gap-3 absolute right-[2.5rem] top-3.5 text-opacity-20'>
+               <InputAddReminder setTaskReminder={setTaskReminder} />
 
-               <InputAddDue
-                  setTaskDueDate={setTaskDueDate}
-                  className='absolute right-[4.25rem] top-3.5'
-               />
+               <InputAddDue setTaskDueDate={setTaskDueDate} />
 
                <InputAddRepeat
                   setTaskRepeat={setTaskRepeat}
                   setTaskDueDate={setTaskDueDate}
                   taskDueDate={taskDueDate}
                   taskRepeat={taskRepeat}
-                  className='absolute right-10 top-3.5'
                />
-            </>
+            </div>
          )}
       </div>
    );
