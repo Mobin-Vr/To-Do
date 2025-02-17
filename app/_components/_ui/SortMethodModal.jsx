@@ -3,6 +3,9 @@ import {
    StarIcon,
    PickReminderIcon,
    TodayCalendarIcon,
+   CalendarIcon,
+   SortIcon,
+   CreationDateIcon,
 } from '@/public/icons';
 import { ModalActionButton } from '../EditSidebar/remiderBoxModals/ModalActionBtn';
 
@@ -16,7 +19,7 @@ export default function SortMethodModal({ setSortMethod }) {
       <>
          <ModalActionButton
             label='Sort by'
-            className='border-b border-gray-100 text-gray-800 hover:bg-inherit cursor-default'
+            className='border-b border-gray-100 text-gray-800 hover:bg-inherit cursor-default font-semibold'
          />
 
          <ModalActionButton
@@ -26,19 +29,19 @@ export default function SortMethodModal({ setSortMethod }) {
          />
 
          <ModalActionButton
-            icon={<PickReminderIcon size='16px' />}
+            icon={<CalendarIcon />}
             label='Due date'
             onClick={() => handleSelect('dueDate')}
          />
 
          <ModalActionButton
-            icon={<TodayCalendarIcon size='16px' />}
+            icon={<CreationDateIcon />}
             label='Creation date'
             onClick={() => handleSelect('creationDate')}
          />
 
          <ModalActionButton
-            icon={<AlphabetIcon size='16px' />}
+            icon={<SortIcon />}
             label='Alphabetically'
             onClick={() => handleSelect('alphabet')}
          />
