@@ -1,6 +1,8 @@
-function Border() {
+function Border({ className }) {
    return (
-      <span className='h-[0.01rem] w-[92%] translate-y-[0.005] bg-gray-200 m-auto my-0.5'></span>
+      <span
+         className={`h-[1px] w-[92%] transform bg-gray-200 m-auto my-0.5 -translate-y-[10%] ${className}`}
+      ></span>
    );
 }
 

@@ -10,18 +10,28 @@ import toast from 'react-hot-toast';
 import { useShallow } from 'zustand/react/shallow';
 import useTaskStore from '../taskStore';
 import AlarmToast from './AlarmToast';
-import { checkIfToday } from '../_lib/utils';
+import {
+   calculateNextDate,
+   checkIfToday,
+   isDateBeforeToday,
+} from '../_lib/utils';
 
 export default function ReminderHandler() {
-   const { getTaskList, updateReminder, toggleCompleted, toggleAddedToMyDay } =
-      useTaskStore(
-         useShallow((state) => ({
-            getTaskList: state.getTaskList,
-            updateReminder: state.updateReminder,
-            toggleCompleted: state.toggleCompleted,
-            toggleAddedToMyDay: state.toggleAddedToMyDay,
-         }))
-      );
+   const {
+      getTaskList,
+      updateReminder,
+      updateDueDate,
+      toggleCompleted,
+      toggleAddedToMyDay,
+   } = useTaskStore(
+      useShallow((state) => ({
+         getTaskList: state.getTaskList,
+         updateReminder: state.updateReminder,
+         updateDueDate: state.updateDueDate,
+         toggleCompleted: state.toggleCompleted,
+         toggleAddedToMyDay: state.toggleAddedToMyDay,
+      }))
+   );
 
    const [alarmSound, setAlarmSound] = useState(null);
    const [isUserInteracted, setIsUserInteracted] = useState(false);
@@ -49,6 +59,16 @@ export default function ReminderHandler() {
             if (!task.is_task_in_myday && checkIfToday(task.task_due_date))
                toggleAddedToMyDay(task.task_id);
 
+            // Check if the task's due date is before today (yesterday or earlier), then apply the repeat!
+            if (task.task_repeat && isDateBeforeToday(task.task_due_date)) {
+               const nextRepeatDate = calculateNextDate(
+                  task.task_due_date,
+                  task.task_repeat
+               );
+
+               updateDueDate(task.task_id, nextRepeatDate);
+            }
+
             if (
                task.task_reminder !== null &&
                !task.is_task_completed &&
@@ -65,6 +85,7 @@ export default function ReminderHandler() {
          clearInterval(interval);
          document.removeEventListener('click', handleUserInteraction);
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [isUserInteracted]);
 
    function triggerReminder(task) {

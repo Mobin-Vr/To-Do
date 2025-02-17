@@ -164,6 +164,43 @@ export function getShortFormattedDate() {
    return new Date().toLocaleDateString('en-US', options);
 }
 
+// Calculates the next date based on the repeat type.
+export function calculateNextDate(taskDueDate, repeatType) {
+   let newDate = new Date(taskDueDate);
+   console.log(newDate);
+
+   switch (repeatType) {
+      case 'Daily':
+         newDate.setDate(newDate.getDate() + 1); // Adds one day
+         break;
+      case 'Weekdays':
+         newDate.setDate(newDate.getDate() + 7); // Adds one week
+         break;
+      case 'Weekly':
+         newDate.setDate(newDate.getDate() + 7); // Adds one week
+         break;
+      case 'Monthly':
+         newDate.setMonth(newDate.getMonth() + 1); // Adds one month
+         break;
+      case 'Yearly':
+         newDate.setFullYear(newDate.getFullYear() + 1); // Adds one year
+         break;
+      default:
+         break;
+   }
+
+   console.log(newDate.toISOString());
+
+   return newDate.toISOString();
+}
+
+// Check if the given date is before today (yesterday or earlier).
+export function isDateBeforeToday(dateString) {
+   const givenDate = startOfDay(new Date(dateString));
+   const today = startOfDay(new Date());
+   return isBefore(givenDate, today);
+}
+
 export function categorizePlannedTasks(tasks) {
    const today = new Date();
 
