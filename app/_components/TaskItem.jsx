@@ -1,13 +1,8 @@
+import useTaskStore from '../taskStore';
 import CompleteBtn from './_ui/CompleteBtn';
 import StarBtn from './_ui/StarBtn';
 import TaskDetails from './TaskDetails';
 import TaskTitle from './TaskTitle';
-
-/* 
-   We used 'closest' instead of 'ref' because 'ref' can sometimes fail to detect clicks, especially if React hasn't updated the DOM yet. 
-   'closest' allows us to check if the clicked element is inside a specific DOM element, which is more reliable for handling outside clicks, 
-   ensuring the sidebar closes properly when clicked outside, regardless of React's DOM state.
-*/
 
 // Define styles for the TaskItem component
 const taskItemStyles = `
@@ -27,18 +22,16 @@ const taskItemStyles = `
    }
 `;
 
-export default function TaskItem({
-   task,
-   listRef,
-   bgColor,
-   handleToggleSidebar,
-   listName,
-}) {
+export default function TaskItem({ task, listRef, bgColor, listName }) {
+   const handleActiveTaskSidebar = useTaskStore(
+      (state) => state.handleActiveTaskSidebar
+   );
+
    return (
       <li
          ref={listRef}
          id={task.task_id}
-         onClick={(e) => handleToggleSidebar(task, e)}
+         onClick={(e) => handleActiveTaskSidebar(task, e)}
          className='task-item min-h-12 text-gray-400' // for click handeling
          style={{
             '--default-bg-color': bgColor.taskBackground,

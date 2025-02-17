@@ -1,12 +1,6 @@
 import TaskItem from './TaskItem';
 
-export default function TaskGroup({
-   tasks,
-   listRef,
-   bgColor,
-   handleToggleSidebar,
-   listName,
-}) {
+export default function TaskGroup({ tasks, listRef, bgColor, listName }) {
    if (tasks.length === 0) return null;
 
    return (
@@ -17,7 +11,6 @@ export default function TaskGroup({
                listRef={listRef}
                key={task.task_id}
                bgColor={bgColor}
-               handleToggleSidebar={handleToggleSidebar}
                listName={listName}
             />
          ))}

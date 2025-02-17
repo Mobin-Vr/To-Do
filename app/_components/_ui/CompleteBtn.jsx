@@ -17,7 +17,7 @@ export default function CompleteBtn({ task, className, bgColor }) {
    return (
       <button
          onClick={handleCompleteClick}
-         className={`btnStyles group bg-transparent relative transition-all cursor-default duration-200 ease-in-out ${className}`}
+         className={`group bg-transparent relative transition-all cursor-default duration-200 ease-in-out ${className}`}
       >
          {task.is_task_completed ? (
             <div style={{ color: bgColor.iconSecondaryColor }}>

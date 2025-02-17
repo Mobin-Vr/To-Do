@@ -5,7 +5,6 @@ export default function PlannedMinimizer({
    tasks,
    listRef,
    bgColor,
-   handleToggleSidebar,
    listName,
 }) {
    const { pastTasks, todayTasks, futureTasks } = categorizePlannedTasks(tasks);
@@ -17,7 +16,6 @@ export default function PlannedMinimizer({
             tasks={pastTasks}
             listRef={listRef}
             bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
             isVisibleByDefault={true}
             listName={listName}
          />
@@ -27,7 +25,6 @@ export default function PlannedMinimizer({
             tasks={todayTasks}
             listRef={listRef}
             bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
             isVisibleByDefault={true}
             listName={listName}
          />
@@ -37,7 +34,6 @@ export default function PlannedMinimizer({
             tasks={futureTasks}
             listRef={listRef}
             bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
             isVisibleByDefault={true}
             listName={listName}
          />

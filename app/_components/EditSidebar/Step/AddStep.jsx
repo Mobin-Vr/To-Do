@@ -9,7 +9,6 @@ export default function AddStep({ task }) {
    const [stepInput, setStepInput] = useState('');
    const [isTyping, setIsTyping] = useState(false);
 
-   // const steps = task.task_steps || []; // LATER this or :
    if (!task.task_steps) return;
 
    function handleSubmit(e) {

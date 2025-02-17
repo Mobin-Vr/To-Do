@@ -20,8 +20,7 @@ import {
    updateCategory,
    updateTask,
 } from './_lib/data-services';
-import { checkIfToday, getDateNowIso } from './_lib/utils';
-import { isToday } from 'date-fns';
+import { delay, getDateNowIso } from './_lib/utils';
 
 const initialState = {
    isSidebarOpen: false,
@@ -79,13 +78,48 @@ const useTaskStore = create(
                );
             },
 
+            // # Toggle Edit sidebar
+            handleActiveTaskSidebar: async (selectedTask, e) => {
+               if (
+                  e?.target?.closest('.complete-btn') ||
+                  e?.target?.closest('.star-btn')
+               )
+                  return;
+
+               const { isEditSidebarOpen, activeTask, tasksList } = get();
+               const cond = selectedTask?.task_id === activeTask?.task_id;
+
+               set(
+                  produce((state) => {
+                     if (!isEditSidebarOpen) {
+                        state.activeTask = selectedTask;
+                        state.isEditSidebarOpen = true;
+                     } else if (isEditSidebarOpen && cond) {
+                        state.isEditSidebarOpen = false;
+                        state.activeTask = tasksList[0] || null;
+                     } else if (isEditSidebarOpen && !cond) {
+                        state.isEditSidebarOpen = false;
+                     }
+                  })
+               );
+
+               if (isEditSidebarOpen && !cond) {
+                  await delay(200);
+                  set(
+                     produce((state) => {
+                        state.activeTask = selectedTask;
+                        state.isEditSidebarOpen = true;
+                     })
+                  );
+               }
+            },
+
             // # Add a task
             addTaskToStore: async (task) => {
                set(
                   produce((state) => {
                      // Add the task to LC
                      state.tasksList.push(task);
-                     state.activeTask = task;
 
                      // Add to change log only if offline.
                      if (state.offlineLogMode) {
@@ -118,17 +152,6 @@ const useTaskStore = create(
                      const taskToDelete = state.tasksList.find(
                         (task) => task.task_id === id
                      );
-
-                     // Set an active task if the active task is deleted
-                     if (state.activeTask.task_id === id) {
-                        const remainingTasks = state.tasksList.filter(
-                           (task) => task.task_id !== id
-                        );
-                        state.activeTask =
-                           remainingTasks.length > 0
-                              ? remainingTasks[0] // Choose the first remaining task as active
-                              : {};
-                     }
 
                      // Delete the task from LC
                      state.tasksList = state.tasksList.filter(
@@ -904,17 +927,6 @@ const useTaskStore = create(
                         (task) => task.task_category_id !== id
                      );
 
-                     // Set a new active task if the current one was deleted
-                     if (
-                        state.activeTask?.task_id &&
-                        tasksToDelete.some(
-                           (t) => t.task_id === state.activeTask.task_id
-                        )
-                     ) {
-                        state.activeTask =
-                           state.tasksList.length > 0 ? state.tasksList[0] : {};
-                     }
-
                      // Add changes to the offline log if offline mode is enabled
                      if (state.offlineLogMode) {
                         // Remove existing logs related to this category
@@ -1446,11 +1458,11 @@ const useTaskStore = create(
                ),
          }),
          {
-            name: 'todo[tasks-store]', // Key name for storage
+            name: 'Todo Store', // Key name for storage
             getStorage: () => localStorage, // Use localStorage for persisting the data
          }
       ),
-      { name: 'Task Store' } // Redux DevTools name
+      { name: 'Todo Store' } // Redux DevTools name
    )
 );
 

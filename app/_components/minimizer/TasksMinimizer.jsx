@@ -8,7 +8,6 @@ export default function TasksMinimizer({
    tasks,
    bgColor,
    listRef,
-   handleToggleSidebar,
    TogglerName,
    isVisibleByDefault = false,
    listName,
@@ -29,7 +28,6 @@ export default function TasksMinimizer({
                tasks={tasks}
                listRef={listRef}
                bgColor={bgColor}
-               handleToggleSidebar={handleToggleSidebar}
                listName={listName}
             />
          )}

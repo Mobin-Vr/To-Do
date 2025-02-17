@@ -7,6 +7,7 @@ import UserSignupHandler from './_components/menuSidebar/UserSignupHandler';
 import ReminderHandler from './_components/ReminderHandler';
 import TaskRealTimeListener from './_components/TaskRealTimeListener';
 import './_styles/globals.css';
+import EditSidebar from './_components/EditSidebar/EditSidebar';
 
 const roboto = Roboto_Flex({
    subsets: ['latin'],
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }) {
                   <UserSignupHandler />
 
                   <Sidebar />
+                  <EditSidebar />
 
                   {/* get new tasks in real time */}
                   <TaskRealTimeListener />

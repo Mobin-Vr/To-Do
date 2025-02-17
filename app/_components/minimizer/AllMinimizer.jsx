@@ -5,7 +5,6 @@ export default function AllMinimizer({
    tasks,
    listRef,
    bgColor,
-   handleToggleSidebar,
    getCategoriesList,
    listName,
 }) {
@@ -28,7 +27,6 @@ export default function AllMinimizer({
             tasks={defaultTasks}
             listRef={listRef}
             bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
             isVisibleByDefault={true}
             listName={listName}
          />
@@ -43,7 +41,6 @@ export default function AllMinimizer({
                      TogglerName={cat.category_title}
                      listRef={listRef}
                      bgColor={bgColor}
-                     handleToggleSidebar={handleToggleSidebar}
                      isVisibleByDefault={true}
                      listName={listName}
                      tasks={tasks.filter(

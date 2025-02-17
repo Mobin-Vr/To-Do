@@ -6,7 +6,6 @@ export default function DefaultMinimizer({
    tasks,
    listRef,
    bgColor,
-   handleToggleSidebar,
    sortMethod,
    listName,
    isVisibleByDefault,
@@ -23,7 +22,6 @@ export default function DefaultMinimizer({
             tasks={sortedUncompletedTasks}
             listRef={listRef}
             bgColor={bgColor}
-            handleToggleSidebar={handleToggleSidebar}
             listName={listName}
          />
 
@@ -33,7 +31,6 @@ export default function DefaultMinimizer({
                tasks={sortedCompletedTasks}
                listRef={listRef}
                bgColor={bgColor}
-               handleToggleSidebar={handleToggleSidebar}
                isVisibleByDefault={isVisibleByDefault}
                listName={listName}
             />

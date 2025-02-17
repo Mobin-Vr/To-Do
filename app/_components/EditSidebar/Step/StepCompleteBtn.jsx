@@ -1,20 +1,10 @@
 import useTaskStore from '@/app/taskStore';
 import { CircleIcon, CompletedIcon, TickCircleIcon } from '@/public/icons';
 
-const btnStyles = `
-   .btnStyles {
-      color: var(--default-text-color);
-   }
-
-   .btnStyles:hover {
-      color: var(--hover-text-color);
-   }
-`;
-
 export default function StepCompleteBtn({ taskId, step, className, bgColor }) {
    const updateStep = useTaskStore((state) => state.updateStep);
 
-   function handleCompleteBtn() {
+   function handleCompleteClick() {
       updateStep(taskId, step.step_id, {
          is_step_completed: !step.is_step_completed,
       });
@@ -22,30 +12,30 @@ export default function StepCompleteBtn({ taskId, step, className, bgColor }) {
 
    return (
       <button
-         onClick={handleCompleteBtn}
-         style={{ '--hover-text-color': bgColor.iconColor }}
-         className={`btnStyles group bg-transparent relative transition-all cursor-default duration-300 ease-in-out ${className}`}
+         onClick={handleCompleteClick}
+         className={`group bg-transparent relative transition-all cursor-default duration-300 ease-in-out ${className}`}
       >
          {step.is_step_completed ? (
-            <span
-               className='btnStyles'
-               style={{ '--default-text-color': bgColor.iconColor }}
-            >
+            <span style={{ color: bgColor.iconSecondaryColor }}>
                <CompletedIcon size='16' />
             </span>
          ) : (
             <>
-               <span className='block group-hover:hidden'>
+               <span
+                  className='block group-hover:hidden'
+                  style={{ color: bgColor.ternaryText }}
+               >
                   <CircleIcon size='16' />
                </span>
 
-               <span className='hidden group-hover:block'>
+               <span
+                  className='hidden group-hover:block'
+                  style={{ color: bgColor.iconSecondaryColor }}
+               >
                   <TickCircleIcon size='16' />
                </span>
             </>
          )}
-
-         <style>{btnStyles}</style>
       </button>
    );
 }

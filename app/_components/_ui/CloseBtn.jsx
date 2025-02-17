@@ -1,16 +1,8 @@
-import useTaskStore from '@/app/taskStore';
 import { XIcon } from '@/public/icons';
 import { useRef } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
-export default function CloseBtn() {
+export default function CloseBtn({ toggleEditSidebar }) {
    const closeRef = useRef(null);
-
-   const { toggleEditSidebar } = useTaskStore(
-      useShallow((state) => ({
-         toggleEditSidebar: state.toggleEditSidebar,
-      }))
-   );
 
    function handleClose() {
       toggleEditSidebar();
