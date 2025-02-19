@@ -19,19 +19,19 @@ export default function AppHeader({
 }) {
   const { bgColor, listName, listIcon, theCategory } = listConfig;
 
-  const { getUserInfo } = useTaskStore(
+  const { getuserState } = useTaskStore(
     useShallow((state) => ({
-      getUserInfo: state.getUserInfo,
+      getuserState: state.getuserState,
     })),
   );
 
   const isCategoryOwner =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getUserInfo().user_id;
+    theCategory.category_owner_id === getuserState().user_id;
 
   const isEditable =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getUserInfo().user_id;
+    theCategory.category_owner_id === getuserState().user_id;
 
   return (
     <div

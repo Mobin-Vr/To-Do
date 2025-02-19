@@ -25,7 +25,7 @@ export default function Sidebar() {
     toggleSidebar,
     tasksList,
     categoriesList,
-    getUserInfo,
+    getuserState,
     addCategoryToStore,
   } = useTaskStore(
     useShallow((state) => ({
@@ -33,7 +33,7 @@ export default function Sidebar() {
       toggleSidebar: state.toggleSidebar,
       tasksList: state.tasksList,
       categoriesList: state.categoriesList,
-      getUserInfo: state.getUserInfo,
+      getuserState: state.getuserState,
       addCategoryToStore: state.addCategoryToStore,
     })),
   );
@@ -105,7 +105,7 @@ export default function Sidebar() {
 
         <div className="sticky bottom-0 w-full border-t border-t-gray-200 bg-gray-50">
           <NewListBtn
-            getUserInfo={getUserInfo}
+            getuserState={getuserState}
             addCategoryToStore={addCategoryToStore}
           />
         </div>

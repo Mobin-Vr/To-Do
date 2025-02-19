@@ -5,6 +5,9 @@ export const TOAST_DURATION = duration;
 export const CHECK_REMINDERS_INTERVAL = 30000; // 30 sec
 export const SNOOZE_DURATION = 5 * 60 * 1000; // 5 minutes
 
+export const MAX_INPUT_LENGTH = 200; // Enforces the character limit on the input
+export const MAX_TEXT_ARIA_LENGTH = 500; // Enforces the character limit on the textaria
+
 // Default task object
 export const defaultCategoryId = "00000000-0000-0000-0000-000000000000";
 export const defaultCategory = {
@@ -13,7 +16,7 @@ export const defaultCategory = {
   category_owner_id: null,
   category_created_at: null,
   has_category_collaborator: false,
-  has_category_invatation: false,
+  has_category_invitation: false,
 };
 
 ////////////////////

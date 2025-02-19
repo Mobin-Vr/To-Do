@@ -7,7 +7,9 @@ export default function UserStatus({ user, showIcon = true }) {
     (state) => state.conectionStatus,
   );
 
-  const timeAgo = `Synced ${getTimeAgo(lastOnline)} ...`;
+  const timeAgo = lastOnline
+    ? `Synced ${getTimeAgo(lastOnline)} ...`
+    : "You're offline ...";
 
   const statusIndicator =
     isConnected && isOnline ? "bg-green-400" : "bg-orange-400";

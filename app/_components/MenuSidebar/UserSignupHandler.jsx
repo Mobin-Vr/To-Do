@@ -9,12 +9,12 @@ import useTaskStore from "@/app/taskStore";
 export default function UserSignupHandler() {
   const { user } = useUser();
 
-  const setUserInfo = useTaskStore((state) => state.setUserInfo);
+  const setuserState = useTaskStore((state) => state.setuserState);
 
   // Use useCallback to prevent unnecessary re-renders
-  const memoized_setUserInfo = useCallback(
-    (userInfo) => setUserInfo(userInfo),
-    [setUserInfo],
+  const memoized_setuserState = useCallback(
+    (userState) => setuserState(userState),
+    [setuserState],
   );
 
   useEffect(() => {
@@ -34,17 +34,17 @@ export default function UserSignupHandler() {
           user_clerk_id: user.id,
         });
 
-        memoized_setUserInfo(newUser[0]);
+        memoized_setuserState(newUser[0]);
       }
 
-      if (existingUser) memoized_setUserInfo(existingUser);
+      if (existingUser) memoized_setuserState(existingUser);
     }
 
     // Call the sign-in handler and catch any errors
     handleSignIn().catch((error) => {
       console.error("Error creating user record in DB:", error);
     });
-  }, [user, memoized_setUserInfo]);
+  }, [user, memoized_setuserState]);
 
   return null;
 }

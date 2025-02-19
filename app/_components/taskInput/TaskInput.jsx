@@ -8,7 +8,7 @@ import useTaskStore from "../../taskStore";
 import InputAddDue from "./InputAddDue";
 import InputAddReminder from "./InputAddReminder";
 import InputAddRepeat from "./InputAddRepeat";
-import { defaultCategoryId } from "@/app/_lib/configs";
+import { defaultCategoryId, MAX_INPUT_LENGTH } from "@/app/_lib/configs";
 
 export default function TaskInput({
   bgColor,
@@ -16,10 +16,10 @@ export default function TaskInput({
   categoryId,
   listName,
 }) {
-  const { addTaskToStore, getUserInfo } = useTaskStore(
+  const { addTaskToStore, getuserState } = useTaskStore(
     useShallow((state) => ({
       addTaskToStore: state.addTaskToStore,
-      getUserInfo: state.getUserInfo,
+      getuserState: state.getuserState,
     })),
   );
 
@@ -47,7 +47,7 @@ export default function TaskInput({
 
     const newItem = {
       task_id: generateNewUuid(),
-      task_owner_id: getUserInfo().user_id,
+      task_owner_id: getuserState().user_id,
       task_title: taskInput,
       task_category_id: categoryId,
       task_category_title: catTitleCond,
@@ -89,6 +89,7 @@ export default function TaskInput({
           value={taskInput}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          maxLength={MAX_INPUT_LENGTH}
           onChange={(e) => setTaskInput(e.target.value)}
           style={{ backgroundColor: bgColor.toggleBackground }}
           className={`custom-placeholder h-full w-full rounded-md pl-12 pr-28 text-sm font-light outline-none ${

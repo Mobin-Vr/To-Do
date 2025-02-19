@@ -99,8 +99,8 @@ function TaskDetails({ task, listName, className }) {
         )}
 
         {task.task_note && (
-          <span>
-            <NoteIcon size="12px" color="#888" />
+          <span className="mt-0.5 opacity-70">
+            <NoteIcon size="13px" />
           </span>
         )}
       </div>

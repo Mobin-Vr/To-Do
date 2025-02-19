@@ -37,12 +37,16 @@ export default function BoxBtn({
         }`}
       >
         {Icon && (
-          <span className={`${isDateSet ? "text-blue-600" : ""}`}>
+          <span
+            className={` ${isDateSet ? "text-blue-600 opacity-100" : "opacity-60"}`}
+          >
             <Icon />
           </span>
         )}
         <div className="mt-1 flex h-10 flex-col justify-center leading-tight">
-          <span className={`${isDateSet ? "text-blue-700" : ""} capitalize`}>
+          <span
+            className={`${isDateSet ? "text-blue-700 opacity-100" : "opacity-80"} capitalize`}
+          >
             {isDateSet ? activeText : text}
           </span>
           {isDateSet && (

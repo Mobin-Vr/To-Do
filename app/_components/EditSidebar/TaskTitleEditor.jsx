@@ -1,3 +1,4 @@
+import { MAX_INPUT_LENGTH } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
 import { useState, useEffect, useRef, useCallback } from "react";
 
@@ -53,7 +54,7 @@ export default function TaskTitleEditor({ task, className }) {
       onBlur={handleBlur}
       value={currentTitle}
       onChange={handleUpdateTitle}
-      maxLength={150}
+      maxLength={MAX_INPUT_LENGTH}
       className={`min-h-[2rem] w-full resize-none overflow-hidden whitespace-pre-wrap break-words bg-inherit p-2 outline-none ${className} ${
         task.is_task_completed && !isTyping ? "text-gray-800 line-through" : ""
       }`}

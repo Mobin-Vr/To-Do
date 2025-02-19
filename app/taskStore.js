@@ -23,42 +23,42 @@ import {
 import { delay, getDateNowIso } from "./_lib/utils";
 
 const initialState = {
-  isSidebarOpen: false,
-  isEditSidebarOpen: false,
-  activeTask: {},
-  isSyncing: false,
-  offlineLogMode: false,
-  conectionStatus: {}, // {isConected, isOnline, lastOnline}
-  userInfo: {},
-  tasksList: [],
-  categoriesList: [defaultCategory], // we can push more
-  changeLog: [],
   sortMethod: "importance",
   sortMethodForShared: "creationDate",
+  isSidebarOpen: false,
+  isEditSidebarOpen: false,
+  isSyncing: false,
+  offlineLogMode: false,
+  editTitleWhileCreating: false, // Auto-focus the textarea for renaming only when creating a new list.
+  activeTask: {},
+  conectionStatus: {}, // {isConected, isOnline, lastOnline}
+  changeLog: [],
+  userState: {},
+  tasksList: [],
+  categoriesList: [defaultCategory], // we can push more
   invitations: [], // this is just for owner: each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
   sharedWithMe: [], // this is for the second user: each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
-  editTitleWhileCreating: false, // Auto-focus the textarea for renaming only when creating a new list.
 };
 
 const useTaskStore = create(
   devtools(
     persist(
       (set, get) => ({
-        isSidebarOpen: initialState.isSidebarOpen,
-        isEditSidebarOpen: initialState.isEditSidebarOpen,
-        activeTask: initialState.activeTask,
-        isSyncing: initialState.isSyncing,
-        offlineLogMode: initialState.offlineLogMode,
-        conectionStatus: initialState.conectionStatus,
-        userInfo: initialState.userInfo,
-        tasksList: initialState.tasksList,
-        changeLog: initialState.changeLog,
         sortMethod: initialState.sortMethod,
         sortMethodForShared: initialState.sortMethodForShared,
+        isSidebarOpen: initialState.isSidebarOpen,
+        isEditSidebarOpen: initialState.isEditSidebarOpen,
+        isSyncing: initialState.isSyncing,
+        offlineLogMode: initialState.offlineLogMode,
+        editTitleWhileCreating: initialState.editTitleWhileCreating,
+        activeTask: initialState.activeTask,
+        conectionStatus: initialState.conectionStatus,
+        changeLog: initialState.changeLog,
+        userState: initialState.userState,
+        tasksList: initialState.tasksList,
         categoriesList: initialState.categoriesList,
         invitations: initialState.invitations,
         sharedWithMe: initialState.sharedWithMe,
-        editTitleWhileCreating: initialState.editTitleWhileCreating,
 
         // # Toggle sidebar
         toggleSidebar: () => {
@@ -927,7 +927,7 @@ const useTaskStore = create(
 
         // # Fetching tasks from DB and Synchronizing localeStorage with the database
         syncLcWithDb: async () => {
-          const userId = get().userInfo.user_id;
+          const userId = get().userState.user_id;
 
           // This will get all relevent tasks on every reload (shared + owned)
           const tasks = await getRelevantTasksAction(userId);
@@ -967,10 +967,10 @@ const useTaskStore = create(
         },
 
         // Set user's info
-        setUserInfo: (userInfo) => {
+        setuserState: (userState) => {
           set(
             produce((state) => {
-              state.userInfo = userInfo;
+              state.userState = userState;
             }),
           );
         },
@@ -1021,8 +1021,8 @@ const useTaskStore = create(
           );
         },
 
-        getUserInfo: () => {
-          return get().userInfo;
+        getuserState: () => {
+          return get().userState;
         },
 
         getCategoriesList: () => {
@@ -1037,12 +1037,12 @@ const useTaskStore = create(
 
         // # Create invitation
         createInvitationInStore: async (categoryId) => {
-          const userInfo = get().userInfo;
+          const userState = get().userState;
 
           try {
             const token = await createInvitationAction(
               categoryId,
-              userInfo.user_id,
+              userState.user_id,
             );
 
             const baseUrl =
@@ -1063,7 +1063,7 @@ const useTaskStore = create(
                 state.invitations.push({
                   invitation_id: token,
                   invitation_category_id: categoryId,
-                  invitation_owner_id: userInfo.user_id,
+                  invitation_owner_id: userState.user_id,
                   invitation_limit_access: false,
                   invitation_created_at: new Date().toISOString(),
                   invitation_link: invitationLink, // This is not in the DB "inavtion" table
@@ -1084,7 +1084,7 @@ const useTaskStore = create(
 
         // # Remove user
         removeUserFromInvitationStore: async (invitationId, userId) => {
-          const owner = get().userInfo;
+          const owner = get().userState;
 
           try {
             await removeUserFromInvitationAction(
@@ -1113,7 +1113,7 @@ const useTaskStore = create(
 
         // # Set access limit
         setInvitationAccessLimitInStore: async (categoryId) => {
-          const owner = get().userInfo;
+          const owner = get().userState;
 
           const { invitation_limit_access } = get().invitations.find(
             (inv) => inv.invitation_category_id === categoryId,
@@ -1148,7 +1148,7 @@ const useTaskStore = create(
 
         // # Stop sharing
         stopSharingInvitationInStore: async (categoryId) => {
-          const owner = get().userInfo;
+          const owner = get().userState;
 
           const { invitation_id } = get().invitations.find(
             (inv) => inv.invitation_category_id === categoryId,
@@ -1177,7 +1177,7 @@ const useTaskStore = create(
 
         // # Get list's users
         getUsersByInvitationInStore: async (invitationId) => {
-          const owner = get().userInfo;
+          const owner = get().userState;
 
           try {
             const users = await getUsersByInvitationAction(
@@ -1201,7 +1201,7 @@ const useTaskStore = create(
 
         // # Joining to a list with token
         joinInvitationInStore: async (invitationId) => {
-          const userInfo = get().userInfo;
+          const userState = get().userState;
 
           try {
             // Check if the invitation already exists
@@ -1219,7 +1219,7 @@ const useTaskStore = create(
             // Request invitation details and relevent tasks
             const { category, tasks } = await joinInvitationAction(
               invitationId,
-              userInfo.user_id,
+              userState.user_id,
             );
 
             // Add new invitation if not existing
