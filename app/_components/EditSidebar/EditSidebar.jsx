@@ -13,6 +13,7 @@ import AddToMyDay from "./AddToMyDay";
 import ReminderBox from "./reminderBox/ReminderBox";
 import TaskOverView from "./TaskOverView";
 import { validate } from "uuid";
+import Overlay from "../_ui/Overlay";
 
 export default function EditSidebar() {
   const pageName = usePathname().split("/").at(-1);
@@ -70,33 +71,37 @@ export default function EditSidebar() {
   if (!activeTask) return;
 
   return (
-    <div
-      className={`edit-sidebar border-1 absolute bottom-0 right-0 top-0 z-20 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-64 md:max-w-80 ${
-        isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
-      <div className="flex h-full flex-col overflow-y-scroll px-3 py-3">
-        <CloseBtn toggleEditSidebar={toggleEditSidebar} />
+    <>
+      <Overlay isOpen={isEditSidebarOpen} onClick={toggleEditSidebar} />
 
-        <div className="flex flex-1 flex-col gap-2.5 justify-self-start">
-          <TaskOverView task={activeTask} bgColor={bgColor} />
-          <AddToMyDay task={activeTask} />
-          <ReminderBox task={activeTask} />
-          <AddFile />
-          <AddNote
-            task={activeTask}
-            updateNote={updateNote}
-            isEditSidebarOpen={isEditSidebarOpen}
-          />
+      <div
+        className={`edit-sidebar border-1 absolute bottom-0 right-0 top-0 z-50 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-64 md:max-w-80 ${
+          isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="flex h-full flex-col overflow-y-scroll px-3 py-3">
+          <CloseBtn toggleEditSidebar={toggleEditSidebar} />
+
+          <div className="flex flex-1 flex-col gap-2.5 justify-self-start">
+            <TaskOverView task={activeTask} bgColor={bgColor} />
+            <AddToMyDay task={activeTask} />
+            <ReminderBox task={activeTask} />
+            <AddFile />
+            <AddNote
+              task={activeTask}
+              updateNote={updateNote}
+              isEditSidebarOpen={isEditSidebarOpen}
+            />
+          </div>
         </div>
-      </div>
 
-      <ActionFooter
-        task={activeTask}
-        deleteTaskFromStore={deleteTaskFromStore}
-        toggleEditSidebar={toggleEditSidebar}
-      />
-    </div>
+        <ActionFooter
+          task={activeTask}
+          deleteTaskFromStore={deleteTaskFromStore}
+          toggleEditSidebar={toggleEditSidebar}
+        />
+      </div>
+    </>
   );
 }
 

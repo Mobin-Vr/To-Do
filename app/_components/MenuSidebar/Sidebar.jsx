@@ -12,6 +12,7 @@ import CategoriesList from "./CategoriesList";
 import SidebarNav from "./SidebarNav";
 import TaskSearch from "./TaskSearch";
 import UserMenu from "./UserMenu";
+import Overlay from "../_ui/Overlay";
 
 export default function Sidebar() {
   const sidebarRef = useRef(null);
@@ -64,43 +65,51 @@ export default function Sidebar() {
   }
 
   return (
-    <div
-      ref={sidebarRef}
-      className={`fixed bottom-0 left-0 top-0 z-20 flex h-full w-3/5 transform flex-col justify-between rounded-r-md border border-gray-300 bg-sidebar-main px-4 py-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:static sm:max-w-64 sm:translate-x-0 md:max-w-80 ${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}
-    >
-      <div>
-        <MenuBtn
-          menuButtonRef={menuButtonRef}
-          className="-translate-x-1 -translate-y-1"
-          bgColor={bgColor}
-        />
+    <>
+      <Overlay
+        isOpen={isSidebarOpen}
+        onClick={toggleSidebar}
+        className="sm:hidden"
+      />
 
-        <UserMenu
-          className={"mb-3 mt-2"}
-          user={user}
-          createClerkPasskey={createClerkPasskey}
-        />
-
-        <TaskSearch />
-
-        <nav className="sidebar relative max-h-[calc(100vh-200px)] overflow-y-auto pb-4">
-          <SidebarNav tasksList={tasksList} toggleSidebar={toggleSidebar} />
-
-          <CategoriesList
-            categoriesList={categoriesList}
-            toggleSidebar={toggleSidebar}
+      <div
+        ref={sidebarRef}
+        className={`fixed bottom-0 left-0 top-0 z-50 flex h-full w-3/5 transform flex-col justify-between rounded-r-md border border-gray-300 bg-sidebar-main px-4 py-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:static sm:max-w-64 sm:translate-x-0 md:max-w-80 ${
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div>
+          <MenuBtn
+            menuButtonRef={menuButtonRef}
+            className="-translate-x-1 -translate-y-1"
+            bgColor={bgColor}
           />
-        </nav>
-      </div>
 
-      <div className="sticky bottom-0 w-full border-t border-t-gray-200 bg-gray-50">
-        <NewListBtn
-          getUserInfo={getUserInfo}
-          addCategoryToStore={addCategoryToStore}
-        />
+          <UserMenu
+            className={"mb-3 mt-2"}
+            user={user}
+            createClerkPasskey={createClerkPasskey}
+          />
+
+          <TaskSearch />
+
+          <nav className="sidebar relative max-h-[calc(100vh-200px)] overflow-y-auto pb-4">
+            <SidebarNav tasksList={tasksList} toggleSidebar={toggleSidebar} />
+
+            <CategoriesList
+              categoriesList={categoriesList}
+              toggleSidebar={toggleSidebar}
+            />
+          </nav>
+        </div>
+
+        <div className="sticky bottom-0 w-full border-t border-t-gray-200 bg-gray-50">
+          <NewListBtn
+            getUserInfo={getUserInfo}
+            addCategoryToStore={addCategoryToStore}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
