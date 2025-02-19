@@ -1,46 +1,46 @@
-import { generateNewUuid, getDateNowIso } from '@/app/_lib/utils';
-import useTaskStore from '@/app/taskStore';
-import { PlusIcon } from '@/public/icons';
-import { redirect } from 'next/navigation';
-import { useShallow } from 'zustand/react/shallow';
+import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
+import useTaskStore from "@/app/taskStore";
+import { PlusIcon } from "@/public/icons";
+import { redirect } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
 
 export default function NewListBtn({
-   className,
-   getUserInfo,
-   addCategoryToStore,
+  className,
+  getUserInfo,
+  addCategoryToStore,
 }) {
-   const { toggleSidebar, toggleTitleFocus } = useTaskStore(
-      useShallow((state) => ({
-         toggleSidebar: state.toggleSidebar,
-         toggleTitleFocus: state.toggleTitleFocus,
-      }))
-   );
+  const { toggleSidebar, toggleTitleFocus } = useTaskStore(
+    useShallow((state) => ({
+      toggleSidebar: state.toggleSidebar,
+      toggleTitleFocus: state.toggleTitleFocus,
+    })),
+  );
 
-   function handleNewList() {
-      const uuId = generateNewUuid();
+  function handleNewList() {
+    const uuId = generateNewUuid();
 
-      const newCategory = {
-         category_id: uuId,
-         category_title: '',
-         category_owner_id: getUserInfo().user_id,
-         category_created_at: getDateNowIso(),
-         has_category_invitation: false,
-         has_category_collaborator: false,
-      };
+    const newCategory = {
+      category_id: uuId,
+      category_title: "",
+      category_owner_id: getUserInfo().user_id,
+      category_created_at: getDateNowIso(),
+      has_category_invitation: false,
+      has_category_collaborator: false,
+    };
 
-      addCategoryToStore(newCategory);
-      toggleTitleFocus(true);
-      toggleSidebar();
+    addCategoryToStore(newCategory);
+    toggleTitleFocus(true);
+    toggleSidebar();
 
-      redirect(`/tasks/${uuId}`);
-   }
-   return (
-      <button
-         onClick={handleNewList}
-         className={`flex gap-3 text-sm w-full items-center  hover:bg-sidebar-hover p-1 mt-1 rounded-md ${className}`}
-      >
-         <PlusIcon color='#000' />
-         <span>New list</span>
-      </button>
-   );
+    redirect(`/tasks/${uuId}`);
+  }
+  return (
+    <button
+      onClick={handleNewList}
+      className={`mt-1 flex w-full items-center gap-3 rounded-md p-1 text-sm hover:bg-sidebar-hover ${className}`}
+    >
+      <PlusIcon color="#000" />
+      <span>New list</span>
+    </button>
+  );
 }

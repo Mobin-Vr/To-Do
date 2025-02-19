@@ -1,128 +1,125 @@
-'use client';
+"use client";
 
-import { CircleIcon, PlusIcon } from '@/public/icons';
-import { useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import { checkIfToday, generateNewUuid, getDateNowIso } from '../../_lib/utils';
-import useTaskStore from '../../taskStore';
-import InputAddDue from './InputAddDue';
-import InputAddReminder from './InputAddReminder';
-import InputAddRepeat from './InputAddRepeat';
-import { defaultCategoryId } from '@/app/_lib/configs';
+import { CircleIcon, PlusIcon } from "@/public/icons";
+import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { checkIfToday, generateNewUuid, getDateNowIso } from "../../_lib/utils";
+import useTaskStore from "../../taskStore";
+import InputAddDue from "./InputAddDue";
+import InputAddReminder from "./InputAddReminder";
+import InputAddRepeat from "./InputAddRepeat";
+import { defaultCategoryId } from "@/app/_lib/configs";
 
 export default function TaskInput({
-   bgColor,
-   className,
-   categoryId,
-   listName,
+  bgColor,
+  className,
+  categoryId,
+  listName,
 }) {
-   const { addTaskToStore, getUserInfo } = useTaskStore(
-      useShallow((state) => ({
-         addTaskToStore: state.addTaskToStore,
-         getUserInfo: state.getUserInfo,
-      }))
-   );
+  const { addTaskToStore, getUserInfo } = useTaskStore(
+    useShallow((state) => ({
+      addTaskToStore: state.addTaskToStore,
+      getUserInfo: state.getUserInfo,
+    })),
+  );
 
-   const [taskInput, setTaskInput] = useState('');
-   const [isTyping, setIsTyping] = useState(false);
+  const [taskInput, setTaskInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
 
-   const [taskReminder, setTaskReminder] = useState(null);
-   const [taskDueDate, setTaskDueDate] = useState(null);
-   const [taskRepeat, setTaskRepeat] = useState(null);
+  const [taskReminder, setTaskReminder] = useState(null);
+  const [taskDueDate, setTaskDueDate] = useState(null);
+  const [taskRepeat, setTaskRepeat] = useState(null);
 
-   function handleSubmit(e) {
-      e.preventDefault();
-      if (taskInput.trim() === '') return;
+  const handleFocus = () => setIsTyping(true);
+  const handleBlur = () => setIsTyping(false);
 
-      const catTitleCond =
-         categoryId === defaultCategoryId ? 'Tasks' : listName;
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (taskInput.trim() === "") return;
 
-      const myDayCond =
-         checkIfToday(taskDueDate) ||
-         checkIfToday(taskReminder) ||
-         listName === 'My Day' ||
-         (listName === 'Planned' && !taskDueDate && !taskReminder);
+    const catTitleCond = categoryId === defaultCategoryId ? "Tasks" : listName;
 
-      const newItem = {
-         task_id: generateNewUuid(),
-         task_owner_id: getUserInfo().user_id,
-         task_title: taskInput,
-         task_category_id: categoryId,
-         task_category_title: catTitleCond,
-         task_note: '',
-         task_due_date: taskDueDate,
-         task_reminder: taskReminder,
-         task_repeat: taskRepeat,
-         task_steps: [],
-         task_created_at: getDateNowIso(),
-         task_completed_at: null,
-         task_updated_at: null,
-         is_task_completed: false,
-         is_task_starred: listName === 'Important',
-         is_task_in_myday: myDayCond,
-      };
+    const myDayCond =
+      checkIfToday(taskDueDate) ||
+      checkIfToday(taskReminder) ||
+      listName === "My Day" ||
+      (listName === "Planned" && !taskDueDate && !taskReminder);
 
-      addTaskToStore(newItem);
-      setTaskInput('');
-   }
+    const newItem = {
+      task_id: generateNewUuid(),
+      task_owner_id: getUserInfo().user_id,
+      task_title: taskInput,
+      task_category_id: categoryId,
+      task_category_title: catTitleCond,
+      task_note: "",
+      task_due_date: taskDueDate,
+      task_reminder: taskReminder,
+      task_repeat: taskRepeat,
+      task_steps: [],
+      task_created_at: getDateNowIso(),
+      task_completed_at: null,
+      task_updated_at: null,
+      is_task_completed: false,
+      is_task_starred: listName === "Important",
+      is_task_in_myday: myDayCond,
+    };
 
-   function handleFocus() {
-      setIsTyping(true);
-   }
+    addTaskToStore(newItem);
+    setTaskInput("");
+  }
 
-   function handleBlur() {
-      setIsTyping(false);
-   }
-
-   return (
-      <div
-         className={`relative ${className}`}
-         style={{ backgroundColor: bgColor.mainBackground }}
+  return (
+    <div
+      className={`relative ${className}`}
+      style={{ backgroundColor: bgColor.mainBackground }}
+    >
+      <button
+        className="absolute left-[4.5rem] top-3.5 cursor-pointer opacity-60"
+        onClick={handleSubmit}
       >
-         <form
-            className='flex items-center h-[2.9rem] w-full z-10 border border-1 border-gray-300 rounded-md overflow-hidden'
-            onSubmit={handleSubmit}
-         >
-            <button className='absolute left-9 cursor-pointer'>
-               {isTyping || taskInput.length > 0 ? (
-                  <CircleIcon />
-               ) : (
-                  <PlusIcon />
-               )}
-            </button>
+        {isTyping || taskInput.length > 0 ? <CircleIcon /> : <PlusIcon />}
+      </button>
 
-            <input
-               type='text'
-               value={taskInput}
-               onChange={(e) => setTaskInput(e.target.value)}
-               onFocus={handleFocus}
-               onBlur={handleBlur}
-               style={{ backgroundColor: bgColor.toggleBackground }}
-               className={`custom-placeholder px-10 pr-28 text-sm font-light outline-none w-full h-full rounded-md ${
-                  isTyping ? 'placeholder-gray-500' : 'placeholder-gray-800'
-               }`}
-               placeholder={
-                  isTyping
-                     ? `Try typing 'Pay utilities bill by Friday 6pm'`
-                     : 'Add a task'
-               }
-            />
-         </form>
+      <form
+        className="z-10 flex h-[2.9rem] w-full items-center overflow-hidden rounded-md"
+        onSubmit={handleSubmit}
+      >
+        <input
+          type="text"
+          value={taskInput}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={(e) => setTaskInput(e.target.value)}
+          style={{ backgroundColor: bgColor.toggleBackground }}
+          className={`custom-placeholder h-full w-full rounded-md pl-12 pr-28 text-sm font-light outline-none ${
+            isTyping ? "placeholder-gray-500" : "placeholder-gray-800"
+          }`}
+          placeholder={
+            isTyping
+              ? `Try typing 'Pay utilities bill by Friday 6pm'`
+              : "Add a task"
+          }
+        />
+      </form>
 
-         {taskInput.length > 0 && (
-            <div className='flex gap-3 absolute right-[2.5rem] top-3.5 text-opacity-20'>
-               <InputAddReminder setTaskReminder={setTaskReminder} />
+      {taskInput.length > 0 && (
+        <div className="absolute right-[4.5rem] top-3.5 flex gap-3">
+          <InputAddReminder
+            setTaskReminder={setTaskReminder}
+            className="opacity-60"
+          />
 
-               <InputAddDue setTaskDueDate={setTaskDueDate} />
+          <InputAddDue setTaskDueDate={setTaskDueDate} className="opacity-60" />
 
-               <InputAddRepeat
-                  setTaskRepeat={setTaskRepeat}
-                  setTaskDueDate={setTaskDueDate}
-                  taskDueDate={taskDueDate}
-                  taskRepeat={taskRepeat}
-               />
-            </div>
-         )}
-      </div>
-   );
+          <InputAddRepeat
+            setTaskRepeat={setTaskRepeat}
+            setTaskDueDate={setTaskDueDate}
+            taskDueDate={taskDueDate}
+            taskRepeat={taskRepeat}
+            className="opacity-60"
+          />
+        </div>
+      )}
+    </div>
+  );
 }

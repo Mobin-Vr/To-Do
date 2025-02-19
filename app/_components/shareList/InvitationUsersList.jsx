@@ -1,54 +1,54 @@
-import { XIcon } from '@/public/icons';
+import { XIcon } from "@/public/icons";
 
 export default function InvitationUsersList({
-   invitationUsers,
-   onRemoveUser,
-   invitationId,
+  invitationUsers,
+  onRemoveUser,
+  invitationId,
 }) {
-   return (
-      <ul className='py-1.5 divide-y rounded-md flex flex-col'>
-         {invitationUsers.map((user, i) => (
-            <User
-               key={user.user_id}
-               number={i + 1}
-               user={user}
-               onRemoveUser={onRemoveUser}
-               invitationId={invitationId}
-            />
-         ))}
-      </ul>
-   );
+  return (
+    <ul className="flex flex-col divide-y rounded-md py-1.5">
+      {invitationUsers.map((user, i) => (
+        <User
+          key={user.user_id}
+          number={i + 1}
+          user={user}
+          onRemoveUser={onRemoveUser}
+          invitationId={invitationId}
+        />
+      ))}
+    </ul>
+  );
 }
 
 function User({ number, user, onRemoveUser, invitationId }) {
-   return (
-      <li className='flex gap-3 px-1 py-2 items-center justify-start'>
-         <span className='h-4 w-4 rounded-full bg-accent-200 flex items-center justify-center text-xs text-blue-800 select-none'>
-            {number}
-         </span>
+  return (
+    <li className="flex items-center justify-start gap-3 px-1 py-2">
+      <span className="flex h-4 w-4 select-none items-center justify-center rounded-full bg-accent-200 text-xs text-blue-800">
+        {number}
+      </span>
 
-         <div className='flex-1 text-xs items-center overflow-hidden flex gap-1'>
-            <p
-               className='text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap'
-               title={user.user_fullname}
-            >
-               {user.user_fullname}
-            </p>
+      <div className="flex flex-1 items-center gap-1 overflow-hidden text-xs">
+        <p
+          className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap"
+          title={user.user_fullname}
+        >
+          {user.user_fullname}
+        </p>
 
-            <p
-               className='text-nowrap overflow-ellipsis overflow-hidden whitespace-nowrap text-gray-500'
-               title={user.user_email}
-            >
-               {user.user_email}
-            </p>
-         </div>
+        <p
+          className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-gray-500"
+          title={user.user_email}
+        >
+          {user.user_email}
+        </p>
+      </div>
 
-         <button
-            onClick={() => onRemoveUser(invitationId, user.user_id)}
-            className='flex items-center justify-center ml-auto hover:bg-gray-300 h-full aspect-square p-1 rounded-md text-red-600'
-         >
-            <XIcon />
-         </button>
-      </li>
-   );
+      <button
+        onClick={() => onRemoveUser(invitationId, user.user_id)}
+        className="ml-auto flex aspect-square h-full items-center justify-center rounded-md p-1 text-red-600 hover:bg-gray-300"
+      >
+        <XIcon />
+      </button>
+    </li>
+  );
 }

@@ -1,9 +1,9 @@
 function Border({ className }) {
-   return (
-      <span
-         className={`h-[1px] w-[92%] transform bg-gray-200 m-auto my-0.5 -translate-y-[10%] ${className}`}
-      ></span>
-   );
+  return (
+    <span
+      className={`m-auto my-0.5 h-[1px] w-[92%] -translate-y-[10%] transform bg-gray-200 ${className}`}
+    ></span>
+  );
 }
 
 export default Border;

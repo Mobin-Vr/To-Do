@@ -1,12 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-export default function ModalTemplateCloseAble({
+export default function ModalTemplateOverlay({
   children,
-  className,
   isModalOpen,
   toggleModal,
-  justify = "0",
+  className,
 }) {
   const modalRef = useRef(null);
   const [shouldRender, setShouldRender] = useState(isModalOpen); // Control rendering in DOM
@@ -17,20 +16,27 @@ export default function ModalTemplateCloseAble({
 
   useEffect(() => {
     if (isModalOpen) {
-      async function handleClickOutside() {
-        toggleModal();
+      async function handleClickOutside(e) {
+        if (modalRef.current && !modalRef.current.contains(e.target))
+          toggleModal();
       }
 
       document.addEventListener("mousedown", handleClickOutside);
-
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-  }, [isModalOpen, toggleModal]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen]);
 
   // Define animation variants
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8, x: justify },
+    hidden: { opacity: 0, scale: 1 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
+    exit: { opacity: 0, scale: 1, transition: { duration: 0.2 } },
+  };
+
+  const modalVariants2 = {
+    hidden: { opacity: 0, scale: 0.8 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
   };
@@ -41,14 +47,22 @@ export default function ModalTemplateCloseAble({
     <AnimatePresence onExitComplete={() => setShouldRender(false)}>
       {isModalOpen && (
         <motion.div
-          ref={modalRef}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
           exit="exit"
-          className={`absolute z-50 flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white text-sm font-normal text-gray-600 shadow-2xl ${className}`}
         >
-          {children}
+          <motion.div
+            ref={modalRef}
+            variants={modalVariants2}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className={`border-1 absolute z-40 overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
+          >
+            {children}
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

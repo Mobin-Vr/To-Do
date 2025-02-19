@@ -1,95 +1,96 @@
-'use client';
+"use client";
 
-import illsturation from '@/public/cat.svg';
-import { CopyIcon, SuccessIcon } from '@/public/icons';
-import Image from 'next/image';
-import { useState } from 'react';
-import OrdinaryBtn from '../_ui/OrdinaryBtn';
+import illsturation from "@/public/cat.svg";
+import { CopyIcon, SuccessIcon } from "@/public/icons";
+import Image from "next/image";
+import { useState } from "react";
+import OrdinaryBtn from "../_ui/OrdinaryBtn";
 
 export default function LinkCreatedView({
-   onMoreOptions,
-   onManageMembers,
-   toggleModal,
-   link,
-   invitationUsers,
+  onMoreOptions,
+  onManageMembers,
+  toggleModal,
+  link,
+  invitationUsers,
 }) {
-   const [isCopied, setIsCopied] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
-   async function copyToClipboard() {
-      const textToCopy = link;
+  async function copyToClipboard() {
+    const textToCopy = link;
 
-      await navigator.clipboard.writeText(textToCopy);
-      setIsCopied(true);
+    await navigator.clipboard.writeText(textToCopy);
+    setIsCopied(true);
 
-      setTimeout(() => {
-         setIsCopied(false);
-      }, 1500);
-   }
-   return (
-      <div className='flex flex-col h-full justify-between text-sm font-light text-black'>
-         <p className='w-full text-center font-normal px-2 py-3 border-b border-b-gray-300 mb-2'>
-            Share list
-         </p>
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 1500);
+  }
+  return (
+    <div className="flex h-full flex-col justify-between text-sm font-light text-black">
+      <p className="mb-2 w-full border-b border-b-gray-300 px-2 py-3 text-center font-normal">
+        Share list
+      </p>
 
-         <div className='p-3 border-b border-b-gray-300 flex-1 flex flex-col justify-between'>
-            <div className=' flex flex-col items-center justify-center gap-8 flex-1'>
-               <Image
-                  src={illsturation}
-                  alt='completed-task'
-                  height={200}
-                  width={200}
-                  className='mx-auto'
-               />
+      <div className="flex flex-1 flex-col justify-between border-b border-b-gray-300 p-3">
+        <div className="flex flex-1 flex-col items-center justify-center gap-8">
+          <Image
+            src={illsturation}
+            alt="completed-task"
+            height={200}
+            width={200}
+            className="mx-auto"
+          />
 
-               <div>
-                  <div className='relative flex mb-3'>
-                     <input
-                        readOnly
-                        value={link}
-                        className='inputRef px-2 py-1.5 rounded-md bg-gray-200 text-nowrap overflow-hidden outline-none w-full h-full'
-                     />
+          <div>
+            <div className="relative mb-3 flex rounded-md bg-gray-200">
+              <input
+                readOnly
+                value={link}
+                className="inputRef h-full w-[calc(100%-28px)] overflow-hidden text-nowrap rounded-l-md bg-gray-200 px-2 py-1.5 outline-none"
+              />
 
-                     <button
-                        onClick={copyToClipboard}
-                        className='absolute right-0 font-thin text-sm h-full  aspect-square flex justify-center items-center text-white bg-gray-600 border border-gray-200 hover:bg-gray-700 rounded-md'
-                     >
-                        {isCopied ? <SuccessIcon /> : <CopyIcon />}
-                     </button>
-                  </div>
-
-                  <p className='px-4 text-center text-xs text-gray-700 mb-3'>
-                     Anyone with this link and an account can join and edit this
-                     list.
-                  </p>
-               </div>
+              <button
+                onClick={copyToClipboard}
+                title="Copy link"
+                className="absolute right-0 flex aspect-square h-full items-center justify-center rounded-r-md border-l-2 border-l-white bg-gray-200 text-sm font-thin text-black duration-200 hover:bg-gray-500 hover:text-white"
+              >
+                {isCopied ? <SuccessIcon /> : <CopyIcon size="14" />}
+              </button>
             </div>
 
-            <div className='flex gap-0.5 justify-center'>
-               <OrdinaryBtn
-                  onClick={onMoreOptions}
-                  text='Manage access'
-                  mode='secondary'
-                  className='w-fit'
-               />
+            <p className="mb-3 px-4 text-center text-xs text-gray-700">
+              Anyone with this link and an account can join and edit this list.
+            </p>
+          </div>
+        </div>
 
-               <OrdinaryBtn
-                  onClick={onManageMembers}
-                  text='Manage members'
-                  mode='secondary'
-                  className='w-fit flex-grow'
-                  disabled={invitationUsers.length > 0 ? false : true}
-               />
-            </div>
-         </div>
+        <div className="flex justify-center gap-0.5">
+          <OrdinaryBtn
+            onClick={onMoreOptions}
+            text="Manage access"
+            mode="secondary"
+            className="w-fit"
+          />
 
-         <div className='px-3 py-3 ml-auto'>
-            <OrdinaryBtn
-               onClick={toggleModal}
-               text='Close'
-               mode='primary'
-               className='font-thin text-sm'
-            />
-         </div>
+          <OrdinaryBtn
+            onClick={onManageMembers}
+            text="Manage members"
+            mode="secondary"
+            className="w-fit flex-grow"
+            disabled={invitationUsers.length > 0 ? false : true}
+            title={invitationUsers.length > 0 ? "" : "No one has joined yet!"}
+          />
+        </div>
       </div>
-   );
+
+      <div className="ml-auto px-3 py-3">
+        <OrdinaryBtn
+          onClick={toggleModal}
+          text="Close"
+          mode="primary"
+          className="text-sm font-thin"
+        />
+      </div>
+    </div>
+  );
 }

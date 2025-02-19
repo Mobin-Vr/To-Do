@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-export default function ModalTemplateCloseAble({
+export default function ModalTemplatePrimary({
   children,
-  className,
   isModalOpen,
   toggleModal,
+  className,
   justify = "0",
 }) {
   const modalRef = useRef(null);
@@ -17,23 +17,17 @@ export default function ModalTemplateCloseAble({
 
   useEffect(() => {
     if (isModalOpen) {
-      async function handleClickOutside() {
-        toggleModal();
+      async function handleClickOutside(e) {
+        if (modalRef.current && !modalRef.current.contains(e.target)) {
+          toggleModal();
+        }
       }
 
       document.addEventListener("mousedown", handleClickOutside);
-
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isModalOpen, toggleModal]);
-
-  // Define animation variants
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8, x: justify },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
-    exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
-  };
 
   if (!shouldRender) return null; // Remove the modal from DOM after exit animation is complete
 
@@ -42,11 +36,11 @@ export default function ModalTemplateCloseAble({
       {isModalOpen && (
         <motion.div
           ref={modalRef}
-          variants={modalVariants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          className={`absolute z-50 flex flex-col overflow-hidden rounded-md border border-gray-200 bg-white text-sm font-normal text-gray-600 shadow-2xl ${className}`}
+          initial={{ opacity: 0, scale: 0.8, x: justify }}
+          animate={{ opacity: 1, scale: 1, x: justify }}
+          exit={{ opacity: 0, scale: 0.8, x: justify }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className={`border-1 absolute z-40 overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
         >
           {children}
         </motion.div>

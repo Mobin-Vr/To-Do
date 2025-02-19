@@ -1,73 +1,71 @@
-'use client';
+"use client";
 
-import useCustomToast from '@/app/_lib/useCustomeToast';
-import useTaskStore from '@/app/taskStore';
-import illsturation_login from '@/public/login.svg';
-import illsturation from '@/public/team.svg';
-import { SignInButton, useUser } from '@clerk/nextjs';
-import Image from 'next/image';
-import { redirect } from 'next/navigation';
-import { useShallow } from 'zustand/react/shallow';
+import useCustomToast from "@/app/_lib/useCustomeToast";
+import useTaskStore from "@/app/taskStore";
+import illsturation_login from "@/public/login.svg";
+import illsturation from "@/public/team.svg";
+import { SignInButton, useUser } from "@clerk/nextjs";
+import Image from "next/image";
+import { redirect } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
 
 export default function InvitationLandingContent({ token }) {
-   const showToast = useCustomToast();
-   const { user } = useUser();
+  const showToast = useCustomToast();
+  const { user } = useUser();
 
-   const { joinInvitationInStore } = useTaskStore(
-      useShallow((state) => ({
-         joinInvitationInStore: state.joinInvitationInStore,
-      }))
-   );
+  const { joinInvitationInStore } = useTaskStore(
+    useShallow((state) => ({
+      joinInvitationInStore: state.joinInvitationInStore,
+    })),
+  );
 
-   async function handleJoin() {
-      const res = await joinInvitationInStore(token);
+  async function handleJoin() {
+    const res = await joinInvitationInStore(token);
 
-      if (res.status === true) redirect(`/tasks/${res.categoryId}`);
-      else showToast(res.message);
-   }
+    if (res.status === true) redirect(`/tasks/${res.categoryId}`);
+    else showToast(res.message);
+  }
 
-   return (
-      <div className='flex justify-center items-center min-h-screen bg-gray-100 w-full text-center'>
-         <div className='max-w-xl p-10 flex flex-col gap-6 items-center justify-center'>
-            <h1 className='text-4xl font-thin text-gray-700'>
-               List Invitation
-            </h1>
-            <p className='text-xl text-gray-600'>
-               You&apos;re invited to join a shared task list.
-            </p>
+  return (
+    <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 text-center">
+      <div className="flex max-w-xl flex-col items-center justify-center gap-6 p-10">
+        <h1 className="text-4xl font-thin text-gray-700">List Invitation</h1>
+        <p className="text-xl text-gray-600">
+          You&apos;re invited to join a shared task list.
+        </p>
 
-            <div className='flex justify-center items-center'>
-               <Image
-                  src={user ? illsturation : illsturation_login}
-                  alt='invitation-illustration'
-                  className='mx-auto w-52 h-52 sm:w-64 sm:h-64'
-               />
+        <div className="flex items-center justify-center">
+          <Image
+            src={user ? illsturation : illsturation_login}
+            alt="invitation-illustration"
+            className="mx-auto h-52 w-52 sm:h-64 sm:w-64"
+          />
+        </div>
+
+        <div className="flex w-full justify-center">
+          {user ? (
+            <button
+              onClick={handleJoin}
+              className="w-1/2 rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700"
+            >
+              Join to the list
+            </button>
+          ) : (
+            <div className="flex w-full flex-col items-center justify-center gap-3">
+              <SignInButton
+                mode="modal"
+                className="w-1/2 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700"
+                forceRedirectUrl={`/tasks/invite?token=${token}`}
+              />
+
+              <span className="px-10 text-sm text-gray-600">
+                You don&apos;t have an account. <br />
+                Sign in / up first.
+              </span>
             </div>
-
-            <div className='w-full flex justify-center'>
-               {user ? (
-                  <button
-                     onClick={handleJoin}
-                     className='w-1/2 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center font-normal'
-                  >
-                     Join to the list
-                  </button>
-               ) : (
-                  <div className='flex flex-col w-full items-center justify-center gap-3'>
-                     <SignInButton
-                        mode='modal'
-                        className='w-1/2 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center font-normal cursor-pointer'
-                        forceRedirectUrl={`/tasks/invite?token=${token}`}
-                     />
-
-                     <span className='text-sm text-gray-600 px-10'>
-                        You don&apos;t have an account. <br />
-                        Sign in / up first.
-                     </span>
-                  </div>
-               )}
-            </div>
-         </div>
+          )}
+        </div>
       </div>
-   );
+    </div>
+  );
 }

@@ -1,34 +1,34 @@
-import illsturation from '@/public/pnf.svg';
-import Image from 'next/image';
-import Link from 'next/link';
+import illsturation from "@/public/pnf.svg";
+import Image from "next/image";
+import Link from "next/link";
 
 function NotFound() {
-   return (
-      <div className='flex justify-center items-center min-h-screen bg-gray-100 w-full text-center'>
-         <div className='max-w-xl p-10 flex flex-col gap-4 items-center justify-center'>
-            <h1 className='text-4xl font-thin text-gray-700'>
-               This list could not be found :(
-            </h1>
+  return (
+    <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 text-center">
+      <div className="flex max-w-xl flex-col items-center justify-center gap-4 p-10">
+        <h1 className="text-4xl font-thin text-gray-700">
+          This list could not be found :(
+        </h1>
 
-            <div className='flex justify-center items-center'>
-               <Image
-                  src={illsturation}
-                  alt='not-found'
-                  className='mx-auto w-52 h-52 sm:w-64 sm:h-64'
-               />
-            </div>
+        <div className="flex items-center justify-center">
+          <Image
+            src={illsturation}
+            alt="not-found"
+            className="mx-auto h-52 w-52 sm:h-64 sm:w-64"
+          />
+        </div>
 
-            <div className='w-full flex justify-center cursor-pointer'>
-               <Link
-                  href='/tasks'
-                  className='w-1/2 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-center font-normal'
-               >
-                  Back to tasks
-               </Link>
-            </div>
-         </div>
+        <div className="flex w-full cursor-pointer justify-center">
+          <Link
+            href="/tasks"
+            className="w-1/2 rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700"
+          >
+            Back to tasks
+          </Link>
+        </div>
       </div>
-   );
+    </div>
+  );
 }
 
 export default NotFound;

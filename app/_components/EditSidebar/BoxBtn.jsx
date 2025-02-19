@@ -1,70 +1,66 @@
 import {
-   BellIcon,
-   CalendarIcon,
-   PaperClipIcon,
-   SunIcon,
-   SyncIcon,
-   XIcon,
-} from '@/public/icons';
+  BellIcon,
+  CalendarIcon,
+  PaperClipIcon,
+  SunIcon,
+  SyncIcon,
+  XIcon,
+} from "@/public/icons";
 
 const iconsMap = {
-   BellIcon,
-   SunIcon,
-   CalendarIcon,
-   SyncIcon,
-   PaperClipIcon,
+  BellIcon,
+  SunIcon,
+  CalendarIcon,
+  SyncIcon,
+  PaperClipIcon,
 };
 
 export default function BoxBtn({
-   text,
-   activeText,
-   icon,
-   disabled = false,
-   toggleModal,
-   weekday,
-   isDateSet,
-   clearDate,
+  text,
+  activeText,
+  icon,
+  disabled = false,
+  toggleModal,
+  weekday,
+  isDateSet,
+  clearDate,
 }) {
-   const Icon = iconsMap[icon];
+  const Icon = iconsMap[icon];
 
-   return (
-      <div className='flex justify-between items-center relative'>
-         <button
-            disabled={disabled}
-            onClick={toggleModal}
-            className={`flex px-3 gap-4 w-full items-center ${
-               disabled
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-sidebar-hover'
-            }`}
-         >
-            {Icon && (
-               <span className={`${isDateSet ? 'text-blue-600' : ''}`}>
-                  <Icon />
-               </span>
-            )}
-            <div className='flex flex-col mt-1 h-10 justify-center leading-tight'>
-               <span
-                  className={`${isDateSet ? 'text-blue-700' : ''} capitalize`}
-               >
-                  {isDateSet ? activeText : text}
-               </span>
-               {isDateSet && (
-                  <span className='text-start text-xs text-gray-500 capitalize'>
-                     {weekday}
-                  </span>
-               )}
-            </div>
-         </button>
+  return (
+    <div className="relative flex items-center justify-between">
+      <button
+        disabled={disabled}
+        onClick={toggleModal}
+        className={`flex w-full items-center gap-4 px-3 ${
+          disabled ? "cursor-not-allowed opacity-50" : "hover:bg-sidebar-hover"
+        }`}
+      >
+        {Icon && (
+          <span className={`${isDateSet ? "text-blue-600" : ""}`}>
+            <Icon />
+          </span>
+        )}
+        <div className="mt-1 flex h-10 flex-col justify-center leading-tight">
+          <span className={`${isDateSet ? "text-blue-700" : ""} capitalize`}>
+            {isDateSet ? activeText : text}
+          </span>
+          {isDateSet && (
+            <span className="text-start text-xs capitalize text-gray-500">
+              {weekday}
+            </span>
+          )}
+        </div>
+      </button>
 
-         {isDateSet && !disabled && (
-            <button
-               onClick={clearDate}
-               className='p-3 h-full aspect-square flex justify-center items-center rounded-md hover:bg-sidebar-hover transition-all duration-300'
-            >
-               <XIcon />
-            </button>
-         )}
-      </div>
-   );
+      {isDateSet && !disabled && (
+        <button
+          onClick={clearDate}
+          className="flex aspect-square h-full items-center justify-center rounded-md p-3 transition-all duration-300 hover:bg-sidebar-hover"
+        >
+          <XIcon />
+        </button>
+      )}
+    </div>
+  );
 }

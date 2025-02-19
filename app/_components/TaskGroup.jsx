@@ -1,19 +1,19 @@
-import TaskItem from './TaskItem';
+import TaskItem from "./TaskItem";
 
 export default function TaskGroup({ tasks, listRef, bgColor, listName }) {
-   if (tasks.length === 0) return null;
+  if (tasks.length === 0) return null;
 
-   return (
-      <ul className='list-none p-0 flex flex-col gap-0.5'>
-         {tasks.map((task) => (
-            <TaskItem
-               task={task}
-               listRef={listRef}
-               key={task.task_id}
-               bgColor={bgColor}
-               listName={listName}
-            />
-         ))}
-      </ul>
-   );
+  return (
+    <ul className="flex list-none flex-col gap-0.5 p-0">
+      {tasks.map((task) => (
+        <TaskItem
+          task={task}
+          listRef={listRef}
+          key={task.task_id}
+          bgColor={bgColor}
+          listName={listName}
+        />
+      ))}
+    </ul>
+  );
 }

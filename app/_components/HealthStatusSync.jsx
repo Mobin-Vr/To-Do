@@ -1,160 +1,160 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
-import { addTask, deleteTask, updateManyTask } from '../_lib/data-services';
-import { checkDatabaseHealth } from '../_lib/healthCheck';
-import { getDateNowIso } from '../_lib/utils';
-import useTaskStore from '../taskStore';
+import { useCallback, useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { addTask, deleteTask, updateManyTask } from "../_lib/data-services";
+import { checkDatabaseHealth } from "../_lib/healthCheck";
+import { getDateNowIso } from "../_lib/utils";
+import useTaskStore from "../taskStore";
 
 export default function HealthStatusSync() {
-   const [isConnected, setIsConnected] = useState(false);
-   const [isOnline, setIsOnline] = useState(true);
-   const [lastOnline, setLastOnline] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
+  const [lastOnline, setLastOnline] = useState(null);
 
-   const {
-      updateConnectionStatus,
-      toggleOfflineLogMode,
-      changeLog,
-      clearLog,
-      isSyncing,
-      toggleIsSyncing,
-      syncLcWithDb,
-   } = useTaskStore(
-      useShallow((state) => ({
-         updateConnectionStatus: state.updateConnectionStatus,
-         toggleOfflineLogMode: state.toggleOfflineLogMode,
-         changeLog: state.changeLog,
-         clearLog: state.clearLog,
-         isSyncing: state.isSyncing,
-         toggleIsSyncing: state.toggleIsSyncing,
-         syncLcWithDb: state.syncLcWithDb,
-      }))
-   );
+  const {
+    updateConnectionStatus,
+    toggleOfflineLogMode,
+    changeLog,
+    clearLog,
+    isSyncing,
+    toggleIsSyncing,
+    syncLcWithDb,
+  } = useTaskStore(
+    useShallow((state) => ({
+      updateConnectionStatus: state.updateConnectionStatus,
+      toggleOfflineLogMode: state.toggleOfflineLogMode,
+      changeLog: state.changeLog,
+      clearLog: state.clearLog,
+      isSyncing: state.isSyncing,
+      toggleIsSyncing: state.toggleIsSyncing,
+      syncLcWithDb: state.syncLcWithDb,
+    })),
+  );
 
-   useEffect(() => {
-      if (typeof window !== 'undefined') {
-         setIsConnected(navigator.onLine);
-      }
-   }, []);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsConnected(navigator.onLine);
+    }
+  }, []);
 
-   // Sync local changes (changeLog) with the database
-   const syncData = useCallback(async () => {
-      // Exit if already syncing
-      if (isSyncing) return;
+  // Sync local changes (changeLog) with the database
+  const syncData = useCallback(async () => {
+    // Exit if already syncing
+    if (isSyncing) return;
 
-      // If there is no log first get the data from cloud and replace that data in lc and then EXIT
-      if (!changeLog.length) {
-         await syncLcWithDb();
-         return;
-      }
+    // If there is no log first get the data from cloud and replace that data in lc and then EXIT
+    if (!changeLog.length) {
+      await syncLcWithDb();
+      return;
+    }
 
-      toggleIsSyncing(true); // Mark syncing as in progress
+    toggleIsSyncing(true); // Mark syncing as in progress
 
-      // Separate change logs by their types for sending them to database
-      const addTasks = changeLog
-         .filter((log) => log.type === 'add')
-         .map((log) => log.task);
+    // Separate change logs by their types for sending them to database
+    const addTasks = changeLog
+      .filter((log) => log.type === "add")
+      .map((log) => log.task);
 
-      const deleteTasks = changeLog
-         .filter((log) => log.type === 'delete')
-         .map((log) => log.task);
+    const deleteTasks = changeLog
+      .filter((log) => log.type === "delete")
+      .map((log) => log.task);
 
-      const completedUpdates = changeLog
-         .filter((log) => log.type === 'update-isCompleted')
-         .map((log) => ({
-            task: {
-               isCompleted: log.task.is_task_completed,
-               updatedAt: log.task.task_updated_at,
-               completedAt: log.task.task_completed_at,
-            },
-            id: log.task.task_id,
-         }));
+    const completedUpdates = changeLog
+      .filter((log) => log.type === "update-isCompleted")
+      .map((log) => ({
+        task: {
+          isCompleted: log.task.is_task_completed,
+          updatedAt: log.task.task_updated_at,
+          completedAt: log.task.task_completed_at,
+        },
+        id: log.task.task_id,
+      }));
 
-      const starredUpdates = changeLog
-         .filter((log) => log.type === 'update-isStarred')
-         .map((log) => ({
-            task: {
-               isStarred: log.task.is_task_starred,
-               updatedAt: log.task.task_updated_at,
-            },
-            id: log.task.task_id,
-         }));
+    const starredUpdates = changeLog
+      .filter((log) => log.type === "update-isStarred")
+      .map((log) => ({
+        task: {
+          isStarred: log.task.is_task_starred,
+          updatedAt: log.task.task_updated_at,
+        },
+        id: log.task.task_id,
+      }));
 
-      // LATER add update Reminder - note - due - reapet - category - steps
+    // LATER add update Reminder - note - due - reapet - category - steps
 
-      // Perform database operations
-      try {
-         if (addTasks.length) await addTask(addTasks);
-         if (completedUpdates.length)
-            await updateManyTask(
-               completedUpdates.map((c) => c.task),
-               completedUpdates.map((c) => c.id)
-            );
-         if (starredUpdates.length)
-            await updateManyTask(
-               starredUpdates.map((s) => s.task),
-               starredUpdates.map((s) => s.id)
-            );
-         if (deleteTasks.length) await deleteTask(deleteTasks);
+    // Perform database operations
+    try {
+      if (addTasks.length) await addTask(addTasks);
+      if (completedUpdates.length)
+        await updateManyTask(
+          completedUpdates.map((c) => c.task),
+          completedUpdates.map((c) => c.id),
+        );
+      if (starredUpdates.length)
+        await updateManyTask(
+          starredUpdates.map((s) => s.task),
+          starredUpdates.map((s) => s.id),
+        );
+      if (deleteTasks.length) await deleteTask(deleteTasks);
 
-         clearLog(); // Clear the change log after successful sync
-      } catch (error) {
-         console.error('Error syncing with the database:', error);
-      } finally {
-         toggleIsSyncing(false); // Mark syncing as complete
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [clearLog, changeLog, isSyncing, toggleIsSyncing]);
+      clearLog(); // Clear the change log after successful sync
+    } catch (error) {
+      console.error("Error syncing with the database:", error);
+    } finally {
+      toggleIsSyncing(false); // Mark syncing as complete
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clearLog, changeLog, isSyncing, toggleIsSyncing]);
 
-   // Handle connection and online status checks
-   const handleConnectionStatus = useCallback(async () => {
-      // If offline, update states
-      if (!navigator.onLine) {
-         setIsConnected(false);
-         setIsOnline(false);
-         return;
-      }
+  // Handle connection and online status checks
+  const handleConnectionStatus = useCallback(async () => {
+    // If offline, update states
+    if (!navigator.onLine) {
+      setIsConnected(false);
+      setIsOnline(false);
+      return;
+    }
 
-      // If online, check database health
-      setIsConnected(true);
-      const result = await checkDatabaseHealth();
-      setIsOnline(result.online);
+    // If online, check database health
+    setIsConnected(true);
+    const result = await checkDatabaseHealth();
+    setIsOnline(result.online);
 
-      if (result.online) {
-         setLastOnline(getDateNowIso()); // Update last online time
-         await syncData(); // Start syncing log with the database
-      }
-   }, [syncData]);
+    if (result.online) {
+      setLastOnline(getDateNowIso()); // Update last online time
+      await syncData(); // Start syncing log with the database
+    }
+  }, [syncData]);
 
-   // Update connection status in the store when local states change
-   useEffect(() => {
-      updateConnectionStatus({ isConnected, isOnline, lastOnline });
-   }, [isConnected, isOnline, lastOnline, updateConnectionStatus]);
+  // Update connection status in the store when local states change
+  useEffect(() => {
+    updateConnectionStatus({ isConnected, isOnline, lastOnline });
+  }, [isConnected, isOnline, lastOnline, updateConnectionStatus]);
 
-   /* Toggle offline logging based on online status. Refer to the comment "1" */
-   useEffect(() => {
-      toggleOfflineLogMode(!isOnline);
-   }, [isOnline, toggleOfflineLogMode]);
+  /* Toggle offline logging based on online status. Refer to the comment "1" */
+  useEffect(() => {
+    toggleOfflineLogMode(!isOnline);
+  }, [isOnline, toggleOfflineLogMode]);
 
-   // Add event listeners for browser's online/offline events
-   useEffect(() => {
-      window.addEventListener('online', handleConnectionStatus);
-      window.addEventListener('offline', handleConnectionStatus);
+  // Add event listeners for browser's online/offline events
+  useEffect(() => {
+    window.addEventListener("online", handleConnectionStatus);
+    window.addEventListener("offline", handleConnectionStatus);
 
-      return () => {
-         window.removeEventListener('online', handleConnectionStatus);
-         window.removeEventListener('offline', handleConnectionStatus);
-      };
-   }, [handleConnectionStatus]);
+    return () => {
+      window.removeEventListener("online", handleConnectionStatus);
+      window.removeEventListener("offline", handleConnectionStatus);
+    };
+  }, [handleConnectionStatus]);
 
-   //Check connection status on mount
-   useEffect(() => {
-      handleConnectionStatus();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+  //Check connection status on mount
+  useEffect(() => {
+    handleConnectionStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-   return null;
+  return null;
 }
 
 /*

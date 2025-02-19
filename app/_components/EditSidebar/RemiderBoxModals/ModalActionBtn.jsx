@@ -1,25 +1,25 @@
 export function ModalActionButton({
-   icon,
-   label,
-   time,
-   disabled = false,
-   className,
-   onClick,
+  icon,
+  label,
+  time,
+  disabled = false,
+  className,
+  onClick,
 }) {
-   return (
-      <button
-         disabled={disabled}
-         onClick={onClick}
-         className={`py-3 px-4 flex justify-between items-center gap-4 w-full ${className} ${
-            disabled ? 'cursor-default' : 'hover:bg-accent-50'
-         }`}
-      >
-         <div className='flex gap-3 items-center justify-center'>
-            {icon}
-            <h4 className={`${disabled ? 'text-gray-300' : ''}`}>{label}</h4>
-         </div>
+  return (
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      className={`flex w-full items-center justify-between gap-4 px-4 py-3 ${className} ${
+        disabled ? "cursor-default" : "hover:bg-accent-50"
+      }`}
+    >
+      <div className="flex items-center justify-center gap-3">
+        {icon}
+        <h4 className={`${disabled ? "text-gray-300" : ""}`}>{label}</h4>
+      </div>
 
-         {time && <span>{time}</span>}
-      </button>
-   );
+      {time && <span>{time}</span>}
+    </button>
+  );
 }
