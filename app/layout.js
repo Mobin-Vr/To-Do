@@ -2,12 +2,10 @@ import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { Roboto_Flex } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import HealthStatusSync from "./_components/HealthStatusSync";
-import Sidebar from "./_components/menuSidebar/Sidebar";
 import UserSignupHandler from "./_components/menuSidebar/UserSignupHandler";
 import ReminderHandler from "./_components/ReminderHandler";
 import TaskRealTimeListener from "./_components/TaskRealTimeListener";
 import "./_styles/globals.css";
-import EditSidebar from "./_components/EditSidebar/EditSidebar";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -34,13 +32,8 @@ export default async function RootLayout({ children }) {
 
             {/* This component handles checking and creating a new user in the database upon sign-in */}
             <UserSignupHandler />
-
-            <Sidebar />
-            <EditSidebar />
-
             {/* get new tasks in real time */}
             <TaskRealTimeListener />
-
             {/* handle reminders */}
             <ReminderHandler />
           </SignedIn>

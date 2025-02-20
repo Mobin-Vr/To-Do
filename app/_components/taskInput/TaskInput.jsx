@@ -1,5 +1,6 @@
 "use client";
 
+import { defaultCategoryId, MAX_INPUT_TASK_TITLE } from "@/app/_lib/configs";
 import { CircleIcon, PlusIcon } from "@/public/icons";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -8,7 +9,6 @@ import useTaskStore from "../../taskStore";
 import InputAddDue from "./InputAddDue";
 import InputAddReminder from "./InputAddReminder";
 import InputAddRepeat from "./InputAddRepeat";
-import { defaultCategoryId, MAX_INPUT_LENGTH } from "@/app/_lib/configs";
 
 export default function TaskInput({
   bgColor,
@@ -16,10 +16,10 @@ export default function TaskInput({
   categoryId,
   listName,
 }) {
-  const { addTaskToStore, getuserState } = useTaskStore(
+  const { addTaskToStore, getUserState } = useTaskStore(
     useShallow((state) => ({
       addTaskToStore: state.addTaskToStore,
-      getuserState: state.getuserState,
+      getUserState: state.getUserState,
     })),
   );
 
@@ -47,7 +47,7 @@ export default function TaskInput({
 
     const newItem = {
       task_id: generateNewUuid(),
-      task_owner_id: getuserState().user_id,
+      task_owner_id: getUserState().user_id,
       task_title: taskInput,
       task_category_id: categoryId,
       task_category_title: catTitleCond,
@@ -74,22 +74,22 @@ export default function TaskInput({
       style={{ backgroundColor: bgColor.mainBackground }}
     >
       <button
-        className="absolute left-[4.5rem] top-3.5 cursor-pointer opacity-60"
+        className="absolute left-[3rem] top-3.5 cursor-pointer opacity-60 sm:left-[3.5rem]"
         onClick={handleSubmit}
       >
         {isTyping || taskInput.length > 0 ? <CircleIcon /> : <PlusIcon />}
       </button>
 
       <form
-        className="z-10 flex h-[2.9rem] w-full items-center overflow-hidden rounded-md"
+        className="z-10 h-[2.9rem] w-full overflow-hidden rounded-md"
         onSubmit={handleSubmit}
       >
         <input
           type="text"
-          value={taskInput}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          maxLength={MAX_INPUT_LENGTH}
+          maxLength={MAX_INPUT_TASK_TITLE}
+          value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
           style={{ backgroundColor: bgColor.toggleBackground }}
           className={`custom-placeholder h-full w-full rounded-md pl-12 pr-28 text-sm font-light outline-none ${
@@ -104,7 +104,7 @@ export default function TaskInput({
       </form>
 
       {taskInput.length > 0 && (
-        <div className="absolute right-[4.5rem] top-3.5 flex gap-3">
+        <div className="absolute right-[3rem] top-3.5 flex gap-3 sm:right-[3.5rem]">
           <InputAddReminder
             setTaskReminder={setTaskReminder}
             className="opacity-60"

@@ -64,19 +64,19 @@ export default function LinkCreatedView({
           </div>
         </div>
 
-        <div className="flex justify-center gap-0.5">
+        <div className="xs:flex-row flex flex-col justify-center gap-0.5">
           <OrdinaryBtn
             onClick={onMoreOptions}
             text="Manage access"
             mode="secondary"
-            className="w-fit"
+            className="xs:w-fit w-full"
           />
 
           <OrdinaryBtn
             onClick={onManageMembers}
             text="Manage members"
             mode="secondary"
-            className="w-fit flex-grow"
+            className="xs:w-fit xs:flex-grow w-full"
             disabled={invitationUsers.length > 0 ? false : true}
             title={invitationUsers.length > 0 ? "" : "No one has joined yet!"}
           />

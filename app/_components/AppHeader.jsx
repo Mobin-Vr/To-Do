@@ -19,19 +19,19 @@ export default function AppHeader({
 }) {
   const { bgColor, listName, listIcon, theCategory } = listConfig;
 
-  const { getuserState } = useTaskStore(
+  const { getUserState } = useTaskStore(
     useShallow((state) => ({
-      getuserState: state.getuserState,
+      getUserState: state.getUserState,
     })),
   );
 
   const isCategoryOwner =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getuserState().user_id;
+    theCategory.category_owner_id === getUserState().user_id;
 
   const isEditable =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getuserState().user_id;
+    theCategory.category_owner_id === getUserState().user_id;
 
   return (
     <div
@@ -45,7 +45,7 @@ export default function AppHeader({
 
       {listName !== "Search" && (
         <div
-          className={`flex items-center px-2 sm:mt-10 ${
+          className={`flex items-center px-1 sm:mt-10 ${
             listName === "Search" ? "justify-center" : "justify-between"
           }`}
           style={{ color: bgColor.primaryText }}

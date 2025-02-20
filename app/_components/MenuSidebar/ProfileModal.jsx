@@ -2,7 +2,7 @@ import {
   SyncIcon,
   SettingsIcon,
   SignOutIcon,
-  UserRoundCog,
+  UserSettingsIcon,
 } from "@/public/icons";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
@@ -58,7 +58,7 @@ export default function ProfileModal({ user }) {
             onClick={handleManageAccClick}
             className="flex items-center gap-3 px-4 py-2 hover:bg-accent-50"
           >
-            <UserRoundCog size="16px" />
+            <UserSettingsIcon size="16px" />
             <span>Manage account</span>
           </Link>
 

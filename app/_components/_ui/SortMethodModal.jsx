@@ -1,11 +1,8 @@
 import {
-  AlphabetIcon,
-  StarIcon,
-  PickReminderIcon,
-  TodayCalendarIcon,
   CalendarIcon,
-  SortIcon,
   CreationDateIcon,
+  SortIcon,
+  StarIcon,
 } from "@/public/icons";
 import { ModalActionButton } from "../EditSidebar/remiderBoxModals/ModalActionBtn";
 

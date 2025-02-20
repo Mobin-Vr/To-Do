@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: "460px", // Custom breakpoint for 480px
+      },
       colors: {
         sidebar: { hover: "#f5f5f5", main: "#faf9f8" },
         primary: {

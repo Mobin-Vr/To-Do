@@ -20,7 +20,7 @@ export default function TaskRealTimeListener() {
     getCategoriesList,
     getInvitations,
     getSharedWithMe,
-    getuserState,
+    getUserState,
   } = useTaskStore(
     useShallow((state) => ({
       addTaskFromRealtime: state.addTaskFromRealtime,
@@ -33,7 +33,7 @@ export default function TaskRealTimeListener() {
       getCategoriesList: state.getCategoriesList,
       getInvitations: state.getInvitations,
       getSharedWithMe: state.getSharedWithMe,
-      getuserState: state.getuserState,
+      getUserState: state.getUserState,
     })),
   );
 
@@ -123,7 +123,7 @@ export default function TaskRealTimeListener() {
         async (payload) => {
           const { invitation_id: invitationId, user_id: userId } = payload.new;
 
-          if (getuserState().user_id === userId) return; // there is no need to add owner to members list
+          if (getUserState().user_id === userId) return; // there is no need to add owner to members list
 
           const invitation = getInvitations()?.find(
             (inv) => inv.invitation_id === invitationId,
@@ -131,7 +131,7 @@ export default function TaskRealTimeListener() {
 
           // Check if the requester is the owner
           const isOwner =
-            invitation?.invitation_owner_id === getuserState().user_id;
+            invitation?.invitation_owner_id === getUserState().user_id;
 
           if (!isOwner) return;
 
@@ -160,11 +160,11 @@ export default function TaskRealTimeListener() {
 
           // Check if the requester is the owner
           const isOwner =
-            invitation?.invitation_owner_id === getuserState().user_id;
+            invitation?.invitation_owner_id === getUserState().user_id;
 
           // Check if the requester is a user in sharedWithMe
           const isUser =
-            sharedCategory?.invitation_owner_id !== getuserState().user_id &&
+            sharedCategory?.invitation_owner_id !== getUserState().user_id &&
             sharedCategory !== undefined;
 
           if (isOwner) removeUserWhenOwner(invitationId, userId);
@@ -184,7 +184,7 @@ export default function TaskRealTimeListener() {
             category_title: categoryTitle,
           } = payload.new;
 
-          if (getuserState().user_id === userId) return; // there is no need to add for owner
+          if (getUserState().user_id === userId) return; // there is no need to add for owner
 
           updateCategoryNameFromRealTime(categoryId, categoryTitle);
         },

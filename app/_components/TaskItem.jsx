@@ -16,7 +16,13 @@ const taskItemStyles = `
    }
 `;
 
-export default function TaskItem({ task, listRef, bgColor, listName }) {
+export default function TaskItem({
+  task,
+  listRef,
+  bgColor,
+  listName,
+  className,
+}) {
   const handleActiveTaskSidebar = useTaskStore(
     (state) => state.handleActiveTaskSidebar,
   );
@@ -26,7 +32,7 @@ export default function TaskItem({ task, listRef, bgColor, listName }) {
       ref={listRef}
       id={task.task_id}
       onClick={(e) => handleActiveTaskSidebar(task, e)}
-      className="task-item flex min-h-[3.25rem] flex-col justify-center rounded-md px-4 py-2 text-gray-400" // for click handeling
+      className={`task-item flex min-h-[3.25rem] flex-col justify-center rounded-md px-4 py-2 text-gray-400 ${className}`} // for click handeling
       style={{
         "--default-bg-color": bgColor.taskBackground,
         "--hover-bg-color": bgColor.taskHover,
@@ -39,7 +45,7 @@ export default function TaskItem({ task, listRef, bgColor, listName }) {
         <div className="flex flex-1 flex-col justify-center overflow-hidden px-2">
           <TaskTitle
             task={task}
-            className="ml-0.5 overflow-hidden whitespace-pre-wrap break-words text-sm font-normal text-black"
+            className="ml-0.5 break-all text-sm font-normal text-black"
           />
 
           <TaskDetails task={task} listName={listName} />

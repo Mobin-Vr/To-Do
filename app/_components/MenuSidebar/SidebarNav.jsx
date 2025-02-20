@@ -3,10 +3,9 @@
 import {
   HomeIcon,
   InfinityIcon,
-  MenuStarIcon,
+  StarIcon,
   SunIcon,
   TickCircleIcon,
-  TodayCalendarIcon,
   WeeklyIcon,
 } from "@/public/icons";
 import SidebarLink from "./SidebarLink";
@@ -31,7 +30,7 @@ export default function SidebarNav({ tasksList, toggleSidebar }) {
           onClick={toggleSidebar}
         >
           <span className="text-red-600">
-            <MenuStarIcon size="19" />
+            <StarIcon />
           </span>
         </SidebarLink>
       )}

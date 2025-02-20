@@ -6,7 +6,7 @@ import { useShallow } from "zustand/react/shallow";
 
 export default function NewListBtn({
   className,
-  getuserState,
+  getUserState,
   addCategoryToStore,
 }) {
   const { toggleSidebar, toggleTitleFocus } = useTaskStore(
@@ -22,7 +22,7 @@ export default function NewListBtn({
     const newCategory = {
       category_id: uuId,
       category_title: "",
-      category_owner_id: getuserState().user_id,
+      category_owner_id: getUserState().user_id,
       category_created_at: getDateNowIso(),
       has_category_invitation: false,
       has_category_collaborator: false,

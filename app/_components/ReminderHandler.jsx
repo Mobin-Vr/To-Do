@@ -3,7 +3,7 @@
 import {
   ALARM_STOP_TIMEOUT,
   CHECK_REMINDERS_INTERVAL,
-  TOAST_DURATION,
+  TOAST_SHOWN_DURATION,
 } from "@/app/_lib/configs";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -115,7 +115,7 @@ export default function ReminderHandler() {
           toggleCompleted={toggleCompleted}
         />
       ),
-      { duration: TOAST_DURATION },
+      { duration: TOAST_SHOWN_DURATION },
     );
 
     if (Notification.permission === "granted") {

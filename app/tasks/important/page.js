@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuStarIcon } from "@/public/icons";
+import { StarIcon } from "@/public/icons";
 import { useEffect, useRef } from "react";
 
 import { useShallow } from "zustand/react/shallow";
@@ -29,7 +29,7 @@ export default function Page() {
   const listConfig = {
     bgColor,
     listName: "Important",
-    listIcon: <MenuStarIcon size="32px" color={bgColor.primaryText} />,
+    listIcon: <StarIcon size="32px" color={bgColor.primaryText} />,
     theCategory,
     tasks,
   };

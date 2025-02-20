@@ -75,7 +75,7 @@ export default function EditSidebar() {
       <Overlay isOpen={isEditSidebarOpen} onClick={toggleEditSidebar} />
 
       <div
-        className={`edit-sidebar border-1 absolute bottom-0 right-0 top-0 z-50 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-64 md:max-w-80 ${
+        className={`edit-sidebar absolute right-0 top-0 z-50 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:max-w-96 ${
           isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -28,17 +28,26 @@ export default function ModalTemplateOverlay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen]);
 
-  // Define animation variants
+  // Define animation variants with media query handling
   const modalVariants = {
-    hidden: { opacity: 0, scale: 1 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
-    exit: { opacity: 0, scale: 1, transition: { duration: 0.2 } },
+    hidden: { opacity: 0, scale: 1, x: "0" },
+    visible: { opacity: 1, scale: 1, x: "0", transition: { duration: 0.2 } },
+    exit: { opacity: 0, scale: 1, x: "0", transition: { duration: 0.2 } },
   };
 
   const modalVariants2 = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.2 } },
-    exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
+    hidden: { opacity: 0, scale: 0.8, x: "0" },
+    visible: { opacity: 1, scale: 1, x: "0", transition: { duration: 0.2 } },
+    exit: { opacity: 0, scale: 0.8, x: "0", transition: { duration: 0.2 } },
+  };
+
+  // Define variants with translate-x on large screens
+  const modalVariantsWithTranslate = {
+    ...modalVariants2,
+    visible: {
+      ...modalVariants.visible,
+      x: window.innerWidth >= 768 ? "10rem" : "0", // Half of the max-width of the sidebar
+    },
   };
 
   if (!shouldRender) return null; // Remove the modal from DOM after exit animation is complete
@@ -47,7 +56,7 @@ export default function ModalTemplateOverlay({
     <AnimatePresence onExitComplete={() => setShouldRender(false)}>
       {isModalOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+          className="absolute inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40"
           variants={modalVariants}
           initial="hidden"
           animate="visible"
@@ -55,11 +64,11 @@ export default function ModalTemplateOverlay({
         >
           <motion.div
             ref={modalRef}
-            variants={modalVariants2}
+            variants={modalVariantsWithTranslate}
             initial="hidden"
             animate="visible"
             exit="exit"
-            className={`border-1 absolute z-40 overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
+            className={`border-1 absolute z-40 transform overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
           >
             {children}
           </motion.div>

@@ -32,7 +32,7 @@ export default function InitialView({ onCreateLink, toggleModal, isPending }) {
               text={`${isPending ? "" : "Create invitation links"}`}
               mode="secondary"
               disabled={isPending}
-              className="mb-3 flex w-full justify-around text-sm font-thin"
+              className="mb-3 flex h-[1.875rem] w-full justify-around text-sm font-thin"
             >
               {isPending && (
                 <span className="max-auto">

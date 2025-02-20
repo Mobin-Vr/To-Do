@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import BoxTemplate from "./BoxTemplate";
-import { MAX_TEXT_ARIA_LENGTH } from "@/app/_lib/configs";
+import { MAX_INPUT_TEXTARIA } from "@/app/_lib/configs";
 
 function AddNote({ updateNote, task, isEditSidebarOpen }) {
   const textareaRef = useRef(null);
@@ -25,7 +25,7 @@ function AddNote({ updateNote, task, isEditSidebarOpen }) {
         onBlur={() => setIsTyping(false)}
         onChange={(e) => handleNote(e.target.value)}
         placeholder={isTyping ? "" : "Add note"}
-        maxLength={MAX_TEXT_ARIA_LENGTH}
+        maxLength={MAX_INPUT_TEXTARIA}
         className="custom-placeholder w-full resize-none bg-inherit outline-none placeholder:font-light placeholder:text-black placeholder:opacity-80"
       />
     </BoxTemplate>

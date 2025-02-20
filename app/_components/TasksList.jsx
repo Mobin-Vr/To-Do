@@ -31,7 +31,7 @@ export default function TasksList({
     categoryId !== defaultCategoryId;
 
   return (
-    <div>
+    <div className="w-full">
       {cond && (
         <DefaultMinimizer
           tasks={tasks}

@@ -1021,7 +1021,7 @@ const useTaskStore = create(
           );
         },
 
-        getuserState: () => {
+        getUserState: () => {
           return get().userState;
         },
 

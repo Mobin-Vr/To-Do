@@ -1,6 +1,7 @@
 import useTaskStore from "@/app/taskStore";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { MAX_INPUT_CAT_TITLE } from "../_lib/configs";
 
 export default function CategoryTitleEditor({ theCategory, className }) {
   const textareaRef = useRef(null);
@@ -70,7 +71,7 @@ export default function CategoryTitleEditor({ theCategory, className }) {
       onBlur={handleBlur}
       value={currentTitle}
       onChange={handleUpdateTitle}
-      maxLength={150}
+      maxLength={MAX_INPUT_CAT_TITLE}
       spellCheck={false}
       className={`overflow-hidden bg-inherit outline-none ${className}`}
     />
