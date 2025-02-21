@@ -93,13 +93,13 @@ function TaskDetails({ task, listName, className }) {
           ))}
 
         {task.task_repeat && (
-          <span className="mt-0.5">
+          <span>
             <SyncIcon size="13px" />
           </span>
         )}
 
         {task.task_note && (
-          <span className="mt-0.5 opacity-70">
+          <span className="opacity-70">
             <NoteIcon size="13px" />
           </span>
         )}

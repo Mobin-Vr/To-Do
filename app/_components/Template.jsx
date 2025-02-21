@@ -38,7 +38,7 @@ export default function Template({
         style={{ backgroundColor: listConfig.bgColor.mainBackground }}
       >
         <AppHeader
-          className="z-10 h-36 w-full px-8 sm:px-10"
+          className="z-10 mb-3 max-h-28 min-h-24 w-full px-8 sm:px-10"
           listConfig={listConfig}
           handleDeleteCategory={handleDeleteCategory}
           theCategoryId={theCategoryId}
