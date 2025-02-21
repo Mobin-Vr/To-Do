@@ -41,7 +41,11 @@ export default function DeleteWarningModal() {
 
   return (
     <>
-      <Overlay isOpen={isDeleteModalOpen} onClick={hideDeleteModal} />
+      <Overlay
+        isOpen={isDeleteModalOpen}
+        onClick={hideDeleteModal}
+        zIndex={40}
+      />
 
       <motion.div
         id="delete-modal"

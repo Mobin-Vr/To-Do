@@ -1,7 +1,8 @@
 import { ShareIcon } from "@/public/icons";
 import { useState } from "react";
-import ModalTemplateOverlay from "../_ui/ModalTemplateOverlay";
+import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import SharedListModal from "./ShareListModal";
+import Overlay from "../_ui/Overlay";
 
 export default function ShareBtn({ theCategoryId, bgColor }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,16 +25,20 @@ export default function ShareBtn({ theCategoryId, bgColor }) {
         <ShareIcon />
       </button>
 
-      <ModalTemplateOverlay
-        isModalOpen={isModalOpen}
-        toggleModal={toggleModal}
-        className="h-full max-h-[28rem] w-4/6 max-w-80"
-      >
-        <SharedListModal
+      <Overlay isOpen={isModalOpen} onClick={toggleModal} zIndex={30}>
+        <ModalTemplatePrimary
+          isModalOpen={isModalOpen}
           toggleModal={toggleModal}
-          theCategoryId={theCategoryId}
-        />
-      </ModalTemplateOverlay>
+          justify="50%"
+          isCenteredModal={true}
+          className="h-full max-h-[28rem] w-4/6 max-w-80"
+        >
+          <SharedListModal
+            toggleModal={toggleModal}
+            theCategoryId={theCategoryId}
+          />
+        </ModalTemplatePrimary>
+      </Overlay>
     </div>
   );
 }

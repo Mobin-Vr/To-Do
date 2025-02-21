@@ -1,16 +1,36 @@
 import { ClerkLoaded, UserButton } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Overlay from "../_ui/Overlay";
 import ProfileModal from "./ProfileModal";
 import UserStatus from "./UserStatus";
 
 function UserMenu({ user, createClerkPasskey, className }) {
   const userMenuBtnRef = useRef(null);
+  const modalRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        isModalOpen &&
+        modalRef.current &&
+        !modalRef.current.contains(event.target) &&
+        userMenuBtnRef.current &&
+        !userMenuBtnRef.current.contains(event.target)
+      )
+        setIsModalOpen(false);
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isModalOpen]);
 
   const userButtonAppearance = {
     elements: {
@@ -43,18 +63,16 @@ function UserMenu({ user, createClerkPasskey, className }) {
           <AnimatePresence>
             {isModalOpen && (
               <>
-                {/* Overlay */}
-                <motion.div
-                  className="fixed inset-0 z-40 w-full rounded-md bg-black bg-opacity-40"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                <Overlay
                   onClick={toggleModal}
+                  isOpen={isModalOpen}
+                  zIndex={40}
+                  className="rounded-r-md"
                 />
 
                 {/* Modal */}
                 <motion.div
-                  className="absolute left-1/2 top-14 z-50 w-fit min-w-[17rem] overflow-hidden rounded-2xl bg-white text-xs font-light shadow-2xl"
+                  ref={modalRef}
                   initial={{
                     opacity: 0,
                     scale: 0.9,
@@ -64,6 +82,7 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   animate={{ opacity: 1, scale: 1, y: 0, x: "-50%" }}
                   exit={{ opacity: 0, scale: 0.9, y: -20, x: "-50%" }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
+                  className="absolute left-1/2 top-14 z-50 w-fit min-w-[17rem] overflow-hidden rounded-2xl bg-white text-xs font-light shadow-2xl"
                 >
                   <ProfileModal user={user} />
                 </motion.div>

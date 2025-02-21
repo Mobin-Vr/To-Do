@@ -21,7 +21,7 @@ function MenuBtn({ menuButtonRef, className, bgColor }) {
       onClick={toggleSidebar}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className={`flex items-center justify-center rounded-md p-1 duration-300 ease-in-out sm:hidden ${className}`}
+      className={`flex items-center justify-center rounded-md p-1 duration-300 ease-in-out md:hidden ${className}`}
       style={{
         color: bgColor?.primaryText,
         backgroundColor: hover
