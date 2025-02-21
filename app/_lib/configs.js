@@ -152,9 +152,9 @@ export const BG_COLORS = {
   },
 
   "/default": {
-    mainBackground: "#5d71bf",
+    mainBackground: "#eeeff3", // dont change this
     taskBackground: "#eeeff3",
-    primaryText: "#fff",
+    primaryText: "#286fd4", // dont change this
     secondaryText: "#3063ab",
     ternaryText: "#999",
     iconColor: "#5d71bf",

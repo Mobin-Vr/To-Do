@@ -28,6 +28,8 @@ export default function EditSidebar() {
     activeTask,
     setActiveTask,
     tasksList,
+    showDeleteModal,
+    deletingType,
   } = useTaskStore(
     useShallow((state) => ({
       isEditSidebarOpen: state.isEditSidebarOpen,
@@ -37,6 +39,8 @@ export default function EditSidebar() {
       activeTask: state.activeTask,
       setActiveTask: state.setActiveTask,
       tasksList: state.tasksList,
+      showDeleteModal: state.showDeleteModal,
+      deletingType: state.deletingType,
     })),
   );
 
@@ -59,14 +63,17 @@ export default function EditSidebar() {
       if (
         isEditSidebarOpen &&
         !e.target.closest(".task-item") &&
-        !e.target.closest(".edit-sidebar")
+        !e.target.closest(".edit-sidebar") &&
+        !e.target.closest(".cancel-delete") &&
+        !e.target.closest(".cancel-delete") &&
+        !(deletingType === "step" && e.target.closest(".confirm-delete")) // Prevent closing sidebar when we are delete a step
       )
         toggleEditSidebar();
     }
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [toggleEditSidebar, isEditSidebarOpen]);
+  }, [toggleEditSidebar, isEditSidebarOpen, deletingType]);
 
   if (!activeTask) return;
 
@@ -75,7 +82,7 @@ export default function EditSidebar() {
       <Overlay isOpen={isEditSidebarOpen} onClick={toggleEditSidebar} />
 
       <div
-        className={`edit-sidebar absolute right-0 top-0 z-50 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:max-w-96 ${
+        className={`edit-sidebar absolute right-0 top-0 z-40 flex h-full w-4/6 transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:max-w-96 ${
           isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -98,7 +105,7 @@ export default function EditSidebar() {
         <ActionFooter
           task={activeTask}
           deleteTaskFromStore={deleteTaskFromStore}
-          toggleEditSidebar={toggleEditSidebar}
+          showDeleteModal={showDeleteModal}
         />
       </div>
     </>

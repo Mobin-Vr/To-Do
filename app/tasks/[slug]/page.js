@@ -1,5 +1,6 @@
 "use client";
 
+import Spinner from "@/app/_components/_ui/Spinner";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
@@ -14,14 +15,19 @@ export default function Page({}) {
   const listRef = useRef(null);
   const bgColor = BG_COLORS["/slug"];
 
-  const { deleteCategoryFromStore, tasksList, getCategoriesList } =
-    useTaskStore(
-      useShallow((state) => ({
-        deleteCategoryFromStore: state.deleteCategoryFromStore,
-        tasksList: state.tasksList,
-        getCategoriesList: state.getCategoriesList,
-      })),
-    );
+  const {
+    deleteCategoryFromStore,
+    tasksList,
+    getCategoriesList,
+    showDeleteModal,
+  } = useTaskStore(
+    useShallow((state) => ({
+      deleteCategoryFromStore: state.deleteCategoryFromStore,
+      tasksList: state.tasksList,
+      getCategoriesList: state.getCategoriesList,
+      showDeleteModal: state.showDeleteModal,
+    })),
+  );
 
   const theCategory = getCategoriesList()?.find(
     (cat) => cat.category_id === slugId,
@@ -54,18 +60,21 @@ export default function Page({}) {
     : null;
 
   async function handleDeleteCategory() {
-    setIsRedirecting(true);
+    // 1. Show warn modal
+    showDeleteModal("category", theCategory.category_title, async () => {
+      // 2.
+      setIsRedirecting(true);
 
-    // 1. Delete the category
-    await deleteCategoryFromStore(theCategory.category_id);
+      // 3. Delete the category
+      await deleteCategoryFromStore(theCategory.category_id);
 
-    // 2. Redirect the url
-    redirect("/tasks");
+      // 4. Redirect the url
+      redirect("/tasks");
+    });
   }
 
   // CHANGE LATER with a real loader
-  if (isRedirecting)
-    return <div className="text-center text-3xl">Redirecting...</div>;
+  if (isRedirecting) return <Spinner defaultBgColor={BG_COLORS["/default"]} />;
 
   return (
     <Template

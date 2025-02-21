@@ -32,8 +32,10 @@ export default async function RootLayout({ children }) {
 
             {/* This component handles checking and creating a new user in the database upon sign-in */}
             <UserSignupHandler />
+
             {/* get new tasks in real time */}
             <TaskRealTimeListener />
+
             {/* handle reminders */}
             <ReminderHandler />
           </SignedIn>

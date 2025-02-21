@@ -10,12 +10,19 @@ import { useShallow } from "zustand/react/shallow";
 import { ModalActionButton } from "../remiderBoxModals/ModalActionBtn";
 
 export default function StepActionModal({ task, step }) {
-  const { updateStep, removeStep, addTaskToStore, getUserState } = useTaskStore(
+  const {
+    updateStep,
+    removeStep,
+    addTaskToStore,
+    getUserState,
+    showDeleteModal,
+  } = useTaskStore(
     useShallow((state) => ({
       updateStep: state.updateStep,
       removeStep: state.removeStep,
       addTaskToStore: state.addTaskToStore,
       getUserState: state.getUserState,
+      showDeleteModal: state.showDeleteModal,
     })),
   );
 
@@ -26,7 +33,11 @@ export default function StepActionModal({ task, step }) {
   }
 
   function handleRemove() {
-    removeStep(task.task_id, step.step_id);
+    // 1. Show warn modal
+    showDeleteModal("step", step.step_title, async () => {
+      // 2. Remove the step
+      removeStep(task.task_id, step.step_id);
+    });
   }
 
   function handlePromote() {
@@ -57,10 +68,10 @@ export default function StepActionModal({ task, step }) {
     <>
       <ModalActionButton
         icon={step.is_step_completed ? <CircleIcon /> : <TickCircleIcon />}
+        onClick={handleUpdate}
         label={
           step.is_step_completed ? "Mark as not completed" : "Mark as completed"
         }
-        onClick={handleUpdate}
       />
 
       <ModalActionButton

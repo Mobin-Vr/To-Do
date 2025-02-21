@@ -1,10 +1,10 @@
-import { delay, getTimeAgo } from "@/app/_lib/utils";
+import { getTimeAgo } from "@/app/_lib/utils";
 import DeleteBtn from "../_ui/DeleteBtn";
 
 export default function ActionFooter({
   task,
-  toggleEditSidebar,
   deleteTaskFromStore,
+  showDeleteModal,
 }) {
   if (!task.task_created_at) return;
 
@@ -16,12 +16,11 @@ export default function ActionFooter({
     : `Created ${timeAgoCreated}`;
 
   async function handleDelete() {
-    // 1. close side bar
-    toggleEditSidebar();
-    await delay(200);
-
-    // 2. Delete the task
-    deleteTaskFromStore(task.task_id);
+    // 1. Show warn modal
+    showDeleteModal("task", task.task_title, async () => {
+      // 2. Delete the task
+      deleteTaskFromStore(task.task_id);
+    });
   }
 
   return (

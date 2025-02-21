@@ -6,6 +6,7 @@ import TasksList from "./TasksList";
 import Sidebar from "./menuSidebar/Sidebar";
 import TaskInput from "./taskInput/TaskInput";
 import { useEffect } from "react";
+import DeleteWarningModal from "./_ui/DeleteWarningModal";
 
 export default function Template({
   listRef,
@@ -25,8 +26,12 @@ export default function Template({
     <div className="relative flex h-full w-full overflow-hidden">
       {/* Absolute Sidebar */}
       <Sidebar />
+
       {/* Absolute Editsidebar */}
       <EditSidebar />
+
+      {/* Delete warn modal */}
+      <DeleteWarningModal />
 
       <div
         className="flex h-full w-full flex-col items-center justify-center"

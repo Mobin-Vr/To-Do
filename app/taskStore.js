@@ -38,6 +38,12 @@ const initialState = {
   categoriesList: [defaultCategory], // we can push more
   invitations: [], // this is just for owner: each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
   sharedWithMe: [], // this is for the second user: each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
+
+  // Delete modal:
+  isDeleteModalOpen: false,
+  deletingType: "", // task, category, step
+  deletingItemName: "",
+  deleteCallback: null,
 };
 
 const useTaskStore = create(
@@ -59,6 +65,10 @@ const useTaskStore = create(
         categoriesList: initialState.categoriesList,
         invitations: initialState.invitations,
         sharedWithMe: initialState.sharedWithMe,
+        isDeleteModalOpen: initialState.isDeleteModalOpen,
+        deletingType: initialState.deletingType,
+        deletingItemName: initialState.deletingItemName,
+        deleteCallback: initialState.deleteCallback,
 
         // # Toggle sidebar
         toggleSidebar: () => {
@@ -1391,6 +1401,48 @@ const useTaskStore = create(
               if (category) category.category_title = newName;
             }),
           ),
+
+        //////////////////////////
+        //////////////////////////
+        ////// Delete Modal //////
+        //////////////////////////
+        //////////////////////////
+
+        showDeleteModal: (deletingType, itemName, deleteCallback) => {
+          set(
+            produce((state) => {
+              state.isDeleteModalOpen = true;
+              state.deletingType = deletingType;
+              state.deletingItemName = itemName;
+              state.deleteCallback = deleteCallback;
+            }),
+          );
+        },
+
+        hideDeleteModal: () => {
+          set(
+            produce((state) => {
+              state.isDeleteModalOpen = false;
+              state.deletingType = null;
+              state.deletingItemName = null;
+              state.deleteCallback = null;
+            }),
+          );
+        },
+
+        handleConfirmDelete: () => {
+          const callback = get().deleteCallback;
+          if (callback) callback();
+
+          set(
+            produce((state) => {
+              state.isDeleteModalOpen = false;
+              state.deletingType = null;
+              state.deletingItemName = null;
+              state.deleteCallback = null;
+            }),
+          );
+        },
       }),
       {
         name: "Todo Store", // Key name for storage

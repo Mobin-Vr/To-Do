@@ -2,9 +2,9 @@ export function ModalActionButton({
   icon,
   label,
   time,
-  disabled = false,
   className,
   onClick,
+  disabled = false,
 }) {
   return (
     <button

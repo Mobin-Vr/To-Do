@@ -40,7 +40,7 @@ export default function ModalTemplatePrimary({
           animate={{ opacity: 1, scale: 1, x: justify }}
           exit={{ opacity: 0, scale: 0.8, x: justify }}
           transition={{ duration: 0.2, ease: "easeOut" }}
-          className={`border-1 absolute z-40 overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
+          className={`border-1 absolute z-50 overflow-hidden rounded-md border border-gray-300 bg-white text-sm font-normal text-gray-800 shadow-2xl ${className}`}
         >
           {children}
         </motion.div>
