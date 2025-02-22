@@ -39,12 +39,11 @@ export default function Page({}) {
   };
 
   return (
-    <>
-      {tasks.length > 0 ? (
-        <Template listRef={listRef} listConfig={listConfig} showInput={false} />
-      ) : (
-        <NoResults query={query} bgColor={bgColor} />
-      )}
-    </>
+    <Template
+      listRef={listRef}
+      listConfig={listConfig}
+      showInput={false}
+      showSearch={tasks.length > 0 ? false : true}
+    />
   );
 }

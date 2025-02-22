@@ -15,9 +15,8 @@ export default function AppHeader({
   className,
   handleDeleteCategory,
   theCategoryId,
-  query,
 }) {
-  const { bgColor, listName, listIcon, theCategory } = listConfig;
+  const { bgColor, listName, listIcon, theCategory, query = "" } = listConfig;
 
   const { getUserState } = useTaskStore(
     useShallow((state) => ({
@@ -45,9 +44,7 @@ export default function AppHeader({
 
       {listName !== "Search" && (
         <div
-          className={`flex items-center px-1 sm:mt-10 ${
-            listName === "Search" ? "justify-center" : "justify-between"
-          }`}
+          className="flex items-center justify-between px-1 sm:mt-10"
           style={{ color: bgColor.primaryText }}
         >
           <h1
@@ -79,6 +76,7 @@ export default function AppHeader({
         </div>
       )}
 
+      {/* if the page is my day we should also render the date  */}
       {listName === "My Day" && (
         <span
           className="ml-1 text-sm font-extralight"
@@ -90,15 +88,19 @@ export default function AppHeader({
 
       {listName === "Search" && (
         <div
-          className="ml-1 mt-1.5 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap leading-tight"
+          className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap px-1 leading-tight sm:mt-10"
           title={query}
           style={{ color: bgColor.primaryText }}
         >
-          <span className="block text-sm font-extralight text-accent-200">
+          <span className="mb-1 block text-sm font-extralight text-accent-200">
             Results for
           </span>
 
-          <span className="text-2xl font-normal leading-none">{query}</span>
+          <div className="text-3xl font-normal leading-none">
+            <span className="opacity-60">&quot;</span>
+            <span>{query}</span>
+            <span className="opacity-60">&quot;</span>
+          </div>
         </div>
       )}
     </div>

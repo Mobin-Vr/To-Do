@@ -7,6 +7,7 @@ import Sidebar from "./menuSidebar/Sidebar";
 import TaskInput from "./taskInput/TaskInput";
 import { useEffect } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";
+import NoResults from "./NoResults";
 
 export default function Template({
   listRef,
@@ -14,6 +15,8 @@ export default function Template({
   handleDeleteCategory,
   theCategoryId = defaultCategoryId,
   showInput = true,
+  showSearch = false,
+  query = "",
 }) {
   // To ensure consistent background, the body background matches the page's. Without this, border-radius on some elements would reveal the white page background at the corners.
   useEffect(() => {
@@ -32,44 +35,47 @@ export default function Template({
 
       {/* Delete warn modal */}
       <DeleteWarningModal />
+      {!showSearch ? (
+        <div
+          className="flex h-full w-full flex-col items-center justify-center"
+          style={{ backgroundColor: listConfig.bgColor.mainBackground }}
+        >
+          <AppHeader
+            className="z-10 mb-3 max-h-28 min-h-24 w-full px-8 sm:px-10"
+            listConfig={listConfig}
+            handleDeleteCategory={handleDeleteCategory}
+            theCategoryId={theCategoryId}
+          />
 
-      <div
-        className="flex h-full w-full flex-col items-center justify-center"
-        style={{ backgroundColor: listConfig.bgColor.mainBackground }}
-      >
-        <AppHeader
-          className="z-10 mb-3 max-h-28 min-h-24 w-full px-8 sm:px-10"
-          listConfig={listConfig}
-          handleDeleteCategory={handleDeleteCategory}
-          theCategoryId={theCategoryId}
-          query={listConfig?.query}
-        />
+          <div className="my-2 w-full flex-grow overflow-auto px-8 sm:px-10">
+            {listConfig.tasks.length > 0 ? (
+              <TasksList
+                listRef={listRef}
+                bgColor={listConfig.bgColor}
+                categoryId={theCategoryId}
+                tasks={listConfig.tasks}
+                listName={listConfig.listName}
+                query={listConfig?.query}
+              />
+            ) : (
+              listConfig.listName === "My Day" && <NoTaskInMyDay />
+            )}
+          </div>
 
-        <div className="my-2 w-full flex-grow overflow-auto px-8 sm:px-10">
-          {listConfig.tasks.length > 0 ? (
-            <TasksList
-              listRef={listRef}
+          {showInput && (
+            <TaskInput
+              // Adjust width to match the task list, which has a 6px scrollbar.
+              className="min-h-[5rem] w-[calc(100%-6px)] -translate-x-[3px] px-8 sm:px-10"
               bgColor={listConfig.bgColor}
               categoryId={theCategoryId}
-              tasks={listConfig.tasks}
               listName={listConfig.listName}
-              query={listConfig?.query}
             />
-          ) : (
-            listConfig.listName === "My Day" && <NoTaskInMyDay />
           )}
         </div>
-
-        {showInput && (
-          <TaskInput
-            // Adjust width to match the task list, which has a 6px scrollbar.
-            className="min-h-[5rem] w-[calc(100%-6px)] -translate-x-[3px] px-8 sm:px-10"
-            bgColor={listConfig.bgColor}
-            categoryId={theCategoryId}
-            listName={listConfig.listName}
-          />
-        )}
-      </div>
+      ) : (
+        // this is for search componnet
+        <NoResults query={listConfig.query} bgColor={listConfig.bgColor} />
+      )}
     </div>
   );
 }
