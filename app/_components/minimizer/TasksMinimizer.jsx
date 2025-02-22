@@ -11,17 +11,20 @@ export default function TasksMinimizer({
   TogglerName,
   isVisibleByDefault = false,
   listName,
+  isShown = true,
 }) {
   const [isVisible, setVisible] = useState(isVisibleByDefault);
   return (
     <>
-      <ListToggler
-        TogglerName={TogglerName}
-        isVisible={isVisible}
-        Count={tasks.length}
-        onClick={() => setVisible(!isVisible)}
-        bgColor={bgColor}
-      />
+      {isShown && (
+        <ListToggler
+          TogglerName={TogglerName}
+          isVisible={isVisible}
+          Count={tasks.length}
+          onClick={() => setVisible(!isVisible)}
+          bgColor={bgColor}
+        />
+      )}
 
       {isVisible && (
         <TaskGroup

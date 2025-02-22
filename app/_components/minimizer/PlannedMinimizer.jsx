@@ -18,6 +18,7 @@ export default function PlannedMinimizer({
         bgColor={bgColor}
         isVisibleByDefault={true}
         listName={listName}
+        isShown={pastTasks.length > 0}
       />
 
       <TasksMinimizer
@@ -27,6 +28,7 @@ export default function PlannedMinimizer({
         bgColor={bgColor}
         isVisibleByDefault={true}
         listName={listName}
+        isShown={todayTasks.length > 0}
       />
 
       <TasksMinimizer
@@ -36,6 +38,7 @@ export default function PlannedMinimizer({
         bgColor={bgColor}
         isVisibleByDefault={true}
         listName={listName}
+        isShown={futureTasks.length > 0}
       />
     </>
   );
