@@ -6,6 +6,8 @@ import ReminderHandler from "./_components/ReminderHandler";
 import TaskRealTimeListener from "./_components/TaskRealTimeListener";
 import "./_styles/globals.css";
 import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
+import Sidebar from "./_components/sidebarSection/Sidebar";
+import EditSidebar from "./_components/editSidebarSection/EditSidebar";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -49,6 +51,11 @@ export default async function RootLayout({ children }) {
 
             {/* handle reminders */}
             <ReminderHandler />
+
+            {/* Absolute Sidebar */}
+            <Sidebar />
+            {/* Absolute Editsidebar */}
+            <EditSidebar />
           </SignedIn>
 
           <main className="h-full overflow-y-hidden sm:flex-1">{children}</main>

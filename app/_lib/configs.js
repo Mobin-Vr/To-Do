@@ -20,6 +20,20 @@ export const defaultCategory = {
   has_category_invitation: false,
 };
 ///////////////////////////////////////////////////////////
+// Sidebar should only render for pages related to tasks, profile management, settings, and search.
+// It should not render for pages like Invite.
+export const RELEVENT_APP_PAGES = [
+  "my-day",
+  "important",
+  "planned",
+  "all",
+  "completed",
+  "tasks",
+  "search",
+  "profile",
+  "slug",
+];
+///////////////////////////////////////////////////////////
 //////////////////   Route background   ///////////////////
 //////////////////    color settings    ///////////////////
 ///////////////////////////////////////////////////////////

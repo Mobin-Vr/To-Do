@@ -4,21 +4,18 @@ import { BG_COLORS } from "@/app/_lib/configs";
 import { usePathname } from "next/navigation";
 import { validate } from "uuid";
 
-export default function Spinner({ defaultBgColor }) {
+export default function Spinner() {
   const pageName = usePathname().split("/").at(-1);
   const isUUID = validate(pageName);
-  const bgColor = BG_COLORS[isUUID ? "/slug" : `/${pageName}`];
+  const bgColor =
+    BG_COLORS[isUUID ? "/slug" : `/${pageName}`] || BG_COLORS["/default"];
 
   const ballStyle = {
-    backgroundColor: defaultBgColor
-      ? defaultBgColor.primaryText
-      : bgColor.primaryText,
+    backgroundColor: bgColor.primaryText,
   };
 
   const spinnerBgStyle = {
-    backgroundColor: defaultBgColor
-      ? defaultBgColor.mainBackground
-      : bgColor.mainBackground,
+    backgroundColor: bgColor.mainBackground,
   };
 
   return (

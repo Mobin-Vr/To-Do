@@ -3,22 +3,28 @@
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef } from "react";
 
-import { BG_COLORS } from "@/app/_lib/configs";
+import { BG_COLORS, RELEVENT_APP_PAGES } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
+import { usePathname } from "next/navigation";
+import { validate } from "uuid";
 import { useShallow } from "zustand/react/shallow";
 import MenuBtn from "../_ui/MenuBtn";
 import NewListBtn from "../_ui/NewListBtn";
+import Overlay from "../_ui/Overlay";
 import CategoriesList from "./CategoriesList";
 import SidebarNav from "./SidebarNav";
 import TaskSearch from "./TaskSearch";
 import UserMenu from "./UserMenu";
-import Overlay from "../_ui/Overlay";
 
 export default function Sidebar() {
   const sidebarRef = useRef(null);
   const menuButtonRef = useRef(null);
+
   const { user } = useUser();
-  const bgColor = BG_COLORS["/default"];
+
+  const pathName = usePathname().split("/").at(-1);
+  const isUUID = validate(pathName);
+  const pageName = isUUID ? "slug" : pathName;
 
   const {
     isSidebarOpen,
@@ -56,6 +62,10 @@ export default function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isSidebarOpen, toggleSidebar]);
 
+  // Refer to the comment "1"
+  const isAtaskPage = RELEVENT_APP_PAGES.some((page) => page === pageName);
+  if (!isAtaskPage) return;
+
   async function createClerkPasskey() {
     try {
       await user?.createPasskey();
@@ -83,7 +93,7 @@ export default function Sidebar() {
           <MenuBtn
             menuButtonRef={menuButtonRef}
             className="-translate-x-1 -translate-y-1"
-            bgColor={bgColor}
+            bgColor={BG_COLORS["/default"]}
           />
 
           <UserMenu
@@ -114,3 +124,7 @@ export default function Sidebar() {
     </>
   );
 }
+
+/**
+ * 1: Sidebar should only render for pages related to tasks, profile management, settings, and search. It should not render for pages like Invite.
+ */

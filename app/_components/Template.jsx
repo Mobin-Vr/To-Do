@@ -27,12 +27,6 @@ export default function Template({
 
   return (
     <div className="relative flex h-full w-full overflow-hidden">
-      {/* Absolute Sidebar */}
-      <Sidebar />
-
-      {/* Absolute Editsidebar */}
-      <EditSidebar />
-
       {/* Delete warn modal */}
       <DeleteWarningModal />
       {!showSearch ? (
