@@ -1,7 +1,7 @@
 import CompleteBtn from "../_ui/CompleteBtn";
 import StarBtn from "../_ui/StarBtn";
 import BoxTemplate from "./BoxTemplate";
-import Steps from "./step/Steps";
+import Steps from "./stepSection/Steps";
 import TaskTitleEditor from "./TaskTitleEditor";
 
 function TaskOverView({ task, bgColor }) {

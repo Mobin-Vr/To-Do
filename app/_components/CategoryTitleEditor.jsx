@@ -36,6 +36,7 @@ export default function CategoryTitleEditor({ theCategory, className }) {
       textareaRef.current.focus();
       toggleTitleFocus(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 1. Save the current value when input is focused (onFocus)

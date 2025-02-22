@@ -1,6 +1,5 @@
 "use client";
 
-import NoResults from "@/app/_components/NoResults";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";

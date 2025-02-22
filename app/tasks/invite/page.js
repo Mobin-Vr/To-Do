@@ -1,4 +1,4 @@
-import InvitationLanding from "@/app/_components/shareList/InvationLanding";
+import InvitationLanding from "@/app/_components/shareListSection/InvationLanding";
 
 export default function Page({ searchParams }) {
   const token = searchParams.token;

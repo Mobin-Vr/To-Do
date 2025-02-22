@@ -1,13 +1,13 @@
-import { CalendarIcon } from "@/public/icons";
+import { BellIcon } from "@/public/icons";
 import { useRef, useState } from "react";
-import AddDueModal from "../editSidebar/reminderBoxModals/AddDueModal";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import InputBtnTempl from "../_ui/InputBtnTempl";
+import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
-import DatePickerModal from "../editSidebar/reminderBoxModals/DatePickerModal";
+import AddReminderModal from "../editSidebarSection/reminderBoxModals/AddReminderModal";
+import DateTimePickerModal from "../editSidebarSection/reminderBoxModals/DateTimePickerModal";
 
-export default function InputAddDue({ setTaskDueDate, className }) {
-  const AddDueRef = useRef(null);
+export default function InputAddReminder({ setTaskReminder, className }) {
+  const AddReminder = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
@@ -17,22 +17,22 @@ export default function InputAddDue({ setTaskDueDate, className }) {
     setIsDatePickerModalOpen(!isDatePickerModalOpen);
 
   return (
-    <div ref={AddDueRef}>
+    <div ref={AddReminder}>
       <InputBtnTempl
         className={`${className}`}
-        icon={<CalendarIcon />}
+        icon={<BellIcon />}
         onClick={toggleModal}
       />
 
       <ModalTemplateCloseAble
-        parentRef={AddDueRef}
+        parentRef={AddReminder}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
         className="bottom-[3rem] right-0 w-44 border border-gray-300 text-xs font-normal shadow-black"
       >
-        <AddDueModal
-          updateDueDate={setTaskDueDate}
-          toggleModal={toggleModalDatePicker}
+        <AddReminderModal
+          updateReminder={setTaskReminder}
+          toggleModalDatePicker={toggleModalDatePicker}
           isForTaskInput={true}
         />
       </ModalTemplateCloseAble>
@@ -42,8 +42,8 @@ export default function InputAddDue({ setTaskDueDate, className }) {
         toggleModal={toggleModalDatePicker}
         className="bottom-[3rem] right-0 w-fit border border-gray-300 text-xs font-normal shadow-black"
       >
-        <DatePickerModal
-          updateDueDate={setTaskDueDate}
+        <DateTimePickerModal
+          updateReminder={setTaskReminder}
           toggleModal={toggleModalDatePicker}
           isForTaskInput={true}
         />

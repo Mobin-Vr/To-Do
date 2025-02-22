@@ -1,13 +1,13 @@
 import { defaultCategoryId } from "@/app/_lib/configs";
 import AppHeader from "./AppHeader";
-import EditSidebar from "./EditSidebar/EditSidebar";
 import NoTaskInMyDay from "./NoTaskInMyDay";
 import TasksList from "./TasksList";
-import Sidebar from "./menuSidebar/Sidebar";
-import TaskInput from "./taskInput/TaskInput";
 import { useEffect } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";
 import NoResults from "./NoResults";
+import EditSidebar from "./editSidebarSection/EditSidebar";
+import Sidebar from "./sidebarSection/Sidebar";
+import TaskInput from "./taskInputSection/TaskInput";
 
 export default function Template({
   listRef,
@@ -16,13 +16,13 @@ export default function Template({
   theCategoryId = defaultCategoryId,
   showInput = true,
   showSearch = false,
-  query = "",
 }) {
   // To ensure consistent background, the body background matches the page's. Without this, border-radius on some elements would reveal the white page background at the corners.
   useEffect(() => {
     if (typeof document !== "undefined") {
       document.body.style.backgroundColor = listConfig.bgColor.mainBackground;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

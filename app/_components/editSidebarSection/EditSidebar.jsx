@@ -10,7 +10,7 @@ import ActionFooter from "./ActionFooter";
 import AddFile from "./AddFile";
 import AddNote from "./AddNote";
 import AddToMyDay from "./AddToMyDay";
-import ReminderBox from "./reminderBox/ReminderBox";
+import ReminderBox from "./reminderBoxSection/ReminderBox";
 import TaskOverView from "./TaskOverView";
 import { validate } from "uuid";
 import Overlay from "../_ui/Overlay";

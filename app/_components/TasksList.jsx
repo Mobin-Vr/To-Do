@@ -3,9 +3,9 @@
 import { useShallow } from "zustand/react/shallow";
 import { defaultCategoryId } from "../_lib/configs";
 import useTaskStore from "../taskStore";
-import AllMinimizer from "./minimizer/AllMinimizer";
-import DefaultMinimizer from "./minimizer/DefaultMinimizer";
-import PlannedMinimizer from "./minimizer/PlannedMinimizer";
+import AllMinimizer from "./minimizerSection/AllMinimizer";
+import DefaultMinimizer from "./minimizerSection/DefaultMinimizer";
+import PlannedMinimizer from "./minimizerSection/PlannedMinimizer";
 
 export default function TasksList({
   listRef,

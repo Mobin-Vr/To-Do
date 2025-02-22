@@ -8,7 +8,7 @@ import DeleteBtn from "./_ui/DeleteBtn";
 import MenuBtn from "./_ui/MenuBtn";
 import SortMethodBtn from "./_ui/SortMethodBtn";
 import CategoryTitleEditor from "./CategoryTitleEditor";
-import ShareBtn from "./shareList/ShareBtn";
+import ShareBtn from "./shareListSection/ShareBtn";
 
 export default function AppHeader({
   listConfig,

@@ -2,10 +2,10 @@ import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { Roboto_Flex } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import HealthStatusSync from "./_components/HealthStatusSync";
-import UserSignupHandler from "./_components/menuSidebar/UserSignupHandler";
 import ReminderHandler from "./_components/ReminderHandler";
 import TaskRealTimeListener from "./_components/TaskRealTimeListener";
 import "./_styles/globals.css";
+import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
