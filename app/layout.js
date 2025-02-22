@@ -1,5 +1,6 @@
 import { ClerkProvider, SignedIn } from "@clerk/nextjs";
 import { Roboto_Flex } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
 import HealthStatusSync from "./_components/HealthStatusSync";
 import ReminderHandler from "./_components/ReminderHandler";
@@ -26,6 +27,13 @@ const roboto = Roboto_Flex({
   display: "swap",
 });
 
+const iranSansRegular = localFont({
+  src: "../public/IRANSansWeb.ttf",
+  weight: "400",
+  style: "normal",
+  display: "swap",
+});
+
 export const metadata = {
   title: "Microsoft To Do",
   description:
@@ -37,7 +45,7 @@ export default async function RootLayout({ children }) {
     <ClerkProvider dynamic>
       <html lang="en">
         <body
-          className={`${roboto.className} relative z-50 flex h-screen flex-col overflow-hidden sm:flex-row`}
+          className={`${roboto.className} ${iranSansRegular.className} relative z-50 flex h-screen flex-col overflow-hidden sm:flex-row`}
         >
           <SignedIn>
             {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}

@@ -6,11 +6,14 @@ import { addTask, deleteTask, updateManyTask } from "../_lib/data-services";
 import { checkDatabaseHealth } from "../_lib/healthCheck";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
+import useCustomToast from "../_lib/useCustomeToast";
 
 export default function HealthStatusSync() {
   const [isConnected, setIsConnected] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [lastOnline, setLastOnline] = useState(null);
+
+  const showToast = useCustomToast();
 
   const {
     updateConnectionStatus,
@@ -20,6 +23,7 @@ export default function HealthStatusSync() {
     isSyncing,
     toggleIsSyncing,
     syncLcWithDb,
+    getConectionStatus,
   } = useTaskStore(
     useShallow((state) => ({
       updateConnectionStatus: state.updateConnectionStatus,
@@ -29,6 +33,7 @@ export default function HealthStatusSync() {
       isSyncing: state.isSyncing,
       toggleIsSyncing: state.toggleIsSyncing,
       syncLcWithDb: state.syncLcWithDb,
+      getConectionStatus: state.getConectionStatus,
     })),
   );
 
@@ -113,6 +118,8 @@ export default function HealthStatusSync() {
     if (!navigator.onLine) {
       setIsConnected(false);
       setIsOnline(false);
+
+      showToast(`You're offline! Changes will be saved locally.`);
       return;
     }
 
@@ -123,6 +130,11 @@ export default function HealthStatusSync() {
 
     if (result.online) {
       setLastOnline(getDateNowIso()); // Update last online time
+
+      // show the taost when it becames online but not in app mount!
+      if (getConectionStatus().lastOnline) {
+        showToast("You're back online! Syncing data...");
+      }
       await syncData(); // Start syncing log with the database
     }
   }, [syncData]);

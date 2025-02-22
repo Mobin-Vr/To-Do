@@ -597,6 +597,11 @@ const useTaskStore = create(
           return tasksList.length > 0 ? tasksList : null;
         },
 
+        // # Get the last tasklist
+        getConectionStatus: () => {
+          return get().conectionStatus;
+        },
+
         /////////////////////////////
         /////////////////////////////
         /////////// Step ////////////
