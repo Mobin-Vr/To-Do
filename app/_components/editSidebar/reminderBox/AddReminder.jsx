@@ -2,29 +2,27 @@ import { getRelativeDay } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 import { format } from "date-fns";
 import { useRef, useState } from "react";
+import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
 import BoxBtn from "../BoxBtn";
-import AddDueModal from "../remiderBoxModals/AddDueModal";
-import DatePickerModal from "../remiderBoxModals/DatePickerModal";
-import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
+import AddReminderModal from "../reminderBoxModals/AddReminderModal";
+import DateTimePickerModal from "../reminderBoxModals/DateTimePickerModal";
 
-export default function AddDue({ task }) {
-  const AddDueRef = useRef(null);
-  const updateDueDate = useTaskStore((state) => state.updateDueDate);
+export default function AddReminder({ task }) {
+  const AddReminder = useRef(null);
+  const updateReminder = useTaskStore((state) => state.updateReminder);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
-  const hasDueDate = task.task_due_date ? true : false;
-  const relativeDay = task.task_due_date
-    ? getRelativeDay(task.task_due_date)
-    : "";
+  const hasReminder = task.task_reminder ? true : false;
+  const activeText = `Remind me at ${
+    task.task_reminder ? format(task.task_reminder, "HH:mm") : ""
+  }`;
 
-  const activeText =
-    relativeDay === null
-      ? `Due ${format(task.task_due_date, "MMM, dd")}`
-      : relativeDay;
+  const relativeDay = getRelativeDay(task.task_reminder);
+  const weekday = relativeDay ? format(task.task_reminder, "EEE") : relativeDay;
 
-  const removeDueDate = () => updateDueDate(task.task_id, null);
+  const removeReminder = () => updateReminder(task.task_id, null);
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -32,28 +30,28 @@ export default function AddDue({ task }) {
     setIsDatePickerModalOpen(!isDatePickerModalOpen);
 
   return (
-    <div ref={AddDueRef} className="">
+    <div ref={AddReminder} className="">
       <BoxBtn
-        text="Add due date"
+        text="Remind me"
         activeText={activeText}
-        icon="CalendarIcon"
-        isDateSet={hasDueDate}
+        icon="BellIcon"
+        weekday={weekday}
+        isDateSet={hasReminder}
         toggleModal={toggleModal}
-        clearDate={removeDueDate}
+        clearDate={removeReminder}
       />
 
       <ModalTemplateCloseAble
-        parentRef={AddDueRef}
+        parentRef={AddReminder}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
         justify="-50%"
         className="left-1/2 w-56 text-xs font-normal"
       >
-        <AddDueModal
-          toggleModal={toggleModalDatePicker}
-          updateDueDate={updateDueDate}
+        <AddReminderModal
+          toggleModalDatePicker={toggleModalDatePicker}
+          updateReminder={updateReminder}
           task={task}
-          d
         />
       </ModalTemplateCloseAble>
 
@@ -63,8 +61,8 @@ export default function AddDue({ task }) {
         justify="-50%"
         className="bottom-12 left-1/2 w-auto text-xs font-normal"
       >
-        <DatePickerModal
-          updateDueDate={updateDueDate}
+        <DateTimePickerModal
+          updateReminder={updateReminder}
           toggleModal={toggleModalDatePicker}
           task={task}
         />

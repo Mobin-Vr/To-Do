@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
 import BoxBtn from "../BoxBtn";
-import AddRepeatModal from "../remiderBoxModals/AddRepeatModal";
+import AddRepeatModal from "../reminderBoxModals/AddRepeatModal";
 
 export default function AddRepeat({ task }) {
   const repeatRef = useRef(null);

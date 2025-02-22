@@ -3,7 +3,7 @@ import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
 
-import { buttonVariants } from "./button";
+import { buttonVariants } from "./Button";
 import { cn } from "@/app/_lib/utils";
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }) {

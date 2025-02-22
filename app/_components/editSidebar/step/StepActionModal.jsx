@@ -7,7 +7,7 @@ import {
   TrashIcon,
 } from "@/public/icons";
 import { useShallow } from "zustand/react/shallow";
-import { ModalActionButton } from "../remiderBoxModals/ModalActionBtn";
+import { ModalActionButton } from "../reminderBoxModals/ModalActionBtn";
 
 export default function StepActionModal({ task, step }) {
   const {

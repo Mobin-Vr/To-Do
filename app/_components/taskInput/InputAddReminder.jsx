@@ -3,8 +3,8 @@ import { useRef, useState } from "react";
 import InputBtnTempl from "../_ui/InputBtnTempl";
 import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
-import AddReminderModal from "../EditSidebar/remiderBoxModals/AddReminderModal";
-import DateTimePickerModal from "../EditSidebar/remiderBoxModals/DateTimePickerModal";
+import AddReminderModal from "../editSidebar/reminderBoxModals/AddReminderModal";
+import DateTimePickerModal from "../editSidebar/reminderBoxModals/DateTimePickerModal";
 
 export default function InputAddReminder({ setTaskReminder, className }) {
   const AddReminder = useRef(null);
