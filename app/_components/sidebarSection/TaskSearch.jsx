@@ -33,9 +33,10 @@ export default function TaskSearch() {
 
   return (
     <div
-      className={`border-1 z-10 mb-3 h-[1.875rem] w-full overflow-hidden rounded-md border border-b-[2px] border-gray-200 border-b-gray-300 ${
-        isTyping ? "border-b-[2.5px] border-b-blue-500" : ""
-      }`}
+      className="border-1 z-10 mb-3 h-[1.875rem] w-full overflow-hidden rounded-md border border-b-[2px] border-gray-200"
+      style={{
+        borderBottom: isTyping ? "2.5px solid #2563EB" : "2.5px solid #d1d5db",
+      }}
     >
       <form className="relative flex h-full w-full items-center">
         <div className="absolute right-2 flex cursor-pointer items-center gap-1">
