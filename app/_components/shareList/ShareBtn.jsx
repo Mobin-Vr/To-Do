@@ -25,7 +25,7 @@ export default function ShareBtn({ theCategoryId, bgColor }) {
         <ShareIcon />
       </button>
 
-      <Overlay isOpen={isModalOpen} onClick={toggleModal} zIndex={30}>
+      <Overlay isOpen={isModalOpen} onClick={() => {}} zIndex={30}>
         <ModalTemplatePrimary
           isModalOpen={isModalOpen}
           toggleModal={toggleModal}
