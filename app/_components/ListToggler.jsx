@@ -15,7 +15,7 @@ export default function ListToggler({
       onClick={onClick}
       onMouseEnter={() => setBg(bgColor.toggleHover)}
       onMouseLeave={() => setBg(bgColor.toggleBackground)}
-      className="my-2 flex h-8 w-fit cursor-pointer select-none items-center gap-1 rounded-md p-2 text-sm font-normal transition-colors duration-200"
+      className="list-toggler my-2 flex h-8 w-fit cursor-pointer select-none items-center gap-1 rounded-md p-2 text-sm font-normal transition-colors duration-200"
       style={{
         backgroundColor: bg,
         color: bgColor.toggleText,

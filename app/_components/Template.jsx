@@ -6,6 +6,7 @@ import NoResults from "./NoResults";
 import NoTaskInMyDay from "./NoTaskInMyDay";
 import TaskInput from "./taskInputSection/TaskInput";
 import TasksList from "./TasksList";
+import { useState } from "react";
 
 export default function Template({
   listRef,
@@ -15,6 +16,8 @@ export default function Template({
   showInput = true,
   showSearch = false,
 }) {
+  const [mustFocus, setMustFocus] = useState(false);
+
   // To ensure consistent background, the body background matches the page's. Without this, border-radius on some elements would reveal the white page background at the corners.
   useEffect(() => {
     if (typeof document !== "undefined") {
@@ -23,8 +26,22 @@ export default function Template({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function handleClick(e) {
+    console.log(e.traget);
+    if (
+      !e.target.closest(".task-item") &&
+      !e.target.closest(".app-header") &&
+      !e.target.closest(".list-toggler") &&
+      !e.target.closest(".task-input")
+    )
+      setMustFocus(true);
+  }
+
   return (
-    <div className="relative flex h-full w-full overflow-hidden">
+    <div
+      onClick={handleClick}
+      className="relative flex h-full w-full overflow-hidden"
+    >
       {/* Delete warn modal */}
       <DeleteWarningModal />
       {!showSearch ? (
@@ -33,7 +50,7 @@ export default function Template({
           style={{ backgroundColor: listConfig.bgColor.mainBackground }}
         >
           <AppHeader
-            className="z-10 max-h-28 min-h-24 w-full px-8 sm:px-10"
+            className="app-header z-10 max-h-28 min-h-24 w-full px-8 sm:px-10"
             listConfig={listConfig}
             handleDeleteCategory={handleDeleteCategory}
             theCategoryId={theCategoryId}
@@ -48,6 +65,7 @@ export default function Template({
                 tasks={listConfig.tasks}
                 listName={listConfig.listName}
                 query={listConfig?.query}
+                setMustFocus={setMustFocus}
               />
             ) : (
               listConfig.listName === "My Day" && <NoTaskInMyDay />
@@ -57,10 +75,12 @@ export default function Template({
           {showInput && (
             <TaskInput
               // Adjust width to match the task list, which has a 6px scrollbar.
-              className="min-h-[5rem] w-[calc(100%-6px)] -translate-x-[3px] px-8 sm:px-10"
+              className="task-input min-h-[5rem] w-[calc(100%-6px)] -translate-x-[3px] px-8 sm:px-10"
               bgColor={listConfig.bgColor}
               categoryId={theCategoryId}
               listName={listConfig.listName}
+              setMustFocus={setMustFocus}
+              mustFocus={mustFocus}
             />
           )}
         </div>

@@ -9,12 +9,17 @@ import useTaskStore from "../../taskStore";
 import InputAddDue from "./InputAddDue";
 import InputAddReminder from "./InputAddReminder";
 import InputAddRepeat from "./InputAddRepeat";
+import { useRef } from "react";
+import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function TaskInput({
   bgColor,
   className,
   categoryId,
   listName,
+  mustFocus,
+  setMustFocus,
 }) {
   const { addTaskToStore, getUserState } = useTaskStore(
     useShallow((state) => ({
@@ -22,6 +27,8 @@ export default function TaskInput({
       getUserState: state.getUserState,
     })),
   );
+
+  const inputRef = useRef(null);
 
   const [taskInput, setTaskInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -31,7 +38,10 @@ export default function TaskInput({
   const [taskRepeat, setTaskRepeat] = useState(null);
 
   const handleFocus = () => setIsTyping(true);
-  const handleBlur = () => setIsTyping(false);
+  const handleBlur = () => {
+    setIsTyping(false);
+    setMustFocus(false);
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -68,6 +78,12 @@ export default function TaskInput({
     setTaskInput("");
   }
 
+  useEffect(() => {
+    if (mustFocus && inputRef.current) {
+      inputRef.current.focus(); // Auto-focus the input if mustFocus is true
+    }
+  }, [mustFocus]); // Runs every time mustFocus changes
+
   return (
     <div
       className={`relative ${className}`}
@@ -79,20 +95,23 @@ export default function TaskInput({
       >
         {isTyping || taskInput.length > 0 ? <CircleIcon /> : <PlusIcon />}
       </button>
-
       <form
         className="z-10 h-[2.9rem] w-full overflow-hidden rounded-md"
         onSubmit={handleSubmit}
       >
         <input
           type="text"
+          ref={inputRef}
           onFocus={handleFocus}
           onBlur={handleBlur}
           maxLength={MAX_INPUT_TASK_TITLE}
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
-          style={{ backgroundColor: bgColor.toggleBackground }}
-          className={`custom-placeholder h-full w-full rounded-md pl-12 pr-28 text-sm font-light outline-none ${
+          style={{
+            backgroundColor: bgColor.toggleBackground,
+            paddingRight: taskInput.length > 0 ? "7rem" : "0",
+          }}
+          className={`custom-placeholder h-full w-full rounded-md pl-12 text-sm font-light outline-none ${
             isTyping ? "placeholder-gray-500" : "placeholder-gray-800"
           }`}
           placeholder={
@@ -103,24 +122,33 @@ export default function TaskInput({
         />
       </form>
 
-      {taskInput.length > 0 && (
-        <div className="absolute right-[3rem] top-3.5 flex gap-3 sm:right-[3.5rem]">
-          <InputAddReminder
-            setTaskReminder={setTaskReminder}
-            className="opacity-60"
-          />
-
-          <InputAddDue setTaskDueDate={setTaskDueDate} className="opacity-60" />
-
-          <InputAddRepeat
-            setTaskRepeat={setTaskRepeat}
-            setTaskDueDate={setTaskDueDate}
-            taskDueDate={taskDueDate}
-            taskRepeat={taskRepeat}
-            className="opacity-60"
-          />
-        </div>
-      )}
+      <AnimatePresence>
+        {taskInput.length > 0 && (
+          <motion.div
+            className="absolute right-[3rem] top-3.5 flex gap-3 sm:right-[3.5rem]"
+            initial={{ opacity: 0, scale: 1, y: -5 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 1, y: -5 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          >
+            <InputAddReminder
+              setTaskReminder={setTaskReminder}
+              className="opacity-60"
+            />
+            <InputAddDue
+              setTaskDueDate={setTaskDueDate}
+              className="opacity-60"
+            />
+            <InputAddRepeat
+              setTaskRepeat={setTaskRepeat}
+              setTaskDueDate={setTaskDueDate}
+              taskDueDate={taskDueDate}
+              taskRepeat={taskRepeat}
+              className="opacity-60"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
