@@ -667,6 +667,7 @@ const useTaskStore = create(
 
               if (task && task.task_steps) {
                 const step = task.task_steps.find((s) => s.step_id === stepId);
+
                 if (step) {
                   // Update only the provided fields
                   Object.assign(step, updatedFields);

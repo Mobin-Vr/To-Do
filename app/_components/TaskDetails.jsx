@@ -33,12 +33,17 @@ function TaskDetails({ task, listName, className }) {
     if (listName === "My Day") text = "Tasks";
     else if (task.is_task_in_myday)
       text = (
-        <span className="flex items-center gap-0.5">
-          <SunIcon size="14" /> My Day
+        <span className="mt-0.5 flex items-center gap-0.5">
+          <SunIcon size="14" /> <span className="mt-0.5">My Day</span>
         </span>
       );
     else text = "Tasks";
   }
+
+  const steps = task.task_steps;
+  const stepCompletedCount = task.task_steps.filter(
+    (s) => s.is_step_completed,
+  ).length;
 
   const cond_1 = task.task_reminder || task.task_due_date || task.task_repeat;
   const cond_2 = [
@@ -58,24 +63,37 @@ function TaskDetails({ task, listName, className }) {
     >
       {text !== "" && <span>{text}</span>}
 
+      {cond_2 && steps.length > 0 && (
+        <span className="mr-0.5 h-1 w-1 bg-gray-400"></span>
+      )}
+
+      {steps.length > 0 && (
+        <span className="mt-0.5">
+          {stepCompletedCount} of {steps.length}
+        </span>
+      )}
+
       <div className="flex items-center gap-2">
         {cond_2 && <span className="mr-0.5 h-1 w-1 bg-gray-400"></span>}
 
         {task.task_reminder && (
           <span className="flex items-center gap-0.5">
             <BellIcon size="12px" color="#888" />
-            {checkIfToday(task.task_reminder)
-              ? "Today"
-              : checkIfTomorrow(task.task_reminder)
-                ? "Tomorrow"
-                : getShortFormattedDate(task.task_reminder)}
+            <span className="mt-0.5">
+              {checkIfToday(task.task_reminder)
+                ? "Today"
+                : checkIfTomorrow(task.task_reminder)
+                  ? "Tomorrow"
+                  : getShortFormattedDate(task.task_reminder)}
+            </span>
           </span>
         )}
 
         {task.task_due_date &&
           (hasDatePassed(task.task_due_date) ? (
             <span className="flex items-center gap-0.5 text-red-600">
-              <DateIcon size="12px" /> Overdue
+              <DateIcon size="12px" />
+              <span className="mt-0.5">Overdue</span>
             </span>
           ) : (
             <span
@@ -84,11 +102,13 @@ function TaskDetails({ task, listName, className }) {
               }`}
             >
               <DateIcon size="12px" />
-              {checkIfToday(task.task_due_date)
-                ? "Today"
-                : checkIfTomorrow(task.task_due_date)
-                  ? "Tomorrow"
-                  : getShortFormattedDate(task.task_due_date)}
+              <span className="mt-0.5">
+                {checkIfToday(task.task_due_date)
+                  ? "Today"
+                  : checkIfTomorrow(task.task_due_date)
+                    ? "Tomorrow"
+                    : getShortFormattedDate(task.task_due_date)}
+              </span>
             </span>
           ))}
 

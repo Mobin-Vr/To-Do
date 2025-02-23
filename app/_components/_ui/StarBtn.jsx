@@ -15,7 +15,7 @@ export default function StarBtn({ task, starBtnRef, className, bgColor }) {
           <FullStarIcon />
         </span>
       ) : (
-        <span style={{ color: bgColor.ternaryText }}>
+        <span style={{ color: bgColor?.ternaryText }}>
           <StarIcon />
         </span>
       )}

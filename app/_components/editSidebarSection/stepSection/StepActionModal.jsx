@@ -29,6 +29,7 @@ export default function StepActionModal({ task, step }) {
   function handleUpdate() {
     updateStep(task.task_id, step.step_id, {
       is_step_completed: !step.is_step_completed,
+      step_completed_at: step.is_step_completed ? null : getDateNowIso(),
     });
   }
 

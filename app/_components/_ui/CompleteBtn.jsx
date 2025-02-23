@@ -20,21 +20,21 @@ export default function CompleteBtn({ task, className, bgColor }) {
       className={`group relative cursor-default bg-transparent transition-all duration-200 ease-in-out ${className}`}
     >
       {task.is_task_completed ? (
-        <div style={{ color: bgColor.iconSecondaryColor }}>
+        <div style={{ color: bgColor?.iconSecondaryColor }}>
           <CompletedIcon />
         </div>
       ) : (
         <>
           <span
             className="block group-hover:hidden"
-            style={{ color: bgColor.ternaryText }}
+            style={{ color: bgColor?.ternaryText }}
           >
             <CircleIcon />
           </span>
 
           <span
             className="hidden group-hover:block"
-            style={{ color: bgColor.iconSecondaryColor }}
+            style={{ color: bgColor?.iconSecondaryColor }}
           >
             <TickCircleIcon />
           </span>

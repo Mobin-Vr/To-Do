@@ -1,3 +1,4 @@
+import { getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 import { CircleIcon, CompletedIcon, TickCircleIcon } from "@/public/icons";
 
@@ -7,6 +8,7 @@ export default function StepCompleteBtn({ taskId, step, className, bgColor }) {
   function handleCompleteClick() {
     updateStep(taskId, step.step_id, {
       is_step_completed: !step.is_step_completed,
+      step_completed_at: step.is_step_completed ? null : getDateNowIso(),
     });
   }
 

@@ -71,8 +71,10 @@ const SidebarLink = ({
             </span>
           )}
 
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-50 text-xs text-gray-500">
-            <span> {count()}</span>
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-100 text-[0.7rem] text-gray-500">
+            <span className="mt-0.5 font-extralight leading-none">
+              {count()}
+            </span>
           </span>
         </div>
         {isActive && (

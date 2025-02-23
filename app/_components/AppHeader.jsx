@@ -34,39 +34,50 @@ export default function AppHeader({
 
   return (
     <div
-      className={`${className}`}
+      className={`md:mt-4 md:flex md:items-center ${className}`}
       style={{ backgroundColor: bgColor.mainBackground }}
     >
-      <MenuBtn
-        className="mt-6 -translate-x-1 -translate-y-1"
-        bgColor={bgColor}
-      />
+      <MenuBtn className="mb-2 mt-6 -translate-y-1" bgColor={bgColor} />
 
       {listName !== "Search" && (
         <div
-          className="flex items-center justify-between px-1 sm:mt-10"
+          className="flex w-full items-center justify-between px-1"
           style={{ color: bgColor.primaryText }}
         >
-          <h1
-            className="flex items-center gap-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-3xl font-medium leading-tight"
-            title={query}
-          >
-            {listIcon}
+          <div className="flex flex-col justify-center">
+            <h1
+              className="flex items-center gap-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-3xl font-medium leading-tight"
+              title={query}
+            >
+              {listIcon}
 
-            {theCategoryId === defaultCategoryId ? (
-              listName
-            ) : isEditable ? (
-              <CategoryTitleEditor theCategory={theCategory} />
-            ) : (
-              listName
+              {theCategoryId === defaultCategoryId ? (
+                <p className="mt-1.5">{listName}</p>
+              ) : isEditable ? (
+                <CategoryTitleEditor
+                  theCategory={theCategory}
+                  className="w-fit max-w-64"
+                />
+              ) : (
+                listName
+              )}
+            </h1>
+
+            {/* if the page is my day we should also render the date  */}
+            {listName === "My Day" && (
+              <span
+                className="ml-1 text-sm font-extralight leading-tight"
+                style={{ color: bgColor.primaryText }}
+              >
+                {getFormattedDate()}
+              </span>
             )}
-          </h1>
+          </div>
 
           <div className="flex gap-2">
             {isCategoryOwner && (
               <>
                 <ShareBtn theCategoryId={theCategoryId} bgColor={bgColor} />
-
                 <DeleteBtn onClick={handleDeleteCategory} bgColor={bgColor} />
               </>
             )}
@@ -76,19 +87,9 @@ export default function AppHeader({
         </div>
       )}
 
-      {/* if the page is my day we should also render the date  */}
-      {listName === "My Day" && (
-        <span
-          className="ml-1 text-sm font-extralight"
-          style={{ color: bgColor.primaryText }}
-        >
-          {getFormattedDate()}
-        </span>
-      )}
-
       {listName === "Search" && (
         <div
-          className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap px-1 leading-tight sm:mt-10"
+          className="flex flex-col justify-center overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap px-1 leading-tight md:mt-4"
           title={query}
           style={{ color: bgColor.primaryText }}
         >

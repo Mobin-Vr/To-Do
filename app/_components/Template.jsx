@@ -1,13 +1,11 @@
 import { defaultCategoryId } from "@/app/_lib/configs";
-import AppHeader from "./AppHeader";
-import NoTaskInMyDay from "./NoTaskInMyDay";
-import TasksList from "./TasksList";
 import { useEffect } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";
+import AppHeader from "./AppHeader";
 import NoResults from "./NoResults";
-import EditSidebar from "./editSidebarSection/EditSidebar";
-import Sidebar from "./sidebarSection/Sidebar";
+import NoTaskInMyDay from "./NoTaskInMyDay";
 import TaskInput from "./taskInputSection/TaskInput";
+import TasksList from "./TasksList";
 
 export default function Template({
   listRef,
@@ -35,13 +33,13 @@ export default function Template({
           style={{ backgroundColor: listConfig.bgColor.mainBackground }}
         >
           <AppHeader
-            className="z-10 mb-3 max-h-28 min-h-24 w-full px-8 sm:px-10"
+            className="z-10 max-h-28 min-h-24 w-full px-8 sm:px-10"
             listConfig={listConfig}
             handleDeleteCategory={handleDeleteCategory}
             theCategoryId={theCategoryId}
           />
 
-          <div className="my-2 w-full flex-grow overflow-auto px-8 sm:px-10">
+          <div className="mb-2 mt-4 w-full flex-grow overflow-auto px-8 sm:px-10 md:mt-0">
             {listConfig.tasks.length > 0 ? (
               <TasksList
                 listRef={listRef}
