@@ -1,4 +1,8 @@
-import { CircleIcon, CompletedIcon, TickCircleIcon } from "@/public/icons";
+import {
+  CircleIcon,
+  CompletedIcon,
+  TickCircleIcon,
+} from "@/public/icons/icons";
 import useTaskStore from "../../taskStore";
 
 export default function CompleteBtn({ task, className, bgColor }) {
@@ -6,7 +10,7 @@ export default function CompleteBtn({ task, className, bgColor }) {
 
   const handleCompleteClick = () => {
     if (!task.is_task_completed) {
-      const dingSound = new Audio("/success-sound.mp3");
+      const dingSound = new Audio("/sounds/success-sound.mp3");
       dingSound
         .play()
         .catch((error) => console.error("Failed to play sound:", error));

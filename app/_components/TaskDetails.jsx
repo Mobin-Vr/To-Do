@@ -4,7 +4,7 @@ import {
   NoteIcon,
   SunIcon,
   SyncIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { defaultCategoryId } from "../_lib/configs";
 import {
   checkIfToday,

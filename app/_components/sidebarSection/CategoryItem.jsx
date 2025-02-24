@@ -1,4 +1,4 @@
-import { ListIcon } from "@/public/icons";
+import { ListIcon } from "@/public/icons/icons";
 import SidebarLink from "./SidebarLink";
 import useTaskStore from "@/app/taskStore";
 import { useShallow } from "zustand/react/shallow";

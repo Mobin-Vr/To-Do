@@ -1,4 +1,4 @@
-import { FullStarIcon, StarIcon } from "@/public/icons";
+import { FullStarIcon, StarIcon } from "@/public/icons/icons";
 import useTaskStore from "../../taskStore";
 
 export default function StarBtn({ task, starBtnRef, className, bgColor }) {

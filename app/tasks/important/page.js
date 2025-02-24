@@ -1,6 +1,6 @@
 "use client";
 
-import { StarIcon } from "@/public/icons";
+import { StarIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { useShallow } from "zustand/react/shallow";

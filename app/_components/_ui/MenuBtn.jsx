@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuIcon } from "@/public/icons";
+import { MenuIcon } from "@/public/icons/icons";
 import React, { useState } from "react";
 import useTaskStore from "../../taskStore";
 import { useShallow } from "zustand/react/shallow";

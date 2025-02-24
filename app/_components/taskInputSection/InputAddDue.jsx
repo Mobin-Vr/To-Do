@@ -1,4 +1,4 @@
-import { CalendarIcon } from "@/public/icons";
+import { CalendarIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import InputBtnTempl from "../_ui/InputBtnTempl";

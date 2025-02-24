@@ -12,13 +12,13 @@ import {
 } from "./_lib/Actions";
 import { defaultCategory } from "./_lib/configs";
 import {
-  addCategory,
-  addTask,
-  deleteCategory,
-  deleteTask,
+  addManyCategories,
+  addManyTasks,
+  deleteManyCategories,
+  deleteManyTasks,
   getCategories,
-  updateCategory,
-  updateTask,
+  updateManyCategories,
+  updateManyTasks,
 } from "./_lib/data-services";
 import { delay, getDateNowIso } from "./_lib/utils";
 
@@ -44,6 +44,7 @@ const initialState = {
   deletingType: "", // task, category, step
   deletingItemName: "",
   deleteCallback: null,
+  showSpinner: true, // this spinner is for the first loading of the data
 };
 
 const useTaskStore = create(
@@ -69,6 +70,7 @@ const useTaskStore = create(
         deletingType: initialState.deletingType,
         deletingItemName: initialState.deletingItemName,
         deleteCallback: initialState.deleteCallback,
+        showSpinner: initialState.showSpinner,
 
         // # Toggle sidebar
         toggleSidebar: () => {
@@ -133,16 +135,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist log with the same ID and TYPE
+                // Remove if exist log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) => !(log.type === "add" && log.id === task.task_id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the chenges log
                 state.changeLog.push({
-                  type: "add",
+                  type: "add-task",
                   id: task.task_id,
-                  logTime: task.createdAt,
                   task,
                 });
               }
@@ -151,36 +152,33 @@ const useTaskStore = create(
 
           // Synchronizing with the database
           const onlineStatus = get().conectionStatus.isOnline;
-          if (onlineStatus) await addTask(task);
+
+          if (onlineStatus) await addManyTasks([task]);
         },
 
         // # Delete a task
         deleteTaskFromStore: async (id) => {
           set(
             produce((state) => {
-              const taskToDelete = state.tasksList.find(
-                (task) => task.task_id === id,
-              );
+              const task = state.tasksList.find((task) => task.task_id === id);
 
               // Delete the task from LC
               state.tasksList = state.tasksList.filter(
-                (task) => task.task_id !== id,
+                (t) => t.task_id !== task.task_id,
               );
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(log.type === "delete" && log.id === taskToDelete.id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the chenges log
                 state.changeLog.push({
-                  type: "delete",
-                  id: taskToDelete.id,
-                  logTime: getDateNowIso(),
-                  task: taskToDelete,
+                  type: "delete-task",
+                  id: task.task_id,
+                  task,
                 });
               }
             }),
@@ -188,7 +186,8 @@ const useTaskStore = create(
 
           // Synchronizing with the database
           const onlineStatus = get().conectionStatus.isOnline;
-          if (onlineStatus) await deleteTask(id);
+
+          if (onlineStatus) await deleteManyTasks([id]);
         },
 
         // # Toggle to completed or uncompleted
@@ -209,20 +208,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "update-isCompleted" &&
-                      log.id === task.task_id
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the chenges log
                 state.changeLog.push({
-                  type: "update-isCompleted",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -230,19 +224,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                is_task_completed: task.is_task_completed,
-                task_updated_at: task.task_updated_at,
-                task_completed_at: task.task_completed_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Toggle to Starred or NOT Starred
@@ -260,19 +245,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "update-isStarred" && log.id === task.task_id
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the chenges log
                 state.changeLog.push({
-                  type: "update-isStarred",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -280,18 +261,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                is_task_starred: task.is_task_starred,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Update task note
@@ -309,17 +282,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(log.type === "update-note" && log.id === task.task_id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the chenges log
                 state.changeLog.push({
-                  type: "update-note",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -327,18 +298,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_note: task.task_note,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Update task reminder
@@ -359,19 +322,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "update-reminder" && log.id === task.task_id
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-reminder",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -379,18 +338,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_reminder: task.task_reminder,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Update task dueDate
@@ -413,17 +364,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(log.type === "update-dueDate" && log.id === task.task_id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-dueDate",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -431,18 +380,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_due_date: task.task_due_date,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Update task repeat
@@ -460,17 +401,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(log.type === "update-repeat" && log.id === task.task_id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-repeat",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -478,18 +417,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_repeat: task.task_repeat,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Toggle to "is_task_in_myday" or NOT
@@ -508,20 +439,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID and TYPE
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "update-isAddedToMyDay" &&
-                      log.id === task.task_id
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-isAddedToMyDay",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -529,18 +455,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                is_task_in_myday: task.is_task_in_myday,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Update the task title
@@ -558,17 +476,15 @@ const useTaskStore = create(
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if there is a record in log with the same ID and TYPE
+                // Remove if there is a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(log.type === "update-title" && log.id === task.task_id),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-title",
+                  type: "update-task",
                   id: task.task_id,
-                  logTime: updateTime,
                   task,
                 });
               }
@@ -576,18 +492,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === id);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === id);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_title: task.task_title,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         // # Get the last tasklist
@@ -600,6 +508,15 @@ const useTaskStore = create(
         // # Get the last tasklist
         getConectionStatus: () => {
           return get().conectionStatus;
+        },
+
+        // # show spinner on mount
+        setShowpinnerFalse: () => {
+          set(
+            produce((state) => {
+              state.showSpinner = false;
+            }),
+          );
         },
 
         /////////////////////////////
@@ -624,17 +541,17 @@ const useTaskStore = create(
                 task.task_updated_at = updateTime;
               }
 
-              // Add to change log only if offline
+              // Add to change log only if offline.
               if (state.offlineLogMode) {
+                // Remove if there is a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) => !(log.type === "update-steps" && log.id === taskId),
+                  (log) => log.id !== task.task_id,
                 );
 
                 // Save the changes log
                 state.changeLog.push({
-                  type: "update-steps",
-                  id: taskId,
-                  logTime: updateTime,
+                  type: "update-task",
+                  id: task.task_id,
                   task,
                 });
               }
@@ -642,18 +559,10 @@ const useTaskStore = create(
           );
 
           // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === taskId);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === taskId);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_steps: task.task_steps,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks(task, task.task_id);
         },
 
         // # Update a specific step of a specific task
@@ -675,42 +584,28 @@ const useTaskStore = create(
                 }
               }
 
-              // Handle offline mode
+              // Add to change log only if offline.
               if (state.offlineLogMode) {
+                // Remove if there is a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "update-steps" &&
-                      log.id === taskId &&
-                      log.stepId === stepId
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
-                // Save changes in the change log
+                // Save the changes log
                 state.changeLog.push({
-                  type: "update-steps",
-                  id: taskId,
-                  stepId,
-                  logTime: updateTime,
-                  updatedFields,
+                  type: "update-task",
+                  id: task.task_id,
+                  task,
                 });
               }
             }),
           );
 
           // Sync with the database
-          const task = get().tasksList.find((task) => task.task_id === taskId);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === taskId);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_steps: task.task_steps,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks(task, task.task_id);
         },
 
         // # Remove a specific step from a specific task
@@ -730,41 +625,28 @@ const useTaskStore = create(
                 task.task_updated_at = updateTime;
               }
 
-              // Handle offline mode
+              // Add to change log only if offline.
               if (state.offlineLogMode) {
+                // Remove if there is a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "delete-step" &&
-                      log.id === taskId &&
-                      log.stepId === stepId
-                    ),
+                  (log) => log.id !== task.task_id,
                 );
 
-                // Save deletion in the change log
+                // Save the changes log
                 state.changeLog.push({
-                  type: "delete-step",
-                  id: taskId,
-                  stepId,
-                  logTime: updateTime,
+                  type: "update-task",
+                  id: task.task_id,
+                  task,
                 });
               }
             }),
           );
 
           // Sync with the database
-          const task = get().tasksList.find((task) => task.task_id === taskId);
           const onlineStatus = get().conectionStatus.isOnline;
+          const task = get().tasksList.find((task) => task.task_id === taskId);
 
-          if (onlineStatus) {
-            await updateTask(
-              {
-                task_steps: task.task_steps,
-                task_updated_at: task.task_updated_at,
-              },
-              task.task_id,
-            );
-          }
+          if (onlineStatus) await updateManyTasks(task, task.task_id);
         },
 
         /////////////////////////////
@@ -812,17 +694,12 @@ const useTaskStore = create(
               // Handle offline log mode
               if (state.offlineLogMode) {
                 state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    !(
-                      log.type === "add-category" &&
-                      log.id === category.category_id
-                    ),
+                  (log) => log.id !== category.category_id,
                 );
 
                 state.changeLog.push({
                   type: "add-category",
                   id: category.category_id,
-                  logTime: getDateNowIso(),
                   category,
                 });
               }
@@ -831,9 +708,49 @@ const useTaskStore = create(
 
           // Sync with the server if online
           const onlineStatus = get().conectionStatus.isOnline;
-          if (onlineStatus) {
-            await addCategory(category);
-          }
+
+          if (onlineStatus) await addManyCategories([category]);
+        },
+
+        // # Delete category
+        deleteCategoryFromStore: async (id) => {
+          set(
+            produce((state) => {
+              const category = state.categoriesList.find(
+                (cat) => cat.category_id !== id,
+              );
+
+              // Remove the category from the list
+              state.categoriesList = state.categoriesList.filter(
+                (cat) => cat.category_id !== id,
+              );
+
+              // Remove also the category's relevent tasks from the tasksList
+              state.tasksList = state.tasksList.filter(
+                (task) => task.task_category_id !== id,
+              );
+
+              // Add changes to the offline log if offline mode is enabled
+              if (state.offlineLogMode) {
+                // Remove existing logs related to this category
+                state.changeLog = state.changeLog.filter(
+                  (log) => log.id !== category.category_id,
+                );
+
+                // Save category deletion log
+                state.changeLog.push({
+                  type: "delete-category",
+                  id: category.category_id,
+                  category,
+                });
+              }
+            }),
+          );
+
+          // Synchronize with the database if online
+          const onlineStatus = get().conectionStatus.isOnline;
+
+          if (onlineStatus) await deleteManyCategories([id]); // NOTE Delete multiple tasks by category only from the store. Tasks in the database will be deleted automatically due to cascading when the category is deleted, so there is no need. Also we dont need to record deleted task in cahnge log.
         },
 
         // # Update category
@@ -843,88 +760,32 @@ const useTaskStore = create(
               const category = state.categoriesList.find(
                 (cat) => cat.category_id === id,
               );
-              const updateTime = getDateNowIso();
 
               if (category) {
                 Object.assign(category, updatedFields);
-                category.updatedAt = updateTime;
               }
 
               if (state.offlineLogMode) {
                 state.changeLog = state.changeLog.filter(
-                  (log) => !(log.type === "update-category" && log.id === id),
+                  (log) => log.id !== category.category_id,
                 );
 
                 state.changeLog.push({
                   type: "update-category",
-                  id,
-                  logTime: updateTime,
-                  updatedFields,
+                  id: category.category_id,
+                  category,
                 });
               }
             }),
           );
 
           const onlineStatus = get().conectionStatus.isOnline;
-
-          if (onlineStatus) {
-            await updateCategory(updatedFields, id);
-          }
-        },
-
-        // # Delete category
-        deleteCategoryFromStore: async (id) => {
-          set(
-            produce((state) => {
-              // Remove the category from the list
-              state.categoriesList = state.categoriesList.filter(
-                (cat) => cat.category_id !== id,
-              );
-
-              // Filter out tasks related to the deleted category
-              const tasksToDelete = state.tasksList.filter(
-                (task) => task.task_category_id === id,
-              );
-
-              state.tasksList = state.tasksList.filter(
-                (task) => task.task_category_id !== id,
-              );
-
-              // Add changes to the offline log if offline mode is enabled
-              if (state.offlineLogMode) {
-                // Remove existing logs related to this category
-                state.changeLog = state.changeLog.filter(
-                  (log) =>
-                    log.id !== id ||
-                    !["delete-category", "delete-by-category"].includes(
-                      log.type,
-                    ),
-                );
-
-                // Save category deletion log
-                state.changeLog.push({
-                  type: "delete-category",
-                  id,
-                  logTime: getDateNowIso(),
-                });
-
-                // Save task deletion log if there are deleted tasks
-                if (tasksToDelete.length > 0) {
-                  state.changeLog.push({
-                    type: "delete-by-category",
-                    id,
-                    logTime: getDateNowIso(),
-                    task: tasksToDelete,
-                  });
-                }
-              }
-            }),
+          const category = get().categoriesList.find(
+            (cat) => cat.category_id === id,
           );
 
-          // Synchronize with the database if online
-          if (get().conectionStatus.isOnline) {
-            await deleteCategory(id); // Delete multiple tasks by category only from the store. Tasks in the database will be deleted automatically due to cascading when the category is deleted, so there is no need.
-          }
+          if (onlineStatus)
+            await updateManyCategories([category], [category.category_id]);
         },
 
         // Toggles the focus state for the title when creating a new list.
@@ -944,6 +805,8 @@ const useTaskStore = create(
         // # Fetching tasks from DB and Synchronizing localeStorage with the database
         syncLcWithDb: async () => {
           const userId = get().userState.user_id;
+
+          if (!userId) return;
 
           // This will get all relevent tasks on every reload (shared + owned)
           const tasks = await getRelevantTasksAction(userId);
@@ -970,6 +833,8 @@ const useTaskStore = create(
               state.categoriesList.push(...newCategories);
             }),
           );
+
+          get().setShowpinnerFalse(); // turn off the spinner after loadind data
         },
 
         // # Update health statuses
@@ -983,12 +848,14 @@ const useTaskStore = create(
         },
 
         // Set user's info
-        setuserState: (userState) => {
+        setUserState: (userState) => {
           set(
             produce((state) => {
               state.userState = userState;
             }),
           );
+
+          get().syncLcWithDb();
         },
 
         // Toggle offline log mode
@@ -1452,7 +1319,7 @@ const useTaskStore = create(
       }),
       {
         name: "Todo Store", // Key name for storage
-        getStorage: () => localStorage, // Use localStorage for persisting the data
+        getStorage: () => sessionStorage, // Use localStorage for persisting the data
       },
     ),
     { name: "Todo Store" }, // Redux DevTools name

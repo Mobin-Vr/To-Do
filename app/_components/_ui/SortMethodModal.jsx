@@ -3,7 +3,7 @@ import {
   CreationDateIcon,
   SortIcon,
   StarIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { ModalActionButton } from "../editSidebarSection/reminderBoxModals/ModalActionBtn";
 
 export default function SortMethodModal({ setSortMethod }) {

@@ -1,4 +1,4 @@
-import { SyncIcon } from "@/public/icons";
+import { SyncIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import InputBtnTempl from "../_ui/InputBtnTempl";
 import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";

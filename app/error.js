@@ -1,6 +1,6 @@
 "use client";
 
-import errorIllustration from "@/public/error.svg";
+import errorIllustration from "@/public/icons/error.svg";
 import Image from "next/image";
 
 export default function Error({ error, reset }) {

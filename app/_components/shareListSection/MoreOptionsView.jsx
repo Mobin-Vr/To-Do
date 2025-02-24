@@ -1,5 +1,5 @@
 import useTaskStore from "@/app/taskStore";
-import { ArrowIcon } from "@/public/icons";
+import { ArrowIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
 import { Switch } from "../_ui/switch";

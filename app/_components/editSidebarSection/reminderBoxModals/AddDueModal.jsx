@@ -4,7 +4,7 @@ import {
   PeakCalendarIcon,
   TodayCalendarIcon,
   TomorrowCalendarIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { format } from "date-fns";
 import { ModalActionButton } from "./ModalActionBtn";
 

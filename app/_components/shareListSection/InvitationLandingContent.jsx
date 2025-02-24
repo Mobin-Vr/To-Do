@@ -2,8 +2,8 @@
 
 import useCustomToast from "@/app/_lib/useCustomeToast";
 import useTaskStore from "@/app/taskStore";
-import illsturation_login from "@/public/login.svg";
-import illsturation from "@/public/team.svg";
+import illsturation_login from "@/public/icons/login.svg";
+import illsturation from "@/public/icons/team.svg";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { redirect } from "next/navigation";

@@ -2,11 +2,18 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { addTask, deleteTask, updateManyTask } from "../_lib/data-services";
+import {
+  addManyCategories,
+  addManyTasks,
+  deleteManyCategories,
+  deleteManyTasks,
+  updateManyCategories,
+  updateManyTasks,
+} from "../_lib/data-services";
 import { checkDatabaseHealth } from "../_lib/healthCheck";
+import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
-import useCustomToast from "../_lib/useCustomeToast";
 
 export default function HealthStatusSync() {
   const [isConnected, setIsConnected] = useState(false);
@@ -38,15 +45,12 @@ export default function HealthStatusSync() {
   );
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setIsConnected(navigator.onLine);
-    }
+    if (typeof window !== "undefined") setIsConnected(navigator.onLine);
   }, []);
 
   // Sync local changes (changeLog) with the database
   const syncData = useCallback(async () => {
-    // Exit if already syncing
-    if (isSyncing) return;
+    if (isSyncing) return; // Exit if already syncing
 
     // If there is no log first get the data from cloud and replace that data in lc and then EXIT
     if (!changeLog.length) {
@@ -56,52 +60,54 @@ export default function HealthStatusSync() {
 
     toggleIsSyncing(true); // Mark syncing as in progress
 
-    // Separate change logs by their types for sending them to database
+    // Separate change logs by their types
     const addTasks = changeLog
-      .filter((log) => log.type === "add")
+      .filter((log) => log.type === "add-task")
       .map((log) => log.task);
 
     const deleteTasks = changeLog
-      .filter((log) => log.type === "delete")
+      .filter((log) => log.type === "delete-task")
       .map((log) => log.task);
 
-    const completedUpdates = changeLog
-      .filter((log) => log.type === "update-isCompleted")
-      .map((log) => ({
-        task: {
-          isCompleted: log.task.is_task_completed,
-          updatedAt: log.task.task_updated_at,
-          completedAt: log.task.task_completed_at,
-        },
-        id: log.task.task_id,
-      }));
+    const updateTasks = changeLog
+      .filter((log) => log.type === "update-task")
+      .map((log) => log.task);
 
-    const starredUpdates = changeLog
-      .filter((log) => log.type === "update-isStarred")
-      .map((log) => ({
-        task: {
-          isStarred: log.task.is_task_starred,
-          updatedAt: log.task.task_updated_at,
-        },
-        id: log.task.task_id,
-      }));
+    const addCategories = changeLog
+      .filter((log) => log.type === "add-category")
+      .map((log) => log.category);
 
-    // LATER add update Reminder - note - due - reapet - category - steps
+    const deleteCategories = changeLog
+      .filter((log) => log.type === "delete-category")
+      .map((log) => log.category);
+
+    const updateCategories = changeLog
+      .filter((log) => log.type === "update-category")
+      .map((log) => log.category);
 
     // Perform database operations
     try {
-      if (addTasks.length) await addTask(addTasks);
-      if (completedUpdates.length)
-        await updateManyTask(
-          completedUpdates.map((c) => c.task),
-          completedUpdates.map((c) => c.id),
+      // Manage tasks
+      if (addTasks.length) await addManyTasks(addTasks);
+
+      if (updateTasks.length)
+        await updateManyTasks(
+          updateTasks,
+          updateTasks.map((task) => task.id),
         );
-      if (starredUpdates.length)
-        await updateManyTask(
-          starredUpdates.map((s) => s.task),
-          starredUpdates.map((s) => s.id),
+
+      if (deleteTasks.length) await deleteManyTasks(deleteTasks);
+
+      // Manage categories
+      if (addCategories.length) await addManyCategories(addCategories);
+
+      if (updateTasks.length)
+        await updateManyCategories(
+          updateCategories,
+          updateCategories.map((cat) => cat.id),
         );
-      if (deleteTasks.length) await deleteTask(deleteTasks);
+
+      if (deleteCategories.length) await deleteManyCategories(deleteCategories);
 
       clearLog(); // Clear the change log after successful sync
     } catch (error) {
@@ -137,6 +143,8 @@ export default function HealthStatusSync() {
       }
       await syncData(); // Start syncing log with the database
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [syncData]);
 
   // Update connection status in the store when local states change

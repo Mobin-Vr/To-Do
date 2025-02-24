@@ -1,4 +1,4 @@
-import { BellIcon, TickCircleIcon } from "@/public/icons";
+import { BellIcon, TickCircleIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "./_ui/OrdinaryBtn";
 
 export default function AlarmToast({

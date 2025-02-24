@@ -3,7 +3,7 @@ import {
   SettingsIcon,
   SignOutIcon,
   UserSettingsIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import UserStatus from "./UserStatus";

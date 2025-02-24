@@ -1,4 +1,4 @@
-import { XIcon } from "@/public/icons";
+import { XIcon } from "@/public/icons/icons";
 
 export default function InvitationUsersList({
   invitationUsers,

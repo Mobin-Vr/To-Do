@@ -1,6 +1,6 @@
 "use client";
 
-import { InfinityIcon } from "@/public/icons";
+import { InfinityIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { useShallow } from "zustand/react/shallow";

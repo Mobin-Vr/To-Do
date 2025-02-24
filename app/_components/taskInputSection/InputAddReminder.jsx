@@ -1,4 +1,4 @@
-import { BellIcon } from "@/public/icons";
+import { BellIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import InputBtnTempl from "../_ui/InputBtnTempl";
 import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";

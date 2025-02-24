@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowIcon } from "@/public/icons";
+import { ArrowIcon } from "@/public/icons/icons";
 
 export default function ListToggler({
   isVisible,

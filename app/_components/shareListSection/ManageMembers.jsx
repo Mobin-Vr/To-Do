@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowIcon } from "@/public/icons";
+import { ArrowIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
 import InvitationUsersList from "./InvitationUsersList";
 import useTaskStore from "@/app/taskStore";

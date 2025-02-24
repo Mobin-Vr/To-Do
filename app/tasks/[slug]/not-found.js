@@ -1,4 +1,4 @@
-import illsturation from "@/public/pnf.svg";
+import illsturation from "@/public/icons/pnf.svg";
 import Image from "next/image";
 import Link from "next/link";
 

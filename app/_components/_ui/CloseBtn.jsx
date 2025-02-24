@@ -1,4 +1,4 @@
-import { XIcon } from "@/public/icons";
+import { XIcon } from "@/public/icons/icons";
 import { useRef } from "react";
 
 export default function CloseBtn({ toggleEditSidebar }) {

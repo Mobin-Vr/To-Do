@@ -1,6 +1,6 @@
 "use client";
 
-import noResultIllustration from "@/public/search.svg";
+import noResultIllustration from "@/public/icons/search.svg";
 import Image from "next/image";
 import MenuBtn from "./_ui/MenuBtn";
 

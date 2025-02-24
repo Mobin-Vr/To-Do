@@ -1,4 +1,4 @@
-import { ChevronIcon } from "@/public/icons";
+import { ChevronIcon } from "@/public/icons/icons";
 import { getTimeAgo } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 

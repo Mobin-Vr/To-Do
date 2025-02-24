@@ -1,6 +1,6 @@
 "use client";
 
-import { TodayCalendarIcon } from "@/public/icons";
+import { TodayCalendarIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { useShallow } from "zustand/react/shallow";

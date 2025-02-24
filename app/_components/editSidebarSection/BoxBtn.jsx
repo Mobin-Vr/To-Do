@@ -5,7 +5,7 @@ import {
   SunIcon,
   SyncIcon,
   XIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 
 const iconsMap = {
   BellIcon,

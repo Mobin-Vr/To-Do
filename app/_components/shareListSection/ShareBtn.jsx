@@ -1,4 +1,4 @@
-import { ShareIcon } from "@/public/icons";
+import { ShareIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import SharedListModal from "./ShareListModal";

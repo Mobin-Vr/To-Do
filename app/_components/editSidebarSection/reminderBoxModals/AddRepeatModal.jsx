@@ -5,7 +5,7 @@ import {
   WeekDaysIcon,
   WeeklyIcon,
   YearlyIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { ModalActionButton } from "./ModalActionBtn";
 
 export default function AddRepeatModal({

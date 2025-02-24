@@ -1,4 +1,4 @@
-import illsturation from "@/public/email.svg";
+import illsturation from "@/public/icons/email.svg";
 import Image from "next/image";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
 import SpinnerMini from "../_ui/SpinnerMini";

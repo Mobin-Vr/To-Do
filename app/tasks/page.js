@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeIcon } from "@/public/icons";
+import { HomeIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { BG_COLORS, defaultCategoryId } from "../_lib/configs";

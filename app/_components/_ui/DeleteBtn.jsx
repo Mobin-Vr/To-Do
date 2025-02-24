@@ -1,4 +1,4 @@
-import { TrashIcon } from "@/public/icons";
+import { TrashIcon } from "@/public/icons/icons";
 import { useState } from "react";
 
 export default function DeleteBtn({

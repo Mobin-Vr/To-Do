@@ -5,7 +5,7 @@ import {
   PlusIcon,
   TickCircleIcon,
   TrashIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
 import { ModalActionButton } from "../reminderBoxModals/ModalActionBtn";
 

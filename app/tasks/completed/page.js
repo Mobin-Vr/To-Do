@@ -1,6 +1,6 @@
 "use client";
 
-import { TickCircleIcon } from "@/public/icons";
+import { TickCircleIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { useShallow } from "zustand/react/shallow";

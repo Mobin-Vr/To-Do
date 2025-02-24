@@ -41,7 +41,7 @@ export default function ReminderHandler() {
 
     // Detect user interaction
     const handleUserInteraction = () => {
-      setAlarmSound(new Audio("/alarm.mp3"));
+      setAlarmSound(new Audio("/sounds/alarm.mp3"));
       setIsUserInteracted(true);
       document.removeEventListener("click", handleUserInteraction);
     };

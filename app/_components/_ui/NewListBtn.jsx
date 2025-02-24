@@ -1,6 +1,6 @@
 import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
-import { PlusIcon } from "@/public/icons";
+import { PlusIcon } from "@/public/icons/icons";
 import { redirect } from "next/navigation";
 import { useShallow } from "zustand/react/shallow";
 

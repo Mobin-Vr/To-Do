@@ -7,7 +7,7 @@ import {
   SunIcon,
   TickCircleIcon,
   WeeklyIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import SidebarLink from "./SidebarLink";
 
 export default function SidebarNav({ tasksList, toggleSidebar }) {

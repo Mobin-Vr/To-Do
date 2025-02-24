@@ -1,4 +1,4 @@
-import illsturation from "@/public/completed-tasks.svg";
+import illsturation from "@/public/icons/completed-tasks.svg";
 import { ClerkLoaded, SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";

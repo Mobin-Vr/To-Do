@@ -1,4 +1,4 @@
-import { SortIcon } from "@/public/icons";
+import { SortIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import useTaskStore from "../../taskStore";
 import ModalTemplateCloseAble from "./ModalTemplateCloseAble";

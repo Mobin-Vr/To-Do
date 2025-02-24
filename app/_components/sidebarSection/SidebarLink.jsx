@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useTaskStore from "@/app/taskStore";
 import { defaultCategoryId } from "@/app/_lib/configs";
-import { UsersIcon } from "@/public/icons";
+import { UsersIcon } from "@/public/icons/icons";
 
 const SidebarLink = ({
   href,

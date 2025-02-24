@@ -1,11 +1,20 @@
 import { supabase } from "./supabase";
 
-// export function addTaskFromRealtime(newTask) {
-//    const addTask = useTaskStore.getState().addTaskFromRealtime;
-//    addTask(newTask);
-// } LATER is it needed?
-
 // LATER remove all error senetence and just pass the error just like joinInvattaion
+
+export async function createUser(newUser) {
+  const { data, error } = await supabase
+    .from("users")
+    .insert([newUser])
+    .select();
+
+  if (error) {
+    console.error(error);
+    throw new Error("User could not be created");
+  }
+
+  return data;
+}
 
 // Fetch user by user_id
 export async function getUserById(userId) {
@@ -16,23 +25,7 @@ export async function getUserById(userId) {
     .single();
 
   if (error) {
-    console.error("Error fetching user:", error);
-    return null;
-  }
-
-  return data;
-}
-
-// Fetch the category's inv id by categoryId
-export async function getCategoryInvId(categoryId) {
-  const { data, error } = await supabase
-    .from("invitations")
-    .select("invitation_id")
-    .eq("invitation_category_id", categoryId)
-    .single();
-
-  if (error) {
-    console.error("Error fetching invitaton id:", error);
+    console.error("Error fetching user", error);
     return null;
   }
 
@@ -50,110 +43,6 @@ export async function getUser(userEmail) {
   return data;
 }
 
-// Add one or many tasks
-export async function addTask(task) {
-  const { data, error } = await supabase.from("tasks").insert(task);
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error syncing added-task with Supabase");
-  }
-
-  return data;
-}
-
-// Upadte one task
-export async function updateTask(updatedPart, taskId) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .update(updatedPart)
-    .eq("task_id", taskId)
-    .select();
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error syncing updated-task with Supabase");
-  }
-
-  return data;
-}
-
-// Update many tasks (an array of tasks)
-export async function updateManyTask(updatedPartsArr, taskIdsArr) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .update(updatedPartsArr)
-    .in("task_id", taskIdsArr);
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error syncing updated-tasks with Supabase");
-  }
-
-  return data;
-}
-
-// Delete one task
-export async function deleteTask(taskId) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .delete()
-    .eq("task_id", taskId)
-    .select(); // LATER does select work?
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error syncing deleted-task with Supabase");
-  }
-
-  return data;
-}
-
-// Delete many task that has the same category id
-export async function deleteManyTask(categoryId) {
-  const { data, error } = await supabase
-    .from("tasks")
-    .delete()
-    .eq("task_category_id", categoryId)
-    .select(); // LATER does select work?
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error syncing deleted-tasks with Supabase");
-  }
-
-  return data;
-}
-
-// LATER unused
-export async function getTasks(userId) {
-  const { data: tasks, error } = await supabase
-    .from("tasks")
-    .select("*")
-    .eq("task_owner_id", userId);
-
-  if (error) {
-    console.error(error);
-    throw new Error("Error getting tasks from Supabase");
-  }
-
-  return tasks;
-}
-
-export async function createUser(newUser) {
-  const { data, error } = await supabase
-    .from("users")
-    .insert([newUser])
-    .select();
-
-  if (error) {
-    console.error(error);
-    throw new Error("User could not be created");
-  }
-
-  return data;
-}
-
 export async function getCategories(userId) {
   const { data: categories, error } = await supabase
     .from("categories")
@@ -162,54 +51,102 @@ export async function getCategories(userId) {
 
   if (error) {
     console.error(error);
-    throw new Error("Error getting categories from Supabase");
+    throw new Error("Error getting categories", error);
   }
 
   return categories;
 }
 
-export async function addCategory(newCategory) {
+// Fetch the category's inv id by categoryId
+export async function getCategoryInvId(categoryId) {
   const { data, error } = await supabase
-    .from("categories")
-    .insert([newCategory])
-    .select();
+    .from("invitations")
+    .select("invitation_id")
+    .eq("invitation_category_id", categoryId)
+    .single();
 
   if (error) {
-    console.error(error);
-    throw new Error("Category could not be created");
+    console.error("Error fetching invitaton id", error);
+    return null;
   }
 
   return data;
 }
 
-export async function updateCategory(updatedPart, categoryId) {
-  const { data, error } = await supabase
-    .from("categories")
-    .update(updatedPart)
-    .eq("category_id", categoryId)
-    .select();
+////////////////////////////////////
+////////////////////////////////////
+////////////////////////////////////
+
+// Add one or many tasks
+export async function addManyTasks(tasksArr) {
+  const { error } = await supabase.from("tasks").insert(tasksArr); // Insert the array of tasks
 
   if (error) {
     console.error(error);
-    throw new Error("Category could not be updated");
+    throw new Error("Failed to add the task:", error);
   }
-
-  return data;
 }
 
-export async function deleteCategory(categoryId) {
-  const { data, error } = await supabase
+// Delete one or many tasks
+export async function deleteManyTasks(tasksIdsArr) {
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .in("task_id", tasksIdsArr);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to delete the task:", error);
+  }
+}
+
+// Update one or many tasks
+export async function updateManyTasks(tasksArr, tasksIdsArr) {
+  const { error } = await supabase
+    .from("tasks")
+    .update(tasksArr)
+    .in("task_id", tasksIdsArr);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to update the task:", error);
+  }
+}
+
+// Add one or many categories
+export async function addManyCategories(categoriesArr) {
+  const { error } = await supabase.from("categories").insert(categoriesArr); // Insert the array of new categories
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to add the category:", error);
+  }
+}
+
+// Delete one or many categories
+export async function deleteManyCategories(categoryIdsArr) {
+  const { error } = await supabase
     .from("categories")
     .delete()
-    .eq("category_id", categoryId)
-    .select(); // LATER does select work?
+    .in("category_id", categoryIdsArr);
 
   if (error) {
     console.error(error);
-    throw new Error("Category could not be deleted");
+    throw new Error("Failed to delete the category:", error);
   }
+}
 
-  return data;
+// Update one or many categories
+export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
+  const { error } = await supabase
+    .from("categories")
+    .update(categoriesArr) // Use the updated parts for the update
+    .in("category_id", categoriesIdsArr);
+
+  if (error) {
+    console.error(error);
+    throw new Error("Failed to update the category:", error);
+  }
 }
 
 ///////////////////

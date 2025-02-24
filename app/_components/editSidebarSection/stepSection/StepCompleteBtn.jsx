@@ -1,6 +1,10 @@
 import { getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
-import { CircleIcon, CompletedIcon, TickCircleIcon } from "@/public/icons";
+import {
+  CircleIcon,
+  CompletedIcon,
+  TickCircleIcon,
+} from "@/public/icons/icons";
 
 export default function StepCompleteBtn({ taskId, step, className, bgColor }) {
   const updateStep = useTaskStore((state) => state.updateStep);

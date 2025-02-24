@@ -1,7 +1,7 @@
 "use client";
 
 import { defaultCategoryId, MAX_INPUT_TASK_TITLE } from "@/app/_lib/configs";
-import { CircleIcon, PlusIcon } from "@/public/icons";
+import { CircleIcon, PlusIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { checkIfToday, generateNewUuid, getDateNowIso } from "../../_lib/utils";

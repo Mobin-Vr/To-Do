@@ -3,7 +3,7 @@ import {
   PickReminderIcon,
   TodayReminderIcon,
   TomorrowReminderIcon,
-} from "@/public/icons";
+} from "@/public/icons/icons";
 import { format, isSameDay } from "date-fns";
 import { ModalActionButton } from "./ModalActionBtn";
 

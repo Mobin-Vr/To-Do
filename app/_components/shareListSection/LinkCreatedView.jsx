@@ -1,7 +1,7 @@
 "use client";
 
-import illsturation from "@/public/cat.svg";
-import { CopyIcon, SuccessIcon } from "@/public/icons";
+import illsturation from "@/public/icons/cat.svg";
+import { CopyIcon, SuccessIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import { useState } from "react";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
@@ -64,19 +64,19 @@ export default function LinkCreatedView({
           </div>
         </div>
 
-        <div className="xs:flex-row flex flex-col justify-center gap-0.5">
+        <div className="flex flex-col justify-center gap-0.5 xs:flex-row">
           <OrdinaryBtn
             onClick={onMoreOptions}
             text="Manage access"
             mode="secondary"
-            className="xs:w-fit w-full"
+            className="w-full xs:w-fit"
           />
 
           <OrdinaryBtn
             onClick={onManageMembers}
             text="Manage members"
             mode="secondary"
-            className="xs:w-fit xs:flex-grow w-full"
+            className="w-full xs:w-fit xs:flex-grow"
             disabled={invitationUsers.length > 0 ? false : true}
             title={invitationUsers.length > 0 ? "" : "No one has joined yet!"}
           />

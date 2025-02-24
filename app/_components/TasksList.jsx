@@ -6,6 +6,7 @@ import useTaskStore from "../taskStore";
 import AllMinimizer from "./minimizerSection/AllMinimizer";
 import DefaultMinimizer from "./minimizerSection/DefaultMinimizer";
 import PlannedMinimizer from "./minimizerSection/PlannedMinimizer";
+import TaskGroup from "./TaskGroup";
 
 export default function TasksList({
   listRef,
@@ -27,7 +28,6 @@ export default function TasksList({
   const cond =
     listName === "Tasks" ||
     listName === "My Day" ||
-    listName === "Important" ||
     categoryId !== defaultCategoryId;
 
   return (
@@ -70,6 +70,16 @@ export default function TasksList({
           listRef={listRef}
           bgColor={bgColor}
           getCategoriesList={getCategoriesList}
+          listName={listName}
+        />
+      )}
+
+      {listName === "Important" && (
+        // No need to minimizer for important tasks
+        <TaskGroup
+          tasks={tasks}
+          listRef={listRef}
+          bgColor={bgColor}
           listName={listName}
         />
       )}

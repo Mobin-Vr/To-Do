@@ -1,4 +1,4 @@
-import { MagnifierIcon, XIcon } from "@/public/icons";
+import { MagnifierIcon, XIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 
 const { useState, useEffect } = require("react");

@@ -9,6 +9,7 @@ import "./_styles/globals.css";
 import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
 import Sidebar from "./_components/sidebarSection/Sidebar";
 import EditSidebar from "./_components/editSidebarSection/EditSidebar";
+import Spinner from "./_components/_ui/Spinner";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -28,7 +29,7 @@ const roboto = Roboto_Flex({
 });
 
 const iranSansRegular = localFont({
-  src: "../public/IRANSansWeb.ttf",
+  src: "../public/fonts/IRANSansWeb.ttf",
   weight: "400",
   style: "normal",
   display: "swap",
@@ -66,7 +67,11 @@ export default async function RootLayout({ children }) {
             <EditSidebar />
           </SignedIn>
 
-          <main className="h-full overflow-y-hidden sm:flex-1">{children}</main>
+          <main className="h-full overflow-y-hidden sm:flex-1">
+            <Spinner variant="transparent" bgColorRoute="tasks" />
+
+            {children}
+          </main>
 
           <Toaster />
         </body>
