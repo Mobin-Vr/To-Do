@@ -3,12 +3,18 @@ import { useRef, useState } from "react";
 import useTaskStore from "../../taskStore";
 import ModalTemplateCloseAble from "./ModalTemplateCloseAble";
 import SortMethodModal from "./SortMethodModal";
+import { useShallow } from "zustand/react/shallow";
 
 function SortMethodBtn({ bgColor }) {
   const sortRef = useRef(null);
   const [hover, setHover] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const setSortMethod = useTaskStore((state) => state.setSortMethod);
+
+  const { setSortMethod } = useTaskStore(
+    useShallow((state) => ({
+      setSortMethod: state.setSortMethod,
+    })),
+  );
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 

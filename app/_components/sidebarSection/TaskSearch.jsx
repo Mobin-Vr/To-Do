@@ -59,6 +59,7 @@ export default function TaskSearch() {
           onChange={(e) => setSearchInput(e.target.value)}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          spellCheck={false}
           className={`h-full w-full p-2 pl-4 pr-14 text-sm font-light placeholder-gray-500 outline-none ${
             isTyping ? "" : ""
           }`}

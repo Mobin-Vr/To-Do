@@ -105,6 +105,7 @@ export default function TaskInput({
           onFocus={handleFocus}
           onBlur={handleBlur}
           maxLength={MAX_INPUT_TASK_TITLE}
+          spellCheck={false}
           value={taskInput}
           onChange={(e) => setTaskInput(e.target.value)}
           style={{

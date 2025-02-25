@@ -22,109 +22,47 @@ import {
 } from "./_lib/data-services";
 import { delay, getDateNowIso } from "./_lib/utils";
 
-const initialState = {
-  sortMethod: "importance",
-  sortMethodForShared: "creationDate",
-  isSidebarOpen: false,
-  isEditSidebarOpen: false,
-  isSyncing: false,
-  offlineLogMode: false,
-  editTitleWhileCreating: false, // Auto-focus the textarea for renaming only when creating a new list.
-  activeTask: {},
-  conectionStatus: {}, // {isConected, isOnline, lastOnline}
-  changeLog: [],
-  userState: {},
-  tasksList: [],
-  categoriesList: [defaultCategory], // we can push more
-  invitations: [], // this is just for owner: each object : {invitationId, categoryId, categoryTitle, ownerId, limitAccess, [sharedWith]}
-  sharedWithMe: [], // this is for the second user: each object : {invitationId, categoryId, categoryTitle, ownerId, tasks: [{full object of tasks}] }
-
-  // Delete modal:
-  isDeleteModalOpen: false,
-  deletingType: "", // task, category, step
-  deletingItemName: "",
-  deleteCallback: null,
-  showSpinner: true, // this spinner is for the first loading of the data
-};
-
 const useTaskStore = create(
   devtools(
     persist(
       (set, get) => ({
-        sortMethod: initialState.sortMethod,
-        sortMethodForShared: initialState.sortMethodForShared,
-        isSidebarOpen: initialState.isSidebarOpen,
-        isEditSidebarOpen: initialState.isEditSidebarOpen,
-        isSyncing: initialState.isSyncing,
-        offlineLogMode: initialState.offlineLogMode,
-        editTitleWhileCreating: initialState.editTitleWhileCreating,
-        activeTask: initialState.activeTask,
-        conectionStatus: initialState.conectionStatus,
-        changeLog: initialState.changeLog,
-        userState: initialState.userState,
-        tasksList: initialState.tasksList,
-        categoriesList: initialState.categoriesList,
-        invitations: initialState.invitations,
-        sharedWithMe: initialState.sharedWithMe,
-        isDeleteModalOpen: initialState.isDeleteModalOpen,
-        deletingType: initialState.deletingType,
-        deletingItemName: initialState.deletingItemName,
-        deleteCallback: initialState.deleteCallback,
-        showSpinner: initialState.showSpinner,
+        // Sorting and Display
+        sortMethod: "importance", // Default sorting method for tasks
+        sortMethodForShared: "creationDate", // Default sorting method for shared lists
+        showSpinner: true, // Show spinner during initial data loading
 
-        // # Toggle sidebar
-        toggleSidebar: () => {
-          set(
-            produce((state) => {
-              state.isSidebarOpen = !state.isSidebarOpen;
-            }),
-          );
-        },
+        // UI State
+        isSidebarOpen: false, // Sidebar open/close state
+        isEditSidebarOpen: false, // Edit sidebar open/close state
+        editTitleWhileCreating: false, // Auto-focus title when creating a new list
 
-        // # Toggle Edit sidebar
-        toggleEditSidebar: () => {
-          set(
-            produce((state) => {
-              state.isEditSidebarOpen = !state.isEditSidebarOpen;
-            }),
-          );
-        },
+        // Sync and Connection State
+        isSyncing: false, // Synchronization status
+        offlineLogMode: false, // Enables offline logging mode
+        conectionStatus: {}, // Connection details: {isConnected, isOnline, lastOnline}
+        changeLog: [], // Stores changes for offline mode
 
-        // # Toggle Edit sidebar
-        handleActiveTaskSidebar: async (selectedTask, e) => {
-          if (
-            e?.target?.closest(".complete-btn") ||
-            e?.target?.closest(".star-btn")
-          )
-            return;
+        // User and Tasks Data
+        userState: {}, // Current user information
+        tasksList: [], // List of tasks
+        activeTask: {}, // Currently active task
+        categoriesList: [defaultCategory], // List of categories
 
-          const { isEditSidebarOpen, activeTask, tasksList } = get();
-          const cond = selectedTask?.task_id === activeTask?.task_id;
+        // Sharing and Invitations
+        invitations: [], // List of invitations sent to others
+        sharedWithMe: [], // Tasks and categories shared with the user
 
-          set(
-            produce((state) => {
-              if (!isEditSidebarOpen) {
-                state.activeTask = selectedTask;
-                state.isEditSidebarOpen = true;
-              } else if (isEditSidebarOpen && cond) {
-                state.isEditSidebarOpen = false;
-                state.activeTask = tasksList[0] || null;
-              } else if (isEditSidebarOpen && !cond) {
-                state.isEditSidebarOpen = false;
-              }
-            }),
-          );
+        // Delete Modal Management
+        isDeleteModalOpen: false, // Delete modal open/close state
+        deletingType: "", // Type of the item being deleted (task, category, step)
+        deletingItemName: "", // Name of the item being deleted
+        deleteCallback: null, // Callback function for deletion
 
-          if (isEditSidebarOpen && !cond) {
-            await delay(200);
-            set(
-              produce((state) => {
-                state.activeTask = selectedTask;
-                state.isEditSidebarOpen = true;
-              }),
-            );
-          }
-        },
+        /////////////////////////////
+        /////////////////////////////
+        /////////// Task ////////////
+        /////////////////////////////
+        /////////////////////////////
 
         // # Add a task
         addTaskToStore: async (task) => {
@@ -190,463 +128,44 @@ const useTaskStore = create(
           if (onlineStatus) await deleteManyTasks([id]);
         },
 
-        // # Toggle to completed or uncompleted
-        toggleCompleted: async (id) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-              const updateTime = getDateNowIso();
+        // # Update a task
+        updateTaskInStore: async (taskId, updatedParts) => {
+          const t = get().tasksList.find((task) => task.task_id === taskId);
+          console.log("task A: ", t);
 
-              // Update the task from LC
-              if (task) {
-                task.is_task_completed = !task.is_task_completed;
-                task.task_updated_at = updateTime;
-                if (task.is_task_completed) task.task_completed_at = updateTime;
-
-                if (!task.is_task_completed) task.task_completed_at = null;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the chenges log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Toggle to Starred or NOT Starred
-        toggleStarred: async (id) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-              const updateTime = getDateNowIso();
-
-              // Update the task from LC
-              if (task) {
-                task.is_task_starred = !task.is_task_starred;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the chenges log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Update task note
-        updateNote: async (id, note) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-              const updateTime = getDateNowIso();
-
-              // Update the task from LC
-              if (task) {
-                task.task_note = note;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the chenges log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Update task reminder
-        updateReminder: async (id, reminder) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-
-              const updateTime = getDateNowIso();
-              const isoDate =
-                reminder === null ? null : new Date(reminder).toISOString();
-
-              // Update the task reminder
-              if (task) {
-                task.task_reminder = isoDate;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Update task dueDate
-        updateDueDate: async (id, dueDate) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-
-              const updateTime = getDateNowIso();
-              const isoDate =
-                dueDate === null ? null : new Date(dueDate).toISOString();
-
-              // Update the task dueDate
-              if (task) {
-                task.task_due_date = isoDate;
-                task.task_updated_at = updateTime;
-
-                if (isoDate === null) task.task_repeat = null; // Set repeat to null as, well when the due date becomes null.
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Update task repeat
-        updateRepeat: async (id, repeat) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-              const updateTime = getDateNowIso();
-
-              // Update the task repeat
-              if (task) {
-                task.task_repeat = repeat;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Toggle to "is_task_in_myday" or NOT
-        toggleAddedToMyDay: async (id) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-
-              const updateTime = getDateNowIso();
-
-              // Update the task from LC
-              if (task) {
-                task.is_task_in_myday = !task.is_task_in_myday;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Update the task title
-        updateTitle: async (id, newTitle) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-              const updateTime = getDateNowIso();
-
-              // Update the task from LC
-              if (task) {
-                task.task_title = newTitle;
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if there is a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === id);
-
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
-        },
-
-        // # Get the last tasklist
-        getTaskList: () => {
-          const tasksList = get().tasksList;
-
-          return tasksList.length > 0 ? tasksList : null;
-        },
-
-        // # Get the last tasklist
-        getConectionStatus: () => {
-          return get().conectionStatus;
-        },
-
-        // # show spinner on mount
-        setShowpinnerFalse: () => {
-          set(
-            produce((state) => {
-              state.showSpinner = false;
-            }),
-          );
-        },
-
-        /////////////////////////////
-        /////////////////////////////
-        /////////// Step ////////////
-        /////////////////////////////
-        /////////////////////////////
-
-        // # Add a new step to a task's steps
-        addStep: async (taskId, newStep) => {
           set(
             produce((state) => {
               const task = state.tasksList.find(
                 (task) => task.task_id === taskId,
               );
-              const updateTime = getDateNowIso();
 
-              // Update the task locally
-              if (task) {
-                if (!task.task_steps) task.task_steps = []; // Initialize steps if not present
-                task.task_steps.push(newStep);
-                task.task_updated_at = updateTime;
-              }
+              if (!task) return;
+
+              // Update the task
+              Object.assign(task, updatedParts, {
+                task_updated_at: getDateNowIso(),
+              });
 
               // Add to change log only if offline.
               if (state.offlineLogMode) {
-                // Remove if there is a record in log with the same ID
+                // Remove if exist a record in log with the same ID
                 state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
+                  (log) => log.id !== taskId,
                 );
 
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
+                // Save the changes logs
+                state.changeLog.push({ type: "update-task", id: taskId, task });
               }
             }),
           );
 
           // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
           const task = get().tasksList.find((task) => task.task_id === taskId);
-
-          if (onlineStatus) await updateManyTasks(task, task.task_id);
-        },
-
-        // # Update a specific step of a specific task
-        updateStep: async (taskId, stepId, updatedFields) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find(
-                (task) => task.task_id === taskId,
-              );
-              const updateTime = getDateNowIso();
-
-              if (task && task.task_steps) {
-                const step = task.task_steps.find((s) => s.step_id === stepId);
-
-                if (step) {
-                  // Update only the provided fields
-                  Object.assign(step, updatedFields);
-                  task.task_updated_at = updateTime;
-                }
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if there is a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Sync with the database
           const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === taskId);
 
-          if (onlineStatus) await updateManyTasks(task, task.task_id);
-        },
+          console.log("task B: ", task);
 
-        // # Remove a specific step from a specific task
-        removeStep: async (taskId, stepId) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find(
-                (task) => task.task_id === taskId,
-              );
-              const updateTime = getDateNowIso();
-
-              if (task && task.task_steps) {
-                // Filter out the step with the given stepId
-                task.task_steps = task.task_steps.filter(
-                  (s) => s.step_id !== stepId,
-                );
-                task.task_updated_at = updateTime;
-              }
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if there is a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
-
-                // Save the changes log
-                state.changeLog.push({
-                  type: "update-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
-
-          // Sync with the database
-          const onlineStatus = get().conectionStatus.isOnline;
-          const task = get().tasksList.find((task) => task.task_id === taskId);
-
-          if (onlineStatus) await updateManyTasks(task, task.task_id);
+          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
         },
 
         /////////////////////////////
@@ -786,130 +305,6 @@ const useTaskStore = create(
 
           if (onlineStatus)
             await updateManyCategories([category], [category.category_id]);
-        },
-
-        // Toggles the focus state for the title when creating a new list.
-        toggleTitleFocus: (bool) =>
-          set(
-            produce((state) => {
-              state.editTitleWhileCreating = bool;
-            }),
-          ),
-
-        //////////////////////////
-        //////////////////////////
-        //////// other ///////////
-        //////////////////////////
-        //////////////////////////
-
-        // # Fetching tasks from DB and Synchronizing localeStorage with the database
-        syncLcWithDb: async () => {
-          const userId = get().userState.user_id;
-
-          if (!userId) return;
-
-          // This will get all relevent tasks on every reload (shared + owned)
-          const tasks = await getRelevantTasksAction(userId);
-
-          const categories = await getCategories(userId);
-
-          //  Filter out tasks that already exist in the tasksList
-          const newTasks = tasks.filter(
-            (task) => !get().tasksList.some((t) => t.task_id === task.task_id),
-          );
-
-          // Filter out categories that already exist in the categoriesList
-          const newCategories = categories.filter(
-            (category) =>
-              !get().categoriesList.some(
-                (c) => c.category_id === category.category_id,
-              ),
-          );
-
-          set(
-            produce((state) => {
-              //  Add only the new tasks and categories to the lists
-              state.tasksList.push(...newTasks);
-              state.categoriesList.push(...newCategories);
-            }),
-          );
-
-          get().setShowpinnerFalse(); // turn off the spinner after loadind data
-        },
-
-        // # Update health statuses
-        // (receives the status from the HealthStatusSync component, whuch is a component to monitor database and internet connectivity status)
-        updateConnectionStatus: (conectionStatus) => {
-          set(
-            produce((state) => {
-              state.conectionStatus = conectionStatus;
-            }),
-          );
-        },
-
-        // Set user's info
-        setUserState: (userState) => {
-          set(
-            produce((state) => {
-              state.userState = userState;
-            }),
-          );
-
-          get().syncLcWithDb();
-        },
-
-        // Toggle offline log mode
-        toggleOfflineLogMode: (bool) => {
-          set(
-            produce((state) => {
-              state.offlineLogMode = bool;
-            }),
-          );
-        },
-
-        // # Clear changeLog
-        clearLog: () => {
-          set(
-            produce((state) => {
-              state.changeLog = initialState.changeLog;
-            }),
-          );
-        },
-
-        // # Toggle isSyncing
-        toggleIsSyncing: (bool) => {
-          set(
-            produce((state) => {
-              state.isSyncing = bool;
-            }),
-          );
-        },
-
-        // # Set active task (To show in the EditSidebar)
-        setActiveTask: (task) => {
-          set(
-            produce((state) => {
-              state.activeTask = task;
-            }),
-          );
-        },
-
-        // # Set active task (To show in the EditSidebar)
-        setSortMethod: (sortMethod) => {
-          set(
-            produce((state) => {
-              state.sortMethod = sortMethod;
-              state.sortMethodForShared = sortMethod;
-            }),
-          );
-        },
-
-        getUserState: () => {
-          return get().userState;
-        },
-
-        getCategoriesList: () => {
-          return get().categoriesList;
         },
 
         //////////////////////////////////////
@@ -1315,6 +710,202 @@ const useTaskStore = create(
               state.deleteCallback = null;
             }),
           );
+        },
+
+        //////////////////////////
+        //////////////////////////
+        //////// other ///////////
+        //////////////////////////
+        //////////////////////////
+
+        // # Fetching tasks from DB and Synchronizing localeStorage with the database
+        syncLcWithDb: async () => {
+          const userId = get().userState.user_id;
+
+          if (!userId) return;
+
+          // This will get all relevent tasks on every reload (shared + owned)
+          const tasks = await getRelevantTasksAction(userId);
+
+          const categories = await getCategories(userId);
+
+          //  Filter out tasks that already exist in the tasksList
+          const newTasks = tasks.filter(
+            (task) => !get().tasksList.some((t) => t.task_id === task.task_id),
+          );
+
+          // Filter out categories that already exist in the categoriesList
+          const newCategories = categories.filter(
+            (category) =>
+              !get().categoriesList.some(
+                (c) => c.category_id === category.category_id,
+              ),
+          );
+
+          set(
+            produce((state) => {
+              //  Add only the new tasks and categories to the lists
+              state.tasksList.push(...newTasks);
+              state.categoriesList.push(...newCategories);
+            }),
+          );
+
+          get().setShowpinnerFalse(); // turn off the spinner after loadind data
+        },
+
+        // # Update health statuses
+        // (receives the status from the HealthStatusSync component, whuch is a component to monitor database and internet connectivity status)
+        updateConnectionStatus: (conectionStatus) => {
+          set(
+            produce((state) => {
+              state.conectionStatus = conectionStatus;
+            }),
+          );
+        },
+
+        // # Toggle offline log mode
+        toggleOfflineLogMode: (bool) => {
+          set(
+            produce((state) => {
+              state.offlineLogMode = bool;
+            }),
+          );
+        },
+
+        // # Toggle isSyncing
+        toggleIsSyncing: (bool) => {
+          set(
+            produce((state) => {
+              state.isSyncing = bool;
+            }),
+          );
+        },
+
+        // # Clear changeLog
+        clearLog: () => {
+          set(
+            produce((state) => {
+              state.changeLog = [];
+            }),
+          );
+        },
+
+        // # Set active task (To show in the EditSidebar)  LATER do we need to this?
+        setActiveTask: (task) => {
+          set(
+            produce((state) => {
+              state.activeTask = task;
+            }),
+          );
+        },
+
+        // # Toggle Edit sidebar
+        handleActiveTaskSidebar: async (selectedTask, e) => {
+          if (
+            e?.target?.closest(".complete-btn") ||
+            e?.target?.closest(".star-btn")
+          )
+            return;
+
+          const { isEditSidebarOpen, activeTask, tasksList } = get();
+          const cond = selectedTask?.task_id === activeTask?.task_id;
+
+          set(
+            produce((state) => {
+              if (!isEditSidebarOpen) {
+                state.activeTask = selectedTask;
+                state.isEditSidebarOpen = true;
+              } else if (isEditSidebarOpen && cond) {
+                state.isEditSidebarOpen = false;
+                state.activeTask = tasksList[0] || null;
+              } else if (isEditSidebarOpen && !cond) {
+                state.isEditSidebarOpen = false;
+              }
+            }),
+          );
+
+          if (isEditSidebarOpen && !cond) {
+            await delay(200);
+            set(
+              produce((state) => {
+                state.activeTask = selectedTask;
+                state.isEditSidebarOpen = true;
+              }),
+            );
+          }
+        },
+
+        // # Set user's info
+        setUserState: (userState) => {
+          set(
+            produce((state) => {
+              state.userState = userState;
+            }),
+          );
+
+          get().syncLcWithDb();
+        },
+
+        // # Set active task (To show in the EditSidebar)
+        setSortMethod: (sortMethod) => {
+          set(
+            produce((state) => {
+              state.sortMethod = sortMethod;
+              state.sortMethodForShared = sortMethod;
+            }),
+          );
+        },
+
+        // # show spinner on mount
+        setShowpinnerFalse: () => {
+          set(
+            produce((state) => {
+              state.showSpinner = false;
+            }),
+          );
+        },
+
+        // # Toggle sidebar
+        toggleSidebar: () => {
+          set(
+            produce((state) => {
+              state.isSidebarOpen = !state.isSidebarOpen;
+            }),
+          );
+        },
+
+        // # Toggle Edit sidebar
+        toggleEditSidebar: () => {
+          set(
+            produce((state) => {
+              state.isEditSidebarOpen = !state.isEditSidebarOpen;
+            }),
+          );
+        },
+
+        // # Toggles the focus state for the title when creating a new list.
+        toggleTitleFocus: (bool) =>
+          set(
+            produce((state) => {
+              state.editTitleWhileCreating = bool;
+            }),
+          ),
+
+        getTaskList: () => {
+          const tasksList = get().tasksList;
+          return tasksList.length > 0 ? tasksList : null;
+        },
+
+        getConectionStatus: () => {
+          return get().conectionStatus;
+        },
+
+        getUserState: () => {
+          return get().userState;
+        },
+
+        getCategoriesList: () => {
+          return get().categoriesList;
         },
       }),
       {

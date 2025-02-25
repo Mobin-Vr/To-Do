@@ -4,9 +4,15 @@ import {
   TickCircleIcon,
 } from "@/public/icons/icons";
 import useTaskStore from "../../taskStore";
+import { getDateNowIso } from "@/app/_lib/utils";
+import { useShallow } from "zustand/react/shallow";
 
 export default function CompleteBtn({ task, className, bgColor }) {
-  const toggleCompleted = useTaskStore((state) => state.toggleCompleted);
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
 
   const handleCompleteClick = () => {
     if (!task.is_task_completed) {
@@ -15,7 +21,12 @@ export default function CompleteBtn({ task, className, bgColor }) {
         .play()
         .catch((error) => console.error("Failed to play sound:", error));
     }
-    toggleCompleted(task.task_id);
+
+    updateTaskInStore(task.task_id, {
+      is_task_completed: !task.is_task_completed,
+
+      task_completed_at: task.is_task_completed ? getDateNowIso() : null,
+    });
   };
 
   return (

@@ -1,12 +1,12 @@
 import { BellIcon, TickCircleIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "./_ui/OrdinaryBtn";
+import { getDateNowIso } from "../_lib/utils";
 
 export default function AlarmToast({
   task,
   t,
   toast,
-  updateReminder,
-  toggleCompleted,
+  updateTaskInStore,
   alarmSound,
   autoStopTimeout,
 }) {
@@ -40,7 +40,10 @@ export default function AlarmToast({
             const newReminderTime = new Date(
               Date.now() + 5 * 60 * 1000,
             ).toISOString();
-            updateReminder(task.task_id, newReminderTime);
+
+            updateTaskInStore(task.task_id, {
+              task_reminder: newReminderTime,
+            });
           }}
         >
           <BellIcon size="15" />
@@ -56,7 +59,12 @@ export default function AlarmToast({
             alarmSound.pause();
             alarmSound.currentTime = 0;
             toast.dismiss(t.id);
-            toggleCompleted(task.task_id);
+            updateTaskInStore(task.task_id, {
+              is_task_completed: !task.is_task_completed,
+              task_completed_at: task.is_task_completed
+                ? getDateNowIso()
+                : null,
+            });
           }}
         >
           <TickCircleIcon size="15" />

@@ -5,14 +5,27 @@ import {
   CompletedIcon,
   TickCircleIcon,
 } from "@/public/icons/icons";
+import { useShallow } from "zustand/react/shallow";
 
-export default function StepCompleteBtn({ taskId, step, className, bgColor }) {
-  const updateStep = useTaskStore((state) => state.updateStep);
+export default function StepCompleteBtn({ task, step, className, bgColor }) {
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
 
   function handleCompleteClick() {
-    updateStep(taskId, step.step_id, {
+    const updatedFields = {
       is_step_completed: !step.is_step_completed,
       step_completed_at: step.is_step_completed ? null : getDateNowIso(),
+    };
+
+    updateTaskInStore(task.task_id, {
+      task_steps: task.task_steps.map((theStep) =>
+        theStep.step_id === step.step_id
+          ? { ...theStep, ...updatedFields }
+          : theStep,
+      ),
     });
   }
 

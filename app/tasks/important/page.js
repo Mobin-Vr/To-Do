@@ -23,7 +23,6 @@ export default function Page() {
   );
 
   const tasks = tasksList.filter((task) => task.is_task_starred) || [];
-  console.log(tasks);
 
   const bgColor = BG_COLORS["/important"];
 

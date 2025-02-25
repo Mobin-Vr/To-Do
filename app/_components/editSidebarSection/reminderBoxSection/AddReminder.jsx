@@ -7,10 +7,17 @@ import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
 import BoxBtn from "../BoxBtn";
 import AddReminderModal from "../reminderBoxModals/AddReminderModal";
 import DateTimePickerModal from "../reminderBoxModals/DateTimePickerModal";
+import { useShallow } from "zustand/react/shallow";
 
 export default function AddReminder({ task }) {
   const AddReminder = useRef(null);
-  const updateReminder = useTaskStore((state) => state.updateReminder);
+
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
@@ -22,7 +29,8 @@ export default function AddReminder({ task }) {
   const relativeDay = getRelativeDay(task.task_reminder);
   const weekday = relativeDay ? format(task.task_reminder, "EEE") : relativeDay;
 
-  const removeReminder = () => updateReminder(task.task_id, null);
+  const removeReminder = () =>
+    updateTaskInStore(task.task_id, { task_reminder: null });
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -50,7 +58,7 @@ export default function AddReminder({ task }) {
       >
         <AddReminderModal
           toggleModalDatePicker={toggleModalDatePicker}
-          updateReminder={updateReminder}
+          updateTaskInStore={updateTaskInStore}
           task={task}
         />
       </ModalTemplateCloseAble>
@@ -62,7 +70,7 @@ export default function AddReminder({ task }) {
         className="bottom-12 left-1/2 w-auto text-xs font-normal"
       >
         <DateTimePickerModal
-          updateReminder={updateReminder}
+          updateTaskInStore={updateTaskInStore}
           toggleModal={toggleModalDatePicker}
           task={task}
         />

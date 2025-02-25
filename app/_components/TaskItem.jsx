@@ -1,3 +1,4 @@
+import { useShallow } from "zustand/react/shallow";
 import useTaskStore from "../taskStore";
 import CompleteBtn from "./_ui/CompleteBtn";
 import StarBtn from "./_ui/StarBtn";
@@ -23,8 +24,10 @@ export default function TaskItem({
   listName,
   className,
 }) {
-  const handleActiveTaskSidebar = useTaskStore(
-    (state) => state.handleActiveTaskSidebar,
+  const { handleActiveTaskSidebar } = useTaskStore(
+    useShallow((state) => ({
+      handleActiveTaskSidebar: state.handleActiveTaskSidebar,
+    })),
   );
 
   return (

@@ -9,10 +9,11 @@ import { format } from "date-fns";
 import { ModalActionButton } from "./ModalActionBtn";
 
 export default function AddDueModal({
-  updateDueDate,
   task,
-  isForTaskInput = false,
   toggleModal,
+  setTaskDueDate,
+  updateTaskInStore,
+  isForTaskInput = false,
 }) {
   const today = getRoundedTime("today");
   const tomorrow = getRoundedTime("tomorrow");
@@ -20,8 +21,10 @@ export default function AddDueModal({
 
   // update store (id, dueDate)
   function handleSelect(day) {
-    if (!isForTaskInput) updateDueDate(task.task_id, day);
-    if (isForTaskInput) updateDueDate(day);
+    if (!isForTaskInput)
+      updateTaskInStore(task.task_id, { task_due_date: day });
+
+    if (isForTaskInput) setTaskDueDate(day);
   }
 
   return (

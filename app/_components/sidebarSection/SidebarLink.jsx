@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import useTaskStore from "@/app/taskStore";
 import { defaultCategoryId } from "@/app/_lib/configs";
 import { UsersIcon } from "@/public/icons/icons";
+import { useShallow } from "zustand/react/shallow";
 
 const SidebarLink = ({
   href,
@@ -18,7 +19,11 @@ const SidebarLink = ({
   const pathname = usePathname();
   const isActive = pathname === href;
 
-  const tasksList = useTaskStore((state) => state.tasksList);
+  const { tasksList } = useTaskStore(
+    useShallow((state) => ({
+      tasksList: state.tasksList,
+    })),
+  );
 
   function count() {
     if (!tasksList) return 0;

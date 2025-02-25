@@ -18,12 +18,12 @@ export default function StepItem({ step, task, bgColor }) {
         className="border-1 flex items-center justify-center overflow-hidden rounded-md border border-gray-200 bg-accent-50"
       >
         <StepCompleteBtn
-          taskId={task.task_id}
+          task={task}
           step={step}
           className="ml-1"
           bgColor={bgColor}
         />
-        <StepTitleEditor step={step} taskId={task.task_id} />
+        <StepTitleEditor step={step} task={task} />
 
         <button
           onClick={toggleModal}

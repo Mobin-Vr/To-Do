@@ -8,6 +8,7 @@ import DatePickerModal from "../editSidebarSection/reminderBoxModals/DatePickerM
 
 export default function InputAddDue({ setTaskDueDate, className }) {
   const AddDueRef = useRef(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
@@ -31,7 +32,7 @@ export default function InputAddDue({ setTaskDueDate, className }) {
         className="bottom-[3rem] right-0 w-44 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddDueModal
-          updateDueDate={setTaskDueDate}
+          setTaskDueDate={setTaskDueDate}
           toggleModal={toggleModalDatePicker}
           isForTaskInput={true}
         />
@@ -43,7 +44,7 @@ export default function InputAddDue({ setTaskDueDate, className }) {
         className="bottom-[3rem] right-0 w-fit border border-gray-300 text-xs font-normal shadow-black"
       >
         <DatePickerModal
-          updateDueDate={setTaskDueDate}
+          setTaskDueDate={setTaskDueDate}
           toggleModal={toggleModalDatePicker}
           isForTaskInput={true}
         />

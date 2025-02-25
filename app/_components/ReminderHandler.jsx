@@ -17,19 +17,10 @@ import {
 } from "../_lib/utils";
 
 export default function ReminderHandler() {
-  const {
-    getTaskList,
-    updateReminder,
-    updateDueDate,
-    toggleCompleted,
-    toggleAddedToMyDay,
-  } = useTaskStore(
+  const { getTaskList, updateTaskInStore } = useTaskStore(
     useShallow((state) => ({
       getTaskList: state.getTaskList,
-      updateReminder: state.updateReminder,
-      updateDueDate: state.updateDueDate,
-      toggleCompleted: state.toggleCompleted,
-      toggleAddedToMyDay: state.toggleAddedToMyDay,
+      updateTaskInStore: state.updateTaskInStore,
     })),
   );
 
@@ -54,10 +45,14 @@ export default function ReminderHandler() {
       getTaskList().forEach((task) => {
         // In each interval, we need to check if the task's due date or reminder is today. If either is today, we should set `is_task_in_myday` to `true`.
         if (!task.is_task_in_myday && checkIfToday(task.task_reminder))
-          toggleAddedToMyDay(task.task_id);
+          updateTaskInStore(task.task_id, {
+            is_task_in_myday: !task.is_task_in_myday,
+          });
 
         if (!task.is_task_in_myday && checkIfToday(task.task_due_date))
-          toggleAddedToMyDay(task.task_id);
+          updateTaskInStore(task.task_id, {
+            is_task_in_myday: !task.is_task_in_myday,
+          });
 
         // Check if the task's due date is before today (yesterday or earlier), then apply the repeat!
         if (task.task_repeat && isDateBeforeToday(task.task_due_date)) {
@@ -66,7 +61,7 @@ export default function ReminderHandler() {
             task.task_repeat,
           );
 
-          updateDueDate(task.task_id, nextRepeatDate);
+          updateTaskInStore(task.task_id, { task_due_date: nextRepeatDate });
         }
 
         if (
@@ -75,7 +70,7 @@ export default function ReminderHandler() {
           new Date(task.task_reminder) <= Date.now()
         ) {
           triggerReminder(task);
-          updateReminder(task.task_id, null);
+          updateTaskInStore(task.task_id, { task_reminder: null });
         }
       });
     }
@@ -111,8 +106,7 @@ export default function ReminderHandler() {
           task={task}
           alarmSound={alarmSound}
           autoStopTimeout={autoStopTimeout}
-          updateReminder={updateReminder}
-          toggleCompleted={toggleCompleted}
+          updateTaskInStore={updateTaskInStore}
         />
       ),
       { duration: TOAST_SHOWN_DURATION },

@@ -10,26 +10,28 @@ import { useShallow } from "zustand/react/shallow";
 import { ModalActionButton } from "../reminderBoxModals/ModalActionBtn";
 
 export default function StepActionModal({ task, step }) {
-  const {
-    updateStep,
-    removeStep,
-    addTaskToStore,
-    getUserState,
-    showDeleteModal,
-  } = useTaskStore(
-    useShallow((state) => ({
-      updateStep: state.updateStep,
-      removeStep: state.removeStep,
-      addTaskToStore: state.addTaskToStore,
-      getUserState: state.getUserState,
-      showDeleteModal: state.showDeleteModal,
-    })),
-  );
+  const { updateTaskInStore, addTaskToStore, getUserState, showDeleteModal } =
+    useTaskStore(
+      useShallow((state) => ({
+        updateTaskInStore: state.updateTaskInStore,
+        addTaskToStore: state.addTaskToStore,
+        getUserState: state.getUserState,
+        showDeleteModal: state.showDeleteModal,
+      })),
+    );
 
   function handleUpdate() {
-    updateStep(task.task_id, step.step_id, {
+    const updatedFields = {
       is_step_completed: !step.is_step_completed,
       step_completed_at: step.is_step_completed ? null : getDateNowIso(),
+    };
+
+    updateTaskInStore(task.task_id, {
+      task_steps: task.task_steps.map((theStep) =>
+        theStep.step_id === step.step_id
+          ? { ...theStep, ...updatedFields }
+          : theStep,
+      ),
     });
   }
 
@@ -37,7 +39,9 @@ export default function StepActionModal({ task, step }) {
     // 1. Show warn modal
     showDeleteModal("step", step.step_title, async () => {
       // 2. Remove the step
-      removeStep(task.task_id, step.step_id);
+      updateTaskInStore(task.task_id, {
+        task_steps: task.task_steps.filter((s) => s.step_id !== step.step_id),
+      });
     });
   }
 
@@ -61,8 +65,13 @@ export default function StepActionModal({ task, step }) {
       is_task_in_myday: false,
     };
 
+    // Add the promoted step in tasksList
     addTaskToStore(promotedStep);
-    removeStep(task.task_id, step.step_id);
+
+    // Remove the step
+    updateTaskInStore(task.task_id, {
+      task_steps: task.task_steps.filter((s) => s.step_id !== step.step_id),
+    });
   }
 
   return (

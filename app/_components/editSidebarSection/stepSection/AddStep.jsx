@@ -2,9 +2,14 @@ import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 import { CircleIcon, PlusIcon } from "lucide-react";
 import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 export default function AddStep({ task }) {
-  const addStep = useTaskStore((state) => state.addStep);
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
 
   const [stepInput, setStepInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -23,7 +28,10 @@ export default function AddStep({ task }) {
       is_step_completed: false,
     };
 
-    addStep(task.task_id, newStep);
+    updateTaskInStore(task.task_id, {
+      task_steps: [...(task.task_steps || []), newStep],
+    });
+
     setStepInput("");
   }
 
@@ -54,6 +62,7 @@ export default function AddStep({ task }) {
         onChange={(e) => setStepInput(e.target.value)}
         onFocus={handleFocus}
         onBlur={handleBlur}
+        spellCheck={false}
         className={`w-full rounded-md bg-inherit p-2 pl-0 text-start text-sm font-light outline-none hover:bg-sidebar-hover focus:bg-white ${
           isTyping ? "placeholder-gray-500" : "placeholder-blue-700"
         }`}

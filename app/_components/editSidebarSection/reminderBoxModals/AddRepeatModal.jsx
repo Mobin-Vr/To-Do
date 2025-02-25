@@ -9,29 +9,30 @@ import {
 import { ModalActionButton } from "./ModalActionBtn";
 
 export default function AddRepeatModal({
-  updateRepeat,
-  updateDueDate,
   task,
-  isForTaskInput = false,
   taskDueDate,
   taskRepeat,
+  setTaskDueDate,
+  updateTaskInStore,
+  setTaskRepeat,
+  isForTaskInput = false,
 }) {
   // Update store (id, repeat)
   function handleSelect(period) {
     if (!isForTaskInput) {
       const nearestFriday = getWeekendForWeekdays(task.task_due_date);
-      updateRepeat(task.task_id, period);
+      updateTaskInStore(task.task_id, { task_repeat: period });
 
       if (task.task_repeat === "Weekdays" && !isWeekday(task.task_due_date))
-        updateDueDate(task.task_id, nearestFriday);
+        updateTaskInStore(task.task_id, { task_due_date: nearestFriday }); // for some bug fixes of clicking again on weekdays (repeat) and update the due date if its not a weekday
     }
 
     if (isForTaskInput) {
       const nearestFriday = getWeekendForWeekdays(taskDueDate);
-      updateRepeat(period);
+      setTaskRepeat(period);
 
       if (taskRepeat === "Weekdays" && !isWeekday(taskDueDate))
-        updateDueDate(nearestFriday);
+        setTaskDueDate(nearestFriday);
     }
   }
 

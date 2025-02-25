@@ -1,11 +1,16 @@
 import { ChevronIcon } from "@/public/icons/icons";
 import { getTimeAgo } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
+import { useShallow } from "zustand/react/shallow";
 
 export default function UserStatus({ user, showIcon = true }) {
-  const { isConnected, isOnline, lastOnline } = useTaskStore(
-    (state) => state.conectionStatus,
+  const { conectionStatus } = useTaskStore(
+    useShallow((state) => ({
+      conectionStatus: state.conectionStatus,
+    })),
   );
+
+  const { isConnected, isOnline, lastOnline } = conectionStatus;
 
   const timeAgo = lastOnline
     ? `Synced ${getTimeAgo(lastOnline)} ...`

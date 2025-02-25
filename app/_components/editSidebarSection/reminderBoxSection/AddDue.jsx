@@ -7,10 +7,17 @@ import BoxBtn from "../BoxBtn";
 import AddDueModal from "../reminderBoxModals/AddDueModal";
 import DatePickerModal from "../reminderBoxModals/DatePickerModal";
 import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
+import { useShallow } from "zustand/react/shallow";
 
 export default function AddDue({ task }) {
   const AddDueRef = useRef(null);
-  const updateDueDate = useTaskStore((state) => state.updateDueDate);
+
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
 
@@ -24,7 +31,11 @@ export default function AddDue({ task }) {
       ? `Due ${format(task.task_due_date, "MMM, dd")}`
       : relativeDay;
 
-  const removeDueDate = () => updateDueDate(task.task_id, null);
+  const removeDueDate = () =>
+    updateTaskInStore(task.task_id, {
+      task_due_date: null,
+      task_repeat: null,
+    });
 
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
@@ -51,7 +62,7 @@ export default function AddDue({ task }) {
       >
         <AddDueModal
           toggleModal={toggleModalDatePicker}
-          updateDueDate={updateDueDate}
+          updateTaskInStore={updateTaskInStore}
           task={task}
           d
         />
@@ -64,7 +75,7 @@ export default function AddDue({ task }) {
         className="bottom-12 left-1/2 w-auto text-xs font-normal"
       >
         <DatePickerModal
-          updateDueDate={updateDueDate}
+          updateTaskInStore={updateTaskInStore}
           toggleModal={toggleModalDatePicker}
           task={task}
         />

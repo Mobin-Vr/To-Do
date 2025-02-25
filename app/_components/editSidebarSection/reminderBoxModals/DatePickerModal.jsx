@@ -4,9 +4,10 @@ import CancelSaveBtn from "../../_ui/CancelSaveBtn";
 import DatePicker from "../../_ui/DatePicker";
 
 export default function DatePickerModal({
-  updateDueDate,
-  toggleModal,
   task,
+  toggleModal,
+  setTaskDueDate,
+  updateTaskInStore,
   isForTaskInput = false,
 }) {
   const d = task?.dueDate ? new Date(task.dueDat) : "";
@@ -14,8 +15,10 @@ export default function DatePickerModal({
 
   function hanldeSave() {
     const due = date.toISOString();
-    if (!isForTaskInput) updateDueDate(task.task_id, due);
-    if (isForTaskInput) updateDueDate(due);
+    if (!isForTaskInput)
+      updateTaskInStore(task.task_id, { task_due_date: due });
+
+    if (isForTaskInput) setTaskDueDate(due);
     toggleModal();
   }
 

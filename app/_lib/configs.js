@@ -7,7 +7,7 @@ export const SNOOZE_DURATION = 5 * 60 * 1000; // 5 min
 ///////////////////////////////////////////////////////////
 export const MAX_INPUT_TASK_TITLE = 100; // Character limit on the task title input
 export const MAX_INPUT_CAT_TITLE = 60; // Character limit on the category title input
-export const MAX_INPUT_TEXTARIA = 400; // Character limit on the text aria input
+export const MAX_INPUT_TEXTAREA = 400; // Character limit on the text aria input
 ///////////////////////////////////////////////////////////
 // Default category object
 export const defaultCategoryId = "00000000-0000-0000-0000-000000000000";

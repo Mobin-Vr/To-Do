@@ -31,8 +31,8 @@ export default function InputAddRepeat({
         className="bottom-[3rem] right-0 w-44 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddRepeatModal
-          updateDueDate={setTaskDueDate}
-          updateRepeat={setTaskRepeat}
+          setTaskDueDate={setTaskDueDate}
+          setTaskRepeat={setTaskRepeat}
           isForTaskInput={true}
           taskDueDate={taskDueDate}
           taskRepeat={taskRepeat}

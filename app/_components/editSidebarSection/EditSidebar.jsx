@@ -24,7 +24,7 @@ export default function EditSidebar() {
     isEditSidebarOpen,
     toggleEditSidebar,
     deleteTaskFromStore,
-    updateNote,
+    updateTaskInStore,
     activeTask,
     setActiveTask,
     tasksList,
@@ -35,7 +35,7 @@ export default function EditSidebar() {
       isEditSidebarOpen: state.isEditSidebarOpen,
       toggleEditSidebar: state.toggleEditSidebar,
       deleteTaskFromStore: state.deleteTaskFromStore,
-      updateNote: state.updateNote,
+      updateTaskInStore: state.updateTaskInStore,
       activeTask: state.activeTask,
       setActiveTask: state.setActiveTask,
       tasksList: state.tasksList,
@@ -52,7 +52,7 @@ export default function EditSidebar() {
         (task) => task.task_id === activeTask.task_id,
       );
 
-      if (updatedTask) setActiveTask(updatedTask);
+      if (updatedTask) setActiveTask(updatedTask); // LATER do we need to this?
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasksList, activeTask?.task_id]);
@@ -100,7 +100,7 @@ export default function EditSidebar() {
             <AddFile />
             <AddNote
               task={activeTask}
-              updateNote={updateNote}
+              updateTaskInStore={updateTaskInStore}
               isEditSidebarOpen={isEditSidebarOpen}
             />
           </div>

@@ -4,12 +4,17 @@ import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
 import { usePathname } from "next/navigation";
 import { validate } from "uuid";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Spinner({
   bgColorRoute = "default",
   variant = "default",
 }) {
-  const showSpinner = useTaskStore((state) => state.showSpinner);
+  const { showSpinner } = useTaskStore(
+    useShallow((state) => ({
+      showSpinner: state.showSpinner,
+    })),
+  );
 
   const pageName = usePathname().split("/").at(-1);
   const isUUID = validate(pageName);

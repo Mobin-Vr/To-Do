@@ -1,9 +1,14 @@
 import { MAX_INPUT_TASK_TITLE } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
 import { useState, useEffect, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 export default function TaskTitleEditor({ task, className }) {
-  const updateTitle = useTaskStore((state) => state.updateTitle);
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
   const textareaRef = useRef(null);
 
   const [isTyping, setIsTyping] = useState(false);
@@ -39,7 +44,7 @@ export default function TaskTitleEditor({ task, className }) {
     if (trimmedTitle === "") {
       setCurrentTitle(previousTitle); // Restore previous title if empty
     } else {
-      updateTitle(task.task_id, trimmedTitle); // Save trimmed title
+      updateTaskInStore(task.task_id, { task_title: trimmedTitle }); // Save trimmed title
       setCurrentTitle(trimmedTitle);
     }
   }
@@ -52,6 +57,7 @@ export default function TaskTitleEditor({ task, className }) {
       value={currentTitle}
       onChange={handleUpdateTitle}
       rows={1}
+      spellCheck={false}
       maxLength={MAX_INPUT_TASK_TITLE}
       className={`min-h-[2rem] w-full resize-none overflow-hidden whitespace-pre-wrap break-words bg-inherit p-2 outline-none ${className} ${
         task.is_task_completed && !isTyping ? "text-gray-800 line-through" : ""

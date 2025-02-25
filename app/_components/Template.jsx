@@ -15,6 +15,7 @@ export default function Template({
   theCategoryId = defaultCategoryId,
   showInput = true,
   showSearch = false,
+  showSpinner = false,
 }) {
   const [mustFocus, setMustFocus] = useState(false);
 
@@ -27,7 +28,6 @@ export default function Template({
   }, []);
 
   function handleClick(e) {
-    console.log(e.traget);
     if (
       !e.target.closest(".task-item") &&
       !e.target.closest(".app-header") &&
@@ -68,7 +68,8 @@ export default function Template({
                 setMustFocus={setMustFocus}
               />
             ) : (
-              listConfig.listName === "My Day" && <NoTaskInMyDay />
+              listConfig.listName === "My Day" &&
+              !showSpinner && <NoTaskInMyDay />
             )}
           </div>
 

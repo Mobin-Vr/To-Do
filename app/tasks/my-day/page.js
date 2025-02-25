@@ -11,10 +11,11 @@ import useTaskStore from "../../taskStore";
 export default function Page() {
   const listRef = useRef(null);
 
-  const { tasksList, getCategoriesList } = useTaskStore(
+  const { tasksList, getCategoriesList, showSpinner } = useTaskStore(
     useShallow((state) => ({
       tasksList: state.tasksList,
       getCategoriesList: state.getCategoriesList,
+      showSpinner: state.showSpinner,
     })),
   );
 
@@ -40,5 +41,11 @@ export default function Page() {
     }
   }, [tasks.length]);
 
-  return <Template listRef={listRef} listConfig={listConfig} />;
+  return (
+    <Template
+      listRef={listRef}
+      listConfig={listConfig}
+      showSpinner={showSpinner}
+    />
+  );
 }

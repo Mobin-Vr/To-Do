@@ -1,17 +1,27 @@
 import useTaskStore from "@/app/taskStore";
 import BoxBtn from "./BoxBtn";
 import BoxTemplate from "./BoxTemplate";
+import { useShallow } from "zustand/react/shallow";
 
 function AddToMyDay({ task }) {
-  const toggleAddedToMyDay = useTaskStore((state) => state.toggleAddedToMyDay);
+  const { updateTaskInStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+    })),
+  );
 
   function toggleAdded() {
     // if is added should not be removed by clicking on box btn
-    if (!task.is_task_in_myday) toggleAddedToMyDay(task.task_id);
+    if (!task.is_task_in_myday)
+      updateTaskInStore(task.task_id, {
+        is_task_in_myday: !task.is_task_in_myday,
+      });
   }
 
   function clearAdded() {
-    toggleAddedToMyDay(task.task_id);
+    updateTaskInStore(task.task_id, {
+      is_task_in_myday: !task.is_task_in_myday,
+    });
   }
 
   return (

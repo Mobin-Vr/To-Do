@@ -5,11 +5,16 @@ import { useCallback, useEffect } from "react";
 
 import { createUser, getUser } from "@/app/_lib/data-services";
 import useTaskStore from "@/app/taskStore";
+import { useShallow } from "zustand/react/shallow";
 
 export default function UserSignupHandler() {
   const { user } = useUser();
 
-  const setUserState = useTaskStore((state) => state.setUserState);
+  const { setUserState } = useTaskStore(
+    useShallow((state) => ({
+      setUserState: state.setUserState,
+    })),
+  );
 
   // Use useCallback to prevent unnecessary re-renders
   const memoized_setUserState = useCallback(
