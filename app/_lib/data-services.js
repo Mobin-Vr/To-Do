@@ -1,6 +1,8 @@
 import { supabase } from "./supabase";
 
-// LATER remove all error senetence and just pass the error just like joinInvattaion
+//////////////////////////////////
+//// User Actions ////////////////
+//////////////////////////////////
 
 export async function createUser(newUser) {
   const { data, error } = await supabase
@@ -9,14 +11,13 @@ export async function createUser(newUser) {
     .select();
 
   if (error) {
-    console.error(error);
-    throw new Error("User could not be created");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
   return data;
 }
 
-// Fetch user by user_id
 export async function getUserById(userId) {
   const { data, error } = await supabase
     .from("users")
@@ -25,8 +26,8 @@ export async function getUserById(userId) {
     .single();
 
   if (error) {
-    console.error("Error fetching user", error);
-    return null;
+    console.error("Database Error", error);
+    throw error;
   }
 
   return data;
@@ -39,25 +40,27 @@ export async function getUser(userEmail) {
     .eq("user_email", userEmail)
     .single();
 
-  // No error here! We handle the possibility of no user in the sign-in
   return data;
 }
 
+//////////////////////////////////
+//// Categories Actions //////////
+//////////////////////////////////
+
 export async function getCategories(userId) {
-  const { data: categories, error } = await supabase
+  const { data, error } = await supabase
     .from("categories")
     .select("*")
     .eq("category_owner_id", userId);
 
   if (error) {
-    console.error(error);
-    throw new Error("Error getting categories", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return categories;
+  return data;
 }
 
-// Fetch the category's inv id by categoryId
 export async function getCategoryInvId(categoryId) {
   const { data, error } = await supabase
     .from("invitations")
@@ -66,28 +69,28 @@ export async function getCategoryInvId(categoryId) {
     .single();
 
   if (error) {
-    console.error("Error fetching invitaton id", error);
-    return null;
+    console.error("Database Error", error);
+    throw error;
   }
 
   return data;
 }
 
-////////////////////////////////////
-////////////////////////////////////
-////////////////////////////////////
+//////////////////////////////////
+//// Tasks Actions ///////////////
+//////////////////////////////////
 
-// Add one or many tasks
 export async function addManyTasks(tasksArr) {
-  const { error } = await supabase.from("tasks").insert(tasksArr); // Insert the array of tasks
+  const { error } = await supabase.from("tasks").insert(tasksArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to add the task:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-// Delete one or many tasks
 export async function deleteManyTasks(tasksIdsArr) {
   const { error } = await supabase
     .from("tasks")
@@ -95,12 +98,13 @@ export async function deleteManyTasks(tasksIdsArr) {
     .in("task_id", tasksIdsArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to delete the task:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-// Update one or many tasks
 export async function updateManyTasks(tasksArr, tasksIdsArr) {
   const { error } = await supabase
     .from("tasks")
@@ -108,22 +112,28 @@ export async function updateManyTasks(tasksArr, tasksIdsArr) {
     .in("task_id", tasksIdsArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to update the task:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-// Add one or many categories
+//////////////////////////////////
+//// Categories Actions //////////
+//////////////////////////////////
+
 export async function addManyCategories(categoriesArr) {
-  const { error } = await supabase.from("categories").insert(categoriesArr); // Insert the array of new categories
+  const { error } = await supabase.from("categories").insert(categoriesArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to add the category:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-// Delete one or many categories
 export async function deleteManyCategories(categoryIdsArr) {
   const { error } = await supabase
     .from("categories")
@@ -131,44 +141,45 @@ export async function deleteManyCategories(categoryIdsArr) {
     .in("category_id", categoryIdsArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to delete the category:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-// Update one or many categories
 export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
   const { error } = await supabase
     .from("categories")
-    .update(categoriesArr) // Use the updated parts for the update
+    .update(categoriesArr)
     .in("category_id", categoriesIdsArr);
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to update the category:", error);
+    console.error("Database Error: ", error);
+    throw error;
   }
+
+  return true;
 }
 
-///////////////////
-/////// RPC ///////
-///////////////////
+//////////////////////////////////
+//// Invitation Actions (RPC) ////
+//////////////////////////////////
 
-// Creates a new invitation for a category.
 export async function createInvitation(categoryId, ownerId) {
-  const { data, error } = await supabase.rpc("create_invitation", {
+  const { error } = await supabase.rpc("create_invitation", {
     param_category_id: categoryId,
     param_owner_id: ownerId,
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to create invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return data;
+  return true;
 }
 
-// Allows a user to leave an invitation.
 export async function leaveInvitation(invitationId, userId) {
   const { error } = await supabase.rpc("leave_invitation", {
     param_invitation_id: invitationId,
@@ -176,14 +187,13 @@ export async function leaveInvitation(invitationId, userId) {
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to leave the invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return;
+  return true;
 }
 
-// Removes a specific user from an invitation.
 export async function removeUserFromInvitation(invitationId, userId, ownerId) {
   const { error } = await supabase.rpc("remove_user_from_invitation", {
     param_invitation_id: invitationId,
@@ -192,14 +202,13 @@ export async function removeUserFromInvitation(invitationId, userId, ownerId) {
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to remove user from the invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return;
+  return true;
 }
 
-// Updates the access limit for a specific invitation.
 export async function setInvitationAccessLimit(
   invitationId,
   limitAccess,
@@ -212,14 +221,13 @@ export async function setInvitationAccessLimit(
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to set invitation access limit");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return;
+  return true;
 }
 
-// Fetches all users associated with a specific invitation.
 export async function getUsersByInvitation(invitationId, ownerId) {
   const { data, error } = await supabase.rpc("get_users_by_invitation", {
     param_invitation_id: invitationId,
@@ -227,14 +235,13 @@ export async function getUsersByInvitation(invitationId, ownerId) {
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to fetch users by invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
   return data;
 }
 
-// Stops sharing a category by deleting the invitation and its users.
 export async function stopSharingInvitation(invitationId, ownerId) {
   const { error } = await supabase.rpc("stop_sharing_invitation", {
     param_invitation_id: invitationId,
@@ -242,11 +249,11 @@ export async function stopSharingInvitation(invitationId, ownerId) {
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to stop sharing the invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return;
+  return true;
 }
 
 export async function joinInvitation(invitationId, userId) {
@@ -257,13 +264,12 @@ export async function joinInvitation(invitationId, userId) {
 
   if (error) {
     console.error("Error:", error.message);
-    throw new Error(error);
+    throw error;
   }
 
   return data;
 }
 
-// Fetches tasks by invitation token for a specific user.
 export async function getTasksByInvitation(invitationId, userId) {
   const { data, error } = await supabase.rpc("retrieve_tasks_by_invitation", {
     param_invitation_id: invitationId,
@@ -271,14 +277,13 @@ export async function getTasksByInvitation(invitationId, userId) {
   });
 
   if (error) {
-    console.error(error);
-    throw new Error("Failed to fetch tasks for the given invitation");
+    console.error("Database Error: ", error);
+    throw error;
   }
 
-  return data; // Data will include an array of the tasks related to the invitation.
+  return data;
 }
 
-// This function retrieves all tasks owned by the user and additionally returns tasks related to categories from invitations the user has received. It first returns the user's own tasks, then loops through invitations to fetch shared tasks.
 export async function getRelevantTasks(userId) {
   const { data, error } = await supabase.rpc("get_shared_tasks_by_user_id", {
     param_user_id: userId,
@@ -286,8 +291,8 @@ export async function getRelevantTasks(userId) {
 
   if (error) {
     console.error("Error:", error.message);
-    throw new Error(error.message);
+    throw error;
   }
 
-  return data; // Data will include an array of the tasks
+  return data;
 }

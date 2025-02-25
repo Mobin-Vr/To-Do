@@ -33,9 +33,9 @@ export default function ModalTemplatePrimary({
   }, [isModalOpen]);
 
   const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8, x: justify },
+    hidden: { opacity: 0, scale: 0.8, x: isCenteredModal ? 0 : justify },
     visible: { opacity: 1, scale: 1, x: justify },
-    exit: { opacity: 0, scale: 0.8, x: justify },
+    exit: { opacity: 0, scale: 0.8, x: isCenteredModal ? 0 : justify },
   };
 
   // Define variants with translate-x on large screens

@@ -2,25 +2,25 @@ import { produce } from "immer";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import {
+  addManyCategoriesAction,
+  addManyTasksAction,
   createInvitationAction,
+  deleteManyCategoriesAction,
+  deleteManyTasksAction,
+  getCategoriesAction,
   getRelevantTasksAction,
   getUsersByInvitationAction,
   joinInvitationAction,
   removeUserFromInvitationAction,
   setInvitationAccessLimitAction,
   stopSharingInvitationAction,
+  updateManyCategoriesAction,
+  updateManyTasksAction,
 } from "./_lib/Actions";
 import { defaultCategory } from "./_lib/configs";
-import {
-  addManyCategories,
-  addManyTasks,
-  deleteManyCategories,
-  deleteManyTasks,
-  getCategories,
-  updateManyCategories,
-  updateManyTasks,
-} from "./_lib/data-services";
 import { delay, getDateNowIso } from "./_lib/utils";
+import { logger } from "./_lib/logger";
+import toast from "react-hot-toast";
 
 const useTaskStore = create(
   devtools(
@@ -41,6 +41,7 @@ const useTaskStore = create(
         offlineLogMode: false, // Enables offline logging mode
         conectionStatus: {}, // Connection details: {isConnected, isOnline, lastOnline}
         changeLog: [], // Stores changes for offline mode
+        errorLog: [], // {method, message, time}
 
         // User and Tasks Data
         userState: {}, // Current user information
@@ -59,265 +60,358 @@ const useTaskStore = create(
         deleteCallback: null, // Callback function for deletion
 
         /////////////////////////////
-        /////////////////////////////
         /////////// Task ////////////
-        /////////////////////////////
         /////////////////////////////
 
         // # Add a task
         addTaskToStore: async (task) => {
-          set(
-            produce((state) => {
-              // Add the task to LC
-              state.tasksList.push(task);
+          try {
+            set(
+              produce((state) => {
+                // Add the task to LC
+                state.tasksList.push(task);
 
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
-                );
+                // Add to change log only if offline.
+                if (state.offlineLogMode) {
+                  // Remove if exist log with the same ID
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== task.task_id,
+                  );
 
-                // Save the chenges log
-                state.changeLog.push({
-                  type: "add-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
+                  // Save the chenges log
+                  state.changeLog.push({
+                    type: "add-task",
+                    id: task.task_id,
+                    task,
+                  });
+                }
+              }),
+            );
 
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
+            // Synchronizing with the database
+            const onlineStatus = get().conectionStatus.isOnline;
 
-          if (onlineStatus) await addManyTasks([task]);
+            if (onlineStatus) await addManyTasksAction([task]);
+          } catch (error) {
+            logger.error("Error adding task: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "addTaskToStore",
+                message: error.message,
+              });
+            });
+          }
         },
 
         // # Delete a task
         deleteTaskFromStore: async (id) => {
-          set(
-            produce((state) => {
-              const task = state.tasksList.find((task) => task.task_id === id);
-
-              // Delete the task from LC
-              state.tasksList = state.tasksList.filter(
-                (t) => t.task_id !== task.task_id,
-              );
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== task.task_id,
+          try {
+            set(
+              produce((state) => {
+                const task = state.tasksList.find(
+                  (task) => task.task_id === id,
                 );
 
-                // Save the chenges log
-                state.changeLog.push({
-                  type: "delete-task",
-                  id: task.task_id,
-                  task,
-                });
-              }
-            }),
-          );
+                // Delete the task from LC
+                state.tasksList = state.tasksList.filter(
+                  (t) => t.task_id !== task.task_id,
+                );
 
-          // Synchronizing with the database
-          const onlineStatus = get().conectionStatus.isOnline;
+                // Add to change log only if offline.
+                if (state.offlineLogMode) {
+                  // Remove if exist a record in log with the same ID
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== task.task_id,
+                  );
 
-          if (onlineStatus) await deleteManyTasks([id]);
+                  // Save the chenges log
+                  state.changeLog.push({
+                    type: "delete-task",
+                    id: task.task_id,
+                    task,
+                  });
+                }
+              }),
+            );
+
+            // Synchronizing with the database
+            const onlineStatus = get().conectionStatus.isOnline;
+
+            if (onlineStatus) await deleteManyTasksAction([id]);
+          } catch (error) {
+            logger.error("Error deleting task: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "deleteTaskFromStore",
+                message: error.message,
+              });
+            });
+          }
         },
 
         // # Update a task
         updateTaskInStore: async (taskId, updatedParts) => {
-          const t = get().tasksList.find((task) => task.task_id === taskId);
-          console.log("task A: ", t);
+          try {
+            const t = get().tasksList.find((task) => task.task_id === taskId);
 
-          set(
-            produce((state) => {
-              const task = state.tasksList.find(
-                (task) => task.task_id === taskId,
-              );
-
-              if (!task) return;
-
-              // Update the task
-              Object.assign(task, updatedParts, {
-                task_updated_at: getDateNowIso(),
-              });
-
-              // Add to change log only if offline.
-              if (state.offlineLogMode) {
-                // Remove if exist a record in log with the same ID
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== taskId,
+            set(
+              produce((state) => {
+                const task = state.tasksList.find(
+                  (task) => task.task_id === taskId,
                 );
 
-                // Save the changes logs
-                state.changeLog.push({ type: "update-task", id: taskId, task });
-              }
-            }),
-          );
+                if (!task) return;
 
-          // Synchronizing with the database
-          const task = get().tasksList.find((task) => task.task_id === taskId);
-          const onlineStatus = get().conectionStatus.isOnline;
+                // Update the task
+                Object.assign(task, updatedParts, {
+                  task_updated_at: getDateNowIso(),
+                });
 
-          console.log("task B: ", task);
+                // Add to change log only if offline.
+                if (state.offlineLogMode) {
+                  // Remove if exist a record in log with the same ID
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== taskId,
+                  );
 
-          if (onlineStatus) await updateManyTasks([task], [task.task_id]);
+                  // Save the changes logs
+                  state.changeLog.push({
+                    type: "update-task",
+                    id: taskId,
+                    task,
+                  });
+                }
+              }),
+            );
+
+            // Synchronizing with the database
+            const task = get().tasksList.find(
+              (task) => task.task_id === taskId,
+            );
+            const onlineStatus = get().conectionStatus.isOnline;
+
+            if (onlineStatus)
+              await updateManyTasksAction([task], [task.task_id]);
+          } catch (error) {
+            logger.error("Error updating task: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "updateTaskInStore",
+                message: error.message,
+              });
+            });
+          }
         },
 
         /////////////////////////////
-        /////////////////////////////
         //////// Category ///////////
-        /////////////////////////////
         /////////////////////////////
 
         // # Add category
         addCategoryToStore: async (category) => {
-          set(
-            produce((state) => {
-              // Extract existing category names
-              const existingNames = state.categoriesList.map(
-                (cat) => cat.category_title,
-              );
-
-              // Match names with the pattern "Untitled list" or "Untitled list (n)"
-              const untitledRegex = /^Untitled list(?: \((\d+)\))?$/;
-              const usedNumbers = existingNames
-                .map((name) => {
-                  const match = name.match(untitledRegex);
-                  return match ? parseInt(match[1] || "0", 10) : null;
-                })
-                .filter((num) => num !== null);
-
-              // Determine the smallest available number
-              let nextNumber = 0;
-              while (usedNumbers.includes(nextNumber)) {
-                nextNumber++;
-              }
-
-              // Generate the name based on the smallest available number
-              const newName =
-                nextNumber === 0
-                  ? "Untitled list"
-                  : `Untitled list (${nextNumber})`;
-
-              // Assign the generated name
-              category.category_title = newName;
-
-              // Add the category to the local store
-              state.categoriesList.push(category);
-
-              // Handle offline log mode
-              if (state.offlineLogMode) {
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== category.category_id,
+          try {
+            set(
+              produce((state) => {
+                // Extract existing category names
+                const existingNames = state.categoriesList.map(
+                  (cat) => cat.category_title,
                 );
 
-                state.changeLog.push({
-                  type: "add-category",
-                  id: category.category_id,
-                  category,
-                });
-              }
-            }),
-          );
+                // Match names with the pattern "Untitled list" or "Untitled list (n)"
+                const untitledRegex = /^Untitled list(?: \((\d+)\))?$/;
+                const usedNumbers = existingNames
+                  .map((name) => {
+                    const match = name.match(untitledRegex);
+                    return match ? parseInt(match[1] || "0", 10) : null;
+                  })
+                  .filter((num) => num !== null);
 
-          // Sync with the server if online
-          const onlineStatus = get().conectionStatus.isOnline;
+                // Determine the smallest available number
+                let nextNumber = 0;
+                while (usedNumbers.includes(nextNumber)) {
+                  nextNumber++;
+                }
 
-          if (onlineStatus) await addManyCategories([category]);
+                // Generate the name based on the smallest available number
+                const newName =
+                  nextNumber === 0
+                    ? "Untitled list"
+                    : `Untitled list (${nextNumber})`;
+
+                // Assign the generated name
+                category.category_title = newName;
+
+                // Add the category to the local store
+                state.categoriesList.push(category);
+
+                // Handle offline log mode
+                if (state.offlineLogMode) {
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== category.category_id,
+                  );
+
+                  state.changeLog.push({
+                    type: "add-category",
+                    id: category.category_id,
+                    category,
+                  });
+                }
+              }),
+            );
+
+            // Sync with the server if online
+            const onlineStatus = get().conectionStatus.isOnline;
+
+            if (onlineStatus) await addManyCategoriesAction([category]);
+          } catch (error) {
+            logger.error("Error adding category: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "addCategoryToStore",
+                message: error.message,
+              });
+            });
+          }
         },
 
         // # Delete category
         deleteCategoryFromStore: async (id) => {
-          set(
-            produce((state) => {
-              const category = state.categoriesList.find(
-                (cat) => cat.category_id !== id,
-              );
-
-              // Remove the category from the list
-              state.categoriesList = state.categoriesList.filter(
-                (cat) => cat.category_id !== id,
-              );
-
-              // Remove also the category's relevent tasks from the tasksList
-              state.tasksList = state.tasksList.filter(
-                (task) => task.task_category_id !== id,
-              );
-
-              // Add changes to the offline log if offline mode is enabled
-              if (state.offlineLogMode) {
-                // Remove existing logs related to this category
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== category.category_id,
+          try {
+            set(
+              produce((state) => {
+                const category = state.categoriesList.find(
+                  (cat) => cat.category_id !== id,
                 );
 
-                // Save category deletion log
-                state.changeLog.push({
-                  type: "delete-category",
-                  id: category.category_id,
-                  category,
-                });
-              }
-            }),
-          );
+                // Remove the category from the list
+                state.categoriesList = state.categoriesList.filter(
+                  (cat) => cat.category_id !== id,
+                );
 
-          // Synchronize with the database if online
-          const onlineStatus = get().conectionStatus.isOnline;
+                // Remove also the category's relevent tasks from the tasksList
+                state.tasksList = state.tasksList.filter(
+                  (task) => task.task_category_id !== id,
+                );
 
-          if (onlineStatus) await deleteManyCategories([id]); // NOTE Delete multiple tasks by category only from the store. Tasks in the database will be deleted automatically due to cascading when the category is deleted, so there is no need. Also we dont need to record deleted task in cahnge log.
+                // Add changes to the offline log if offline mode is enabled
+                if (state.offlineLogMode) {
+                  // Remove existing logs related to this category
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== category.category_id,
+                  );
+
+                  // Save category deletion log
+                  state.changeLog.push({
+                    type: "delete-category",
+                    id: category.category_id,
+                    category,
+                  });
+                }
+              }),
+            );
+
+            // Synchronize with the database if online
+            const onlineStatus = get().conectionStatus.isOnline;
+
+            if (onlineStatus) await deleteManyCategoriesAction([id]); // NOTE Delete multiple tasks by category only from the store. Tasks in the database will be deleted automatically due to cascading when the category is deleted, so there is no need. Also we dont need to record deleted task in cahnge log.
+          } catch (error) {
+            logger.error("Error deleting category:", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "deletecategoryFromstore",
+                message: error.message,
+              });
+            });
+          }
         },
 
         // # Update category
         updateCategoryInStore: async (id, updatedFields) => {
-          set(
-            produce((state) => {
-              const category = state.categoriesList.find(
-                (cat) => cat.category_id === id,
-              );
-
-              if (category) {
-                Object.assign(category, updatedFields);
-              }
-
-              if (state.offlineLogMode) {
-                state.changeLog = state.changeLog.filter(
-                  (log) => log.id !== category.category_id,
+          try {
+            set(
+              produce((state) => {
+                const category = state.categoriesList.find(
+                  (cat) => cat.category_id === id,
                 );
 
-                state.changeLog.push({
-                  type: "update-category",
-                  id: category.category_id,
-                  category,
-                });
-              }
-            }),
-          );
+                if (category) {
+                  Object.assign(category, updatedFields);
+                }
 
-          const onlineStatus = get().conectionStatus.isOnline;
-          const category = get().categoriesList.find(
-            (cat) => cat.category_id === id,
-          );
+                if (state.offlineLogMode) {
+                  state.changeLog = state.changeLog.filter(
+                    (log) => log.id !== category.category_id,
+                  );
 
-          if (onlineStatus)
-            await updateManyCategories([category], [category.category_id]);
+                  state.changeLog.push({
+                    type: "update-category",
+                    id: category.category_id,
+                    category,
+                  });
+                }
+              }),
+            );
+
+            const onlineStatus = get().conectionStatus.isOnline;
+            const category = get().categoriesList.find(
+              (cat) => cat.category_id === id,
+            );
+
+            if (onlineStatus)
+              await updateManyCategoriesAction(
+                [category],
+                [category.category_id],
+              );
+          } catch (error) {
+            logger.error("Error updating category: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "updateCategoryInStore",
+                message: error.message,
+              });
+            });
+          }
         },
 
-        //////////////////////////////////////
         /////////////////////////////////////
         //////////// INVITATION /////////////
-        /////////////////////////////////////
         /////////////////////////////////////
 
         // # Create invitation
         createInvitationInStore: async (categoryId) => {
-          const userState = get().userState;
-
           try {
+            const userState = get().userState;
+
             const token = await createInvitationAction(
               categoryId,
               userState.user_id,
@@ -352,19 +446,31 @@ const useTaskStore = create(
 
             return {
               status: true,
-              message: "the invation link has been created",
+              message: "the invitation link has been created",
             }; // this is for some management in "SharedListModal" component
           } catch (error) {
+            logger.error("Error creating invitation: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "createInvitationInStore",
+                message: error.message,
+              });
+            });
+
             return { status: false, message: error.message }; // this is for some management in "SharedListModal" component
-            console.error(error.message);
           }
         },
 
         // # Remove user
         removeUserFromInvitationStore: async (invitationId, userId) => {
-          const owner = get().userState;
-
           try {
+            const owner = get().userState;
+
             await removeUserFromInvitationAction(
               invitationId,
               userId,
@@ -385,23 +491,34 @@ const useTaskStore = create(
               }),
             );
           } catch (error) {
-            console.error(error.message);
+            logger.error("Error removing user from invitation: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "removeUserFromInvitationStore",
+                message: error.message,
+              });
+            });
           }
         },
 
         // # Set access limit
         setInvitationAccessLimitInStore: async (categoryId) => {
-          const owner = get().userState;
-
-          const { invitation_limit_access } = get().invitations.find(
-            (inv) => inv.invitation_category_id === categoryId,
-          );
-
-          const { invitation_id } = get().invitations.find(
-            (inv) => inv.invitation_category_id === categoryId,
-          );
-
           try {
+            const owner = get().userState;
+
+            const { invitation_limit_access } = get().invitations.find(
+              (inv) => inv.invitation_category_id === categoryId,
+            );
+
+            const { invitation_id } = get().invitations.find(
+              (inv) => inv.invitation_category_id === categoryId,
+            );
+
             await setInvitationAccessLimitAction(
               invitation_id,
               owner.user_id,
@@ -420,19 +537,30 @@ const useTaskStore = create(
               }),
             );
           } catch (error) {
-            console.error(error.message);
+            logger.error("Error setting limit access for invitation: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "setInvitationAccessLimitInStore",
+                message: error.message,
+              });
+            });
           }
         },
 
         // # Stop sharing
         stopSharingInvitationInStore: async (categoryId) => {
-          const owner = get().userState;
-
-          const { invitation_id } = get().invitations.find(
-            (inv) => inv.invitation_category_id === categoryId,
-          );
-
           try {
+            const owner = get().userState;
+
+            const { invitation_id } = get().invitations.find(
+              (inv) => inv.invitation_category_id === categoryId,
+            );
+
             await stopSharingInvitationAction(invitation_id, owner.user_id);
 
             set(
@@ -449,7 +577,18 @@ const useTaskStore = create(
               }),
             );
           } catch (error) {
-            console.error(error.message);
+            logger.error("Error stop sharing invitation: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "stopSharingInvitationInStore",
+                message: error.message,
+              });
+            });
           }
         },
 
@@ -473,7 +612,18 @@ const useTaskStore = create(
               }),
             );
           } catch (error) {
-            console.error(error.message);
+            logger.error("Error getting user by invitation id: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "getUsersByInvitationInStore",
+                message: error.message,
+              });
+            });
           }
         },
 
@@ -518,7 +668,19 @@ const useTaskStore = create(
 
             return { status: true, categoryId: category.category_id };
           } catch (error) {
-            console.error(error.message);
+            logger.error("Error joinning to the invitation: ", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "joinInvitationInStore",
+                message: error.message,
+              });
+            });
+
             return { status: false, message: error.message };
           }
         },
@@ -720,37 +882,53 @@ const useTaskStore = create(
 
         // # Fetching tasks from DB and Synchronizing localeStorage with the database
         syncLcWithDb: async () => {
-          const userId = get().userState.user_id;
+          try {
+            const userId = get().userState.user_id;
 
-          if (!userId) return;
+            if (!userId) return;
 
-          // This will get all relevent tasks on every reload (shared + owned)
-          const tasks = await getRelevantTasksAction(userId);
+            // This will get all relevent tasks on every reload (shared + owned)
+            const tasks = await getRelevantTasksAction(userId);
 
-          const categories = await getCategories(userId);
+            const categories = await getCategoriesAction(userId);
 
-          //  Filter out tasks that already exist in the tasksList
-          const newTasks = tasks.filter(
-            (task) => !get().tasksList.some((t) => t.task_id === task.task_id),
-          );
+            //  Filter out tasks that already exist in the tasksList
+            const newTasks = tasks.filter(
+              (task) =>
+                !get().tasksList.some((t) => t.task_id === task.task_id),
+            );
 
-          // Filter out categories that already exist in the categoriesList
-          const newCategories = categories.filter(
-            (category) =>
-              !get().categoriesList.some(
-                (c) => c.category_id === category.category_id,
-              ),
-          );
+            // Filter out categories that already exist in the categoriesList
+            const newCategories = categories.filter(
+              (category) =>
+                !get().categoriesList.some(
+                  (c) => c.category_id === category.category_id,
+                ),
+            );
 
-          set(
-            produce((state) => {
-              //  Add only the new tasks and categories to the lists
-              state.tasksList.push(...newTasks);
-              state.categoriesList.push(...newCategories);
-            }),
-          );
+            set(
+              produce((state) => {
+                //  Add only the new tasks and categories to the lists
+                state.tasksList.push(...newTasks);
+                state.categoriesList.push(...newCategories);
+              }),
+            );
 
-          get().setShowpinnerFalse(); // turn off the spinner after loadind data
+            get().setShowpinnerFalse(); // turn off the spinner after loadind data
+          } catch (error) {
+            logger.error("Error syncing lC with DB:", error);
+
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            set((state) => {
+              state.error = state.error.push({
+                method: "syncLcWithDb",
+                message: error.message,
+              });
+            });
+          }
         },
 
         // # Update health statuses
