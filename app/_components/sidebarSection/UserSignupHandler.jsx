@@ -3,9 +3,9 @@
 import { useUser } from "@clerk/nextjs";
 import { useCallback, useEffect } from "react";
 
-import { createUser, getUser } from "@/app/_lib/data-services";
 import useTaskStore from "@/app/taskStore";
 import { useShallow } from "zustand/react/shallow";
+import { createUserAction, getUserByEmailAction } from "@/app/_lib/Actions";
 
 export default function UserSignupHandler() {
   const { user } = useUser();
@@ -29,11 +29,11 @@ export default function UserSignupHandler() {
 
       const email = user.emailAddresses[0].emailAddress;
 
-      const existingUser = await getUser(email);
+      const existingUser = await getUserByEmailAction(email);
 
       // If the user doesn't exist, create a new user and store their data in the store
       if (!existingUser) {
-        const newUser = await createUser({
+        const newUser = await createUserAction({
           user_fullname: user.fullName,
           user_email: email,
           user_clerk_id: user.id,

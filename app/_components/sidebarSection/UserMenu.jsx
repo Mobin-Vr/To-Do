@@ -76,11 +76,11 @@ function UserMenu({ user, createClerkPasskey, className }) {
                   initial={{
                     opacity: 0,
                     scale: 0.9,
-                    y: -20,
+                    y: "-3.5rem",
                     x: "-50%",
                   }}
-                  animate={{ opacity: 1, scale: 1, y: 0, x: "-50%" }}
-                  exit={{ opacity: 0, scale: 0.9, y: -20, x: "-50%" }}
+                  animate={{ opacity: 1, scale: 1, y: "-3.5rem", x: "-50%" }}
+                  exit={{ opacity: 0, scale: 0.9, y: "-3.5rem", x: "-50%" }}
                   transition={{ duration: 0.2, ease: "easeInOut" }}
                   className="absolute left-1/2 top-14 z-50 w-fit min-w-[17rem] overflow-hidden rounded-2xl bg-white text-xs font-light shadow-2xl"
                 >

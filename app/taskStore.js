@@ -1,26 +1,28 @@
 import { produce } from "immer";
+import toast from "react-hot-toast";
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import {
   addManyCategoriesAction,
   addManyTasksAction,
   createInvitationAction,
   deleteManyCategoriesAction,
   deleteManyTasksAction,
-  getCategoriesAction,
-  getRelevantTasksAction,
-  getUsersByInvitationAction,
+  getInvitationUsersAction,
+  getJoinedInvitationsAction,
+  getOwnerInvitationsAction,
+  getReleventCategoriesAction,
+  getReleventTasksAction,
   joinInvitationAction,
   removeUserFromInvitationAction,
-  setInvitationAccessLimitAction,
+  setInvitationLimitAction,
   stopSharingInvitationAction,
   updateManyCategoriesAction,
   updateManyTasksAction,
 } from "./_lib/Actions";
 import { defaultCategory } from "./_lib/configs";
-import { delay, getDateNowIso } from "./_lib/utils";
 import { logger } from "./_lib/logger";
-import toast from "react-hot-toast";
+import { delay, getDateNowIso } from "./_lib/utils";
 
 const useTaskStore = create(
   devtools(
@@ -99,12 +101,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "addTaskToStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "addTaskToStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -150,12 +163,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "deleteTaskFromStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "deleteTaskFromStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -209,12 +233,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "updateTaskInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "updateTaskInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -285,12 +320,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "addCategoryToStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "addCategoryToStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -341,12 +387,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "deletecategoryFromstore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "deletecategoryFromstore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -394,12 +451,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "updateCategoryInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "updateCategoryInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -417,13 +485,6 @@ const useTaskStore = create(
               userState.user_id,
             );
 
-            const baseUrl =
-              process.env.NODE_ENV === "production"
-                ? `https://${process.env.VERCEL_URL}`
-                : process.env.NEXT_PUBLIC_BASE_URL;
-
-            const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
-
             set(
               produce((state) => {
                 const theCat = state.categoriesList.find(
@@ -438,7 +499,6 @@ const useTaskStore = create(
                   invitation_owner_id: userState.user_id,
                   invitation_limit_access: false,
                   invitation_created_at: new Date().toISOString(),
-                  invitation_link: invitationLink, // This is not in the DB "inavtion" table
                   sharedWith: [], // This is not in the DB "inavtion" table
                 });
               }),
@@ -455,12 +515,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "createInvitationInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "createInvitationInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
 
             return { status: false, message: error.message }; // this is for some management in "SharedListModal" component
           }
@@ -497,12 +568,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "removeUserFromInvitationStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "removeUserFromInvitationStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -519,7 +601,7 @@ const useTaskStore = create(
               (inv) => inv.invitation_category_id === categoryId,
             );
 
-            await setInvitationAccessLimitAction(
+            await setInvitationLimitAction(
               invitation_id,
               owner.user_id,
               !invitation_limit_access,
@@ -543,12 +625,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "setInvitationAccessLimitInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "setInvitationAccessLimitInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -583,12 +676,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "stopSharingInvitationInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "stopSharingInvitationInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -597,7 +701,7 @@ const useTaskStore = create(
           const owner = get().userState;
 
           try {
-            const users = await getUsersByInvitationAction(
+            const users = await getInvitationUsersAction(
               invitationId,
               owner.user_id,
             );
@@ -618,12 +722,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "getUsersByInvitationInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "getUsersByInvitationInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -657,7 +772,6 @@ const useTaskStore = create(
                   invitation_id: invitationId,
                   invitation_category_id: category.category_id,
                   invitation_category_owner_id: category.category_owner_id,
-                  invitation_tasks: tasks,
                 });
 
                 // Add tasks and categories to the store
@@ -674,12 +788,23 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "joinInvitationInStore",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "joinInvitationInStore",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
 
             return { status: false, message: error.message };
           }
@@ -700,9 +825,7 @@ const useTaskStore = create(
         },
 
         /////////////////////////////
-        /////////////////////////////
         //////// Real time /////////
-        /////////////////////////////
         /////////////////////////////
 
         // # Add task to taskslist from realtime db
@@ -833,9 +956,7 @@ const useTaskStore = create(
           ),
 
         //////////////////////////
-        //////////////////////////
         ////// Delete Modal //////
-        //////////////////////////
         //////////////////////////
 
         showDeleteModal: (deletingType, itemName, deleteCallback) => {
@@ -875,34 +996,47 @@ const useTaskStore = create(
         },
 
         //////////////////////////
-        //////////////////////////
         //////// other ///////////
-        //////////////////////////
         //////////////////////////
 
         // # Fetching tasks from DB and Synchronizing localeStorage with the database
-        syncLcWithDb: async () => {
+        fetchDataOnMount: async () => {
           try {
             const userId = get().userState.user_id;
 
             if (!userId) return;
 
             // This will get all relevent tasks on every reload (shared + owned)
-            const tasks = await getRelevantTasksAction(userId);
-
-            const categories = await getCategoriesAction(userId);
+            const fetchedTasks = await getReleventTasksAction(userId);
+            const fetchedCategories = await getReleventCategoriesAction(userId);
+            const fetchedOwnerInvs = await getOwnerInvitationsAction(userId);
+            const fetchedJoinedInvs = await getJoinedInvitationsAction(userId);
 
             //  Filter out tasks that already exist in the tasksList
-            const newTasks = tasks.filter(
+            const newTasks = fetchedTasks.filter(
               (task) =>
                 !get().tasksList.some((t) => t.task_id === task.task_id),
             );
 
             // Filter out categories that already exist in the categoriesList
-            const newCategories = categories.filter(
+            const newCategories = fetchedCategories.filter(
               (category) =>
                 !get().categoriesList.some(
                   (c) => c.category_id === category.category_id,
+                ),
+            );
+
+            const newOwnerInvs = fetchedOwnerInvs.filter(
+              (inv) =>
+                !get().invitations.some(
+                  (i) => i.invitation_id === inv.invitation_id,
+                ),
+            );
+
+            const newJoinedInvs = fetchedJoinedInvs.filter(
+              (inv) =>
+                !get().sharedWithMe.some(
+                  (i) => i.invitation_id === inv.invitation_id,
                 ),
             );
 
@@ -911,23 +1045,36 @@ const useTaskStore = create(
                 //  Add only the new tasks and categories to the lists
                 state.tasksList.push(...newTasks);
                 state.categoriesList.push(...newCategories);
+                state.invitations.push(...newOwnerInvs);
+                state.sharedWithMe.push(...newJoinedInvs);
               }),
             );
 
             get().setShowpinnerFalse(); // turn off the spinner after loadind data
           } catch (error) {
-            logger.error("Error syncing lC with DB:", error);
+            logger.error("Error syncing and getting data from server:", error);
 
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
-            set((state) => {
-              state.error = state.error.push({
-                method: "syncLcWithDb",
-                message: error.message,
-              });
-            });
+            set(
+              produce((state) => {
+                const newError = {
+                  method: "fetchDataOnMount",
+                  message: error.message,
+                };
+
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
           }
         },
 
@@ -968,7 +1115,7 @@ const useTaskStore = create(
           );
         },
 
-        // # Set active task (To show in the EditSidebar)  LATER do we need to this?
+        // # Set active task (To show in the EditSidebar)
         setActiveTask: (task) => {
           set(
             produce((state) => {
@@ -1021,7 +1168,7 @@ const useTaskStore = create(
             }),
           );
 
-          get().syncLcWithDb();
+          get().fetchDataOnMount();
         },
 
         // # Set active task (To show in the EditSidebar)
@@ -1088,7 +1235,7 @@ const useTaskStore = create(
       }),
       {
         name: "Todo Store", // Key name for storage
-        getStorage: () => sessionStorage, // Use localStorage for persisting the data
+        storage: createJSONStorage(() => sessionStorage), // Use localStorage for persisting the data
       },
     ),
     { name: "Todo Store" }, // Redux DevTools name

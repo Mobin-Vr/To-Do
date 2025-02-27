@@ -41,11 +41,32 @@ export default function ModalTemplatePrimary({
   // Define variants with translate-x on large screens
   const modalVariantsWithTranslate = {
     ...modalVariants,
+
+    hidden: {
+      ...modalVariants.hidden,
+      x:
+        isCenteredModal && window.innerWidth >= 768
+          ? justify
+          : isCenteredModal
+            ? "0"
+            : justify,
+    },
+
     visible: {
       ...modalVariants.visible,
       x:
         isCenteredModal && window.innerWidth >= 768
           ? "10rem" // Half of the max-width of the sidebar
+          : isCenteredModal
+            ? "0"
+            : justify,
+    },
+
+    exit: {
+      ...modalVariants.exit,
+      x:
+        isCenteredModal && window.innerWidth >= 768
+          ? justify
           : isCenteredModal
             ? "0"
             : justify,

@@ -4,9 +4,9 @@ import { useEffect } from "react";
 import { supabase } from "../_lib/supabase";
 import useTaskStore from "../taskStore";
 import { useShallow } from "zustand/react/shallow";
-import { getCategoryInvId, getUserById } from "../_lib/data-services";
 import { defaultCategoryId } from "../_lib/configs";
 import { redirect } from "next/navigation";
+import { getCategoryInvIdAction, getUserByIdAction } from "../_lib/Actions";
 
 export default function TaskRealTimeListener() {
   const {
@@ -65,7 +65,9 @@ export default function TaskRealTimeListener() {
 
           if (payload.new.task_category_id === defaultCategoryId) return;
 
-          const invId = await getCategoryInvId(payload.new.task_category_id);
+          const invId = await getCategoryInvIdAction(
+            payload.new.task_category_id,
+          );
 
           const isRelevant = relevantInvitationIds.includes(
             invId?.invitation_id,
@@ -86,7 +88,9 @@ export default function TaskRealTimeListener() {
           if (!isShared) return; // If not shared, it means we received the change that we made ourselves.
           if (payload.new.task_category_id === defaultCategoryId) return;
 
-          const invId = await getCategoryInvId(payload.new.task_category_id);
+          const invId = await getCategoryInvIdAction(
+            payload.new.task_category_id,
+          );
 
           const isRelevant = relevantInvitationIds.includes(
             invId.invitation_id,
@@ -108,7 +112,9 @@ export default function TaskRealTimeListener() {
 
           if (payload.old.task_category_id === defaultCategoryId) return;
 
-          const invId = await getCategoryInvId(payload.old.task_category_id);
+          const invId = await getCategoryInvIdAction(
+            payload.old.task_category_id,
+          );
 
           const isRelevant = relevantInvitationIds.includes(
             invId.invitation_id,
@@ -136,7 +142,7 @@ export default function TaskRealTimeListener() {
           if (!isOwner) return;
 
           // Fetch user info related to the new collaborator
-          const user = await getUserById(userId);
+          const user = await getUserByIdAction(userId);
 
           if (!user) return;
 

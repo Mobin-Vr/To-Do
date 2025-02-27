@@ -3,24 +3,24 @@
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
-  addManyCategories,
-  addManyTasks,
-  deleteManyCategories,
-  deleteManyTasks,
-  updateManyCategories,
-  updateManyTasks,
-} from "../_lib/data-services";
+  addManyCategoriesAction,
+  addManyTasksAction,
+  deleteManyCategoriesAction,
+  deleteManyTasksAction,
+  updateManyCategoriesAction,
+  updateManyTasksAction,
+} from "../_lib/Actions";
 import { checkDatabaseHealth } from "../_lib/healthCheck";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
 
 export default function HealthStatusSync() {
+  const showToast = useCustomToast();
+
   const [isConnected, setIsConnected] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
   const [lastOnline, setLastOnline] = useState(null);
-
-  const showToast = useCustomToast();
 
   const {
     updateConnectionStatus,
@@ -29,7 +29,7 @@ export default function HealthStatusSync() {
     clearLog,
     isSyncing,
     toggleIsSyncing,
-    syncLcWithDb,
+
     getConectionStatus,
   } = useTaskStore(
     useShallow((state) => ({
@@ -39,7 +39,6 @@ export default function HealthStatusSync() {
       clearLog: state.clearLog,
       isSyncing: state.isSyncing,
       toggleIsSyncing: state.toggleIsSyncing,
-      syncLcWithDb: state.syncLcWithDb,
       getConectionStatus: state.getConectionStatus,
     })),
   );
@@ -51,12 +50,7 @@ export default function HealthStatusSync() {
   // Sync local changes (changeLog) with the database
   const syncData = useCallback(async () => {
     if (isSyncing) return; // Exit if already syncing
-
-    // If there is no log first get the data from cloud and replace that data in lc and then EXIT
-    if (!changeLog.length) {
-      await syncLcWithDb();
-      return;
-    }
+    if (!changeLog.length) return; // Exit if there is no log
 
     toggleIsSyncing(true); // Mark syncing as in progress
 
@@ -88,26 +82,27 @@ export default function HealthStatusSync() {
     // Perform database operations
     try {
       // Manage tasks
-      if (addTasks.length) await addManyTasks(addTasks);
+      if (addTasks.length) await addManyTasksAction(addTasks);
 
       if (updateTasks.length)
-        await updateManyTasks(
+        await updateManyTasksAction(
           updateTasks,
           updateTasks.map((task) => task.id),
         );
 
-      if (deleteTasks.length) await deleteManyTasks(deleteTasks);
+      if (deleteTasks.length) await deleteManyTasksAction(deleteTasks);
 
       // Manage categories
-      if (addCategories.length) await addManyCategories(addCategories);
+      if (addCategories.length) await addManyCategoriesAction(addCategories);
 
       if (updateTasks.length)
-        await updateManyCategories(
+        await updateManyCategoriesAction(
           updateCategories,
           updateCategories.map((cat) => cat.id),
         );
 
-      if (deleteCategories.length) await deleteManyCategories(deleteCategories);
+      if (deleteCategories.length)
+        await deleteManyCategoriesAction(deleteCategories);
 
       clearLog(); // Clear the change log after successful sync
     } catch (error) {

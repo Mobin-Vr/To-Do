@@ -33,6 +33,8 @@ export const RELEVENT_APP_PAGES = [
   "profile",
   "slug",
 ];
+
+export const DONT_SHOW_SPINNER_IN_THIS_PAGES = ["/", "/login", "/tasks/invite"];
 ///////////////////////////////////////////////////////////
 //////////////////   Route background   ///////////////////
 //////////////////    color settings    ///////////////////

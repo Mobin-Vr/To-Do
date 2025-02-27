@@ -235,3 +235,14 @@ export function checkIfTomorrow(date) {
 export function hasDatePassed(dateString) {
   return isPast(new Date(dateString));
 }
+
+export function getInvitationLink(token) {
+  const baseUrl =
+    process.env.NODE_ENV === "production"
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_BASE_URL;
+
+  const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
+
+  return invitationLink;
+}

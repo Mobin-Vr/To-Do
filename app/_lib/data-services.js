@@ -1,23 +1,22 @@
 import { supabase } from "./supabase";
 
 //////////////////////////////////
-//// User Actions ////////////////
+//// User ////////////////////////
 //////////////////////////////////
 
+// Creates a new user in the "users" table
 export async function createUser(newUser) {
   const { data, error } = await supabase
     .from("users")
     .insert([newUser])
     .select();
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
+// Retrieves a user by their unique ID
 export async function getUserById(userId) {
   const { data, error } = await supabase
     .from("users")
@@ -25,15 +24,13 @@ export async function getUserById(userId) {
     .eq("user_id", userId)
     .single();
 
-  if (error) {
-    console.error("Database Error", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
-export async function getUser(userEmail) {
+// Retrieves a user by their email address
+export async function getUserByEmail(userEmail) {
   const { data } = await supabase
     .from("users")
     .select("*")
@@ -44,23 +41,91 @@ export async function getUser(userEmail) {
 }
 
 //////////////////////////////////
-//// Categories Actions //////////
+//// Tasks ///////////////////////
 //////////////////////////////////
 
-export async function getCategories(userId) {
+// Adds multiple tasks to the "tasks" table
+export async function addManyTasks(tasksArr) {
+  const { error } = await supabase.from("tasks").insert(tasksArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Deletes multiple tasks by their IDs
+export async function deleteManyTasks(tasksIdsArr) {
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .in("task_id", tasksIdsArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Updates multiple tasks based on their IDs
+export async function updateManyTasks(tasksArr, tasksIdsArr) {
+  const { error } = await supabase
+    .from("tasks")
+    .update(tasksArr)
+    .in("task_id", tasksIdsArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Retrieves all relevant tasks for a user (owned + shared)
+export async function getReleventTasks(userId) {
+  const { data, error } = await supabase.rpc("get_relevent_tasks", {
+    param_user_id: userId,
+  });
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+
+  return data;
+}
+
+//////////////////////////////////
+//// Categories //////////////////
+//////////////////////////////////
+
+// Adds multiple categories to the "categories" table
+export async function addManyCategories(categoriesArr) {
+  const { error } = await supabase.from("categories").insert(categoriesArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Deletes multiple categories by their IDs
+export async function deleteManyCategories(categoryIdsArr) {
+  const { error } = await supabase
+    .from("categories")
+    .delete()
+    .in("category_id", categoryIdsArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Updates multiple categories based on their IDs
+export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
+  const { error } = await supabase
+    .from("categories")
+    .update(categoriesArr)
+    .in("category_id", categoriesIdsArr);
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Retrieves all categories owned by a specific user
+export async function getReleventCategories(userId) {
   const { data, error } = await supabase
     .from("categories")
     .select("*")
     .eq("category_owner_id", userId);
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
+// Retrieves the invitation ID for a given category
 export async function getCategoryInvId(categoryId) {
   const { data, error } = await supabase
     .from("invitations")
@@ -68,231 +133,110 @@ export async function getCategoryInvId(categoryId) {
     .eq("invitation_category_id", categoryId)
     .single();
 
-  if (error) {
-    console.error("Database Error", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
 //////////////////////////////////
-//// Tasks Actions ///////////////
+//// Invitation (RPC) ////////////
 //////////////////////////////////
 
-export async function addManyTasks(tasksArr) {
-  const { error } = await supabase.from("tasks").insert(tasksArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-export async function deleteManyTasks(tasksIdsArr) {
-  const { error } = await supabase
-    .from("tasks")
-    .delete()
-    .in("task_id", tasksIdsArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-export async function updateManyTasks(tasksArr, tasksIdsArr) {
-  const { error } = await supabase
-    .from("tasks")
-    .update(tasksArr)
-    .in("task_id", tasksIdsArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-//////////////////////////////////
-//// Categories Actions //////////
-//////////////////////////////////
-
-export async function addManyCategories(categoriesArr) {
-  const { error } = await supabase.from("categories").insert(categoriesArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-export async function deleteManyCategories(categoryIdsArr) {
-  const { error } = await supabase
-    .from("categories")
-    .delete()
-    .in("category_id", categoryIdsArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
-  const { error } = await supabase
-    .from("categories")
-    .update(categoriesArr)
-    .in("category_id", categoriesIdsArr);
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-//////////////////////////////////
-//// Invitation Actions (RPC) ////
-//////////////////////////////////
-
+// Creates a new invitation for a category
 export async function createInvitation(categoryId, ownerId) {
-  const { error } = await supabase.rpc("create_invitation", {
+  const { data, error } = await supabase.rpc("invitation_create", {
     param_category_id: categoryId,
     param_owner_id: ownerId,
   });
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
-  return true;
+  return data;
 }
 
+// Allows a user to join an invitation
+export async function joinInvitation(invitationId, userId) {
+  const { data, error } = await supabase.rpc("invitation_join", {
+    param_invitation_id: invitationId,
+    param_user_id: userId,
+  });
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+
+  return data;
+}
+
+// Allows a user to leave an invitation
 export async function leaveInvitation(invitationId, userId) {
-  const { error } = await supabase.rpc("leave_invitation", {
+  const { error } = await supabase.rpc("invitation_leave", {
     param_invitation_id: invitationId,
     param_user_id: userId,
   });
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-export async function removeUserFromInvitation(invitationId, userId, ownerId) {
-  const { error } = await supabase.rpc("remove_user_from_invitation", {
-    param_invitation_id: invitationId,
-    param_user_id: userId,
-    param_owner_id: ownerId,
-  });
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
-}
-
-export async function setInvitationAccessLimit(
-  invitationId,
-  limitAccess,
-  ownerId,
-) {
-  const { error } = await supabase.rpc("set_invitation_access_limit", {
+// Sets the access limit for an invitation
+export async function setInvitationLimit(invitationId, ownerId, limitAccess) {
+  const { error } = await supabase.rpc("invitation_set_limit", {
     param_invitation_id: invitationId,
     param_invitation_owner_id: ownerId,
     param_limit_access: limitAccess,
   });
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-export async function getUsersByInvitation(invitationId, ownerId) {
-  const { data, error } = await supabase.rpc("get_users_by_invitation", {
-    param_invitation_id: invitationId,
-    param_owner_id: ownerId,
-  });
-
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return data;
-}
-
+// Stops sharing an invitation
 export async function stopSharingInvitation(invitationId, ownerId) {
-  const { error } = await supabase.rpc("stop_sharing_invitation", {
+  const { error } = await supabase.rpc("invitation_stop_sharing", {
     param_invitation_id: invitationId,
     param_invitation_owner_id: ownerId,
   });
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
-
-  return true;
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-export async function joinInvitation(invitationId, userId) {
-  const { data, error } = await supabase.rpc("join_invitation", {
+// Removes a specific user from an invitation
+export async function removeUserFromInvitation(invitationId, userId, ownerId) {
+  const { error } = await supabase.rpc("invitation_remove_user", {
     param_invitation_id: invitationId,
     param_user_id: userId,
+    param_owner_id: ownerId,
   });
 
-  if (error) {
-    console.error("Error:", error.message);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
+}
+
+// Retrieves the list of users in an invitation
+export async function getInvitationUsers(invitationId, ownerId) {
+  const { data, error } = await supabase.rpc("get_invitation_users", {
+    param_invitation_id: invitationId,
+    param_owner_id: ownerId,
+  });
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
-export async function getTasksByInvitation(invitationId, userId) {
-  const { data, error } = await supabase.rpc("retrieve_tasks_by_invitation", {
-    param_invitation_id: invitationId,
+// Retrieves all invitations owned by a user
+export async function getOwnerInvitations(userId) {
+  const { data, error } = await supabase.rpc("get_owner_invitations", {
     param_user_id: userId,
   });
 
-  if (error) {
-    console.error("Database Error: ", error);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }
 
-export async function getRelevantTasks(userId) {
-  const { data, error } = await supabase.rpc("get_shared_tasks_by_user_id", {
+// Retrieves all invitations a user has joined
+export async function getJoinedInvitations(userId) {
+  const { data, error } = await supabase.rpc("get_joined_invitations", {
     param_user_id: userId,
   });
 
-  if (error) {
-    console.error("Error:", error.message);
-    throw error;
-  }
+  if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
 }

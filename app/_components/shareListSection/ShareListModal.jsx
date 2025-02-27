@@ -7,6 +7,7 @@ import InitialView from "./InitialView";
 import LinkCreatedView from "./LinkCreatedView";
 import MoreOptionsView from "./MoreOptionsView";
 import ManageMembers from "./ManageMembers";
+import { getInvitationLink } from "@/app/_lib/utils";
 
 export default function SharedListModal({ toggleModal, theCategoryId }) {
   const showToast = useCustomToast();
@@ -21,10 +22,6 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
     })),
   );
 
-  const link =
-    invitations.find((inv) => inv.invitation_category_id === theCategoryId)
-      ?.invitation_link || "";
-
   const invitationUsers = invitations.find(
     (inv) => inv.invitation_category_id === theCategoryId,
   )?.sharedWith;
@@ -32,6 +29,8 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
   const invitationId =
     invitations.find((inv) => inv.invitation_category_id === theCategoryId)
       ?.invitation_id || null;
+
+  const link = invitationId ? getInvitationLink(invitationId) : "";
 
   const [currentView, setCurrentView] = useState(
     link ? "linkCreated" : "initial",
