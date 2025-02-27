@@ -10,11 +10,11 @@ export default function CategoryItem({ category, toggleSidebar }) {
     })),
   );
 
-  const hasCollab = invitations.includes(
-    (invitation) => invitation.invitation_category_id === category.category_id,
-  );
+  const hasCollab = category.has_category_collaborator
+  console.log(hasCollab)
 
-  return (
+  
+  return(
     <SidebarLink
       href={`/tasks/${category.category_id}`}
       title={category.category_title}
@@ -25,6 +25,6 @@ export default function CategoryItem({ category, toggleSidebar }) {
       <span className="text-blue-600">
         <ListIcon />
       </span>
-    </SidebarLink>
+    </SidebarLink>,
   );
 }

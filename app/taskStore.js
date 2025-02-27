@@ -498,7 +498,6 @@ const useTaskStore = create(
                   invitation_category_id: categoryId,
                   invitation_owner_id: userState.user_id,
                   invitation_limit_access: false,
-                  invitation_created_at: new Date().toISOString(),
                   sharedWith: [], // This is not in the DB "inavtion" table
                 });
               }),
@@ -845,11 +844,11 @@ const useTaskStore = create(
         updateTaskFromRealtime: (updatedTask) => {
           set(
             produce((state) => {
-              const taskIndex = state.tasksList.findIndex(
+              const existedTask = state.tasksList.find(
                 (item) => item.task_id === updatedTask.task_id,
               );
 
-              if (taskIndex !== -1) state.tasksList[taskIndex] = updatedTask;
+              if (existedTask) Object.assign(existedTask, updatedTask);
             }),
           );
         },
@@ -999,61 +998,123 @@ const useTaskStore = create(
         //////// other ///////////
         //////////////////////////
 
-        // # Fetching tasks from DB and Synchronizing localeStorage with the database
+        // # Fetching tasks from DB and Synchronizing sessionStorage with the database
         fetchDataOnMount: async () => {
           try {
             const userId = get().userState.user_id;
 
             if (!userId) return;
 
-            // This will get all relevent tasks on every reload (shared + owned)
+            // Fetch all relevant tasks, categories, and invitations (shared + owned)
             const fetchedTasks = await getReleventTasksAction(userId);
             const fetchedCategories = await getReleventCategoriesAction(userId);
             const fetchedOwnerInvs = await getOwnerInvitationsAction(userId);
             const fetchedJoinedInvs = await getJoinedInvitationsAction(userId);
 
-            //  Filter out tasks that already exist in the tasksList
-            const newTasks = fetchedTasks.filter(
-              (task) =>
-                !get().tasksList.some((t) => t.task_id === task.task_id),
+            // Remove duplicate tasks based on task_id
+            // eslint-disable-next-line no-undef
+            const seenTaskIds = new Set();
+            const uniqueTasks = fetchedTasks.filter((task) => {
+              if (!seenTaskIds.has(task.task_id)) {
+                seenTaskIds.add(task.task_id);
+                return true;
+              }
+              return false;
+            });
+
+            // Remove duplicate categories based on category_id
+            // eslint-disable-next-line no-undef
+            const seenCategoryIds = new Set();
+            const uniqueCategories = fetchedCategories.filter((category) => {
+              if (!seenCategoryIds.has(category.category_id)) {
+                seenCategoryIds.add(category.category_id);
+                return true;
+              }
+              return false;
+            });
+
+            // Remove duplicate owner invitations based on invitation_id
+            // eslint-disable-next-line no-undef
+            const seenOwnerInvIds = new Set();
+            const uniqueOwnerInvs = fetchedOwnerInvs.filter((inv) => {
+              if (!seenOwnerInvIds.has(inv.invitation_id)) {
+                seenOwnerInvIds.add(inv.invitation_id);
+                return true;
+              }
+              return false;
+            });
+
+            // Remove duplicate joined invitations based on invitation_id
+            // eslint-disable-next-line no-undef
+            const seenJoinedInvIds = new Set();
+            const uniqueJoinedInvs = fetchedJoinedInvs.filter((inv) => {
+              if (!seenJoinedInvIds.has(inv.invitation_id)) {
+                seenJoinedInvIds.add(inv.invitation_id);
+                return true;
+              }
+              return false;
+            });
+
+            //  Filter out tasks that already exist in the tasksList (no duplicates)
+            const nonDuplicateTasks = get().tasksList.filter(
+              (task) => !uniqueTasks.some((t) => t.task_id === task.task_id),
             );
 
-            // Filter out categories that already exist in the categoriesList
-            const newCategories = fetchedCategories.filter(
+            // Filter out categories that already exist in the categoriesList (no duplicates)
+            const nonDuplicateCategories = get().categoriesList.filter(
               (category) =>
-                !get().categoriesList.some(
+                !uniqueCategories.some(
                   (c) => c.category_id === category.category_id,
                 ),
             );
 
-            const newOwnerInvs = fetchedOwnerInvs.filter(
+            // Filter out owner invitations that already exist in the invitations list (no duplicates)
+            const nonDuplicateOwnerInvs = get().invitations.filter(
               (inv) =>
-                !get().invitations.some(
+                !uniqueOwnerInvs.some(
                   (i) => i.invitation_id === inv.invitation_id,
                 ),
             );
 
-            const newJoinedInvs = fetchedJoinedInvs.filter(
+            // Filter out joined invitations that already exist in the sharedWithMe list (no duplicates)
+            const nonDuplicateJoinedInvs = get().sharedWithMe.filter(
               (inv) =>
-                !get().sharedWithMe.some(
+                !uniqueJoinedInvs.some(
                   (i) => i.invitation_id === inv.invitation_id,
                 ),
             );
 
+            console.log("Unique Tasks:", uniqueTasks);
+            console.log("Unique Categories:", uniqueCategories);
+            console.log("Unique Owner Invitations:", uniqueOwnerInvs);
+            console.log("Unique Joined Invitations:", uniqueJoinedInvs);
+
+            // Update state with non-duplicate tasks, categories, and invitations
             set(
               produce((state) => {
-                //  Add only the new tasks and categories to the lists
-                state.tasksList.push(...newTasks);
-                state.categoriesList.push(...newCategories);
-                state.invitations.push(...newOwnerInvs);
-                state.sharedWithMe.push(...newJoinedInvs);
+                // Add non-duplicate tasks, categories, owner invitations, and joined invitations
+                state.tasksList = [...nonDuplicateTasks, ...uniqueTasks];
+                state.categoriesList = [
+                  ...nonDuplicateCategories,
+                  ...uniqueCategories,
+                ];
+                state.invitations = [
+                  ...nonDuplicateOwnerInvs,
+                  ...uniqueOwnerInvs,
+                ];
+                state.sharedWithMe = [
+                  ...nonDuplicateJoinedInvs,
+                  ...uniqueJoinedInvs,
+                ];
               }),
             );
 
-            get().setShowpinnerFalse(); // turn off the spinner after loadind data
+            // Turn off the loading spinner once data has finished loading
+            get().setShowpinnerFalse();
           } catch (error) {
             logger.error("Error syncing and getting data from server:", error);
 
+            // Show a toast error message when the data synchronization fails
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
@@ -1065,13 +1126,14 @@ const useTaskStore = create(
                   message: error.message,
                 };
 
-                // Check if the exact error object already exists
+                // Check if the exact error object already exists in the error log
                 const isDuplicate = state.errorLog.some(
                   (err) =>
                     err.method === newError.method &&
                     err.message === newError.message,
                 );
 
+                // Add the error if it doesn't already exist in the error log
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );

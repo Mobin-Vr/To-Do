@@ -6,9 +6,13 @@ export default function CategoriesList({ categoriesList, toggleSidebar }) {
     (cat) => cat.category_id !== defaultCategoryId,
   );
 
+  const sortedListByDate = list.sort(
+    (a, b) => new Date(a.category_created_at) - new Date(b.category_created_at),
+  );
+
   return (
     <ul className="flex flex-col gap-1 pt-2">
-      {list.map((cat) => (
+      {sortedListByDate.map((cat) => (
         <CategoryItem
           key={cat.category_id}
           category={cat}

@@ -113,12 +113,11 @@ export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
   if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Retrieves all categories owned by a specific user
+// Retrieves all categories owned by a specific user + shred with
 export async function getReleventCategories(userId) {
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .eq("category_owner_id", userId);
+  const { data, error } = await supabase.rpc("get_relevent_categories", {
+    param_user_id: userId,
+  });
 
   if (error) throw new Error(error.message || JSON.stringify(error));
 
