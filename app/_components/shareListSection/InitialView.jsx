@@ -35,7 +35,7 @@ export default function InitialView({ onCreateLink, toggleModal, isPending }) {
               className="mb-3 flex h-[1.875rem] w-full justify-around text-sm font-thin"
             >
               {isPending && (
-                <span className="max-auto">
+                <span>
                   <SpinnerMini />
                 </span>
               )}

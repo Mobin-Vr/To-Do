@@ -10,6 +10,9 @@ import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
 import Sidebar from "./_components/sidebarSection/Sidebar";
 import EditSidebar from "./_components/editSidebarSection/EditSidebar";
 import Spinner from "./_components/_ui/Spinner";
+import UnsavedChangesWarning from "./_components/UnsavedChangesWarning";
+import { SignedOut } from "@clerk/nextjs";
+import ResetTaskStore from "./_components/ResetTaskStore";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -52,6 +55,9 @@ export default async function RootLayout({ children }) {
             {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}
             <HealthStatusSync />
 
+            {/* Warns the user before leaving the page if there are unsaved changes */}
+            <UnsavedChangesWarning />
+
             {/* This component handles checking and creating a new user in the database upon sign-in */}
             <UserSignupHandler />
 
@@ -66,6 +72,11 @@ export default async function RootLayout({ children }) {
             {/* Absolute Editsidebar */}
             <EditSidebar />
           </SignedIn>
+
+          <SignedOut>
+            {/* Reset task store after sign out */}
+            <ResetTaskStore />
+          </SignedOut>
 
           <main className="h-full overflow-y-hidden sm:flex-1">
             <Spinner variant="transparent" bgColorRoute="tasks" />

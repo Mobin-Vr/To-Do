@@ -13,6 +13,7 @@ export default function AddRepeatModal({
   taskDueDate,
   taskRepeat,
   setTaskDueDate,
+  selectedRepeat,
   updateTaskInStore,
   setTaskRepeat,
   isForTaskInput = false,
@@ -43,6 +44,7 @@ export default function AddRepeatModal({
         label="Daily"
         time={null}
         onClick={() => handleSelect("Daily")}
+        className={`${selectedRepeat === "Daily" ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`}
       />
 
       <ModalActionButton
@@ -50,6 +52,7 @@ export default function AddRepeatModal({
         label="Weekdays"
         time={null}
         onClick={() => handleSelect("Weekdays")}
+        className={`${selectedRepeat === "Weekdays" ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`}
       />
 
       <ModalActionButton
@@ -57,6 +60,7 @@ export default function AddRepeatModal({
         label="Weekly"
         time={null}
         onClick={() => handleSelect("Weekly")}
+        className={`${selectedRepeat === "Weekly" ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`}
       />
 
       <ModalActionButton
@@ -64,6 +68,7 @@ export default function AddRepeatModal({
         label="Monthly"
         time={null}
         onClick={() => handleSelect("Monthly")}
+        className={`${selectedRepeat === "Monthly" ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`}
       />
 
       <ModalActionButton
@@ -71,6 +76,7 @@ export default function AddRepeatModal({
         label="Yearly"
         time={null}
         onClick={() => handleSelect("Yearly")}
+        className={`${selectedRepeat === "Yearly" ? "bg-gray-900 text-white hover:bg-gray-900" : ""}`}
       />
     </>
   );

@@ -1,20 +1,10 @@
 import { ListIcon } from "@/public/icons/icons";
 import SidebarLink from "./SidebarLink";
-import useTaskStore from "@/app/taskStore";
-import { useShallow } from "zustand/react/shallow";
 
 export default function CategoryItem({ category, toggleSidebar }) {
-  const { invitations } = useTaskStore(
-    useShallow((state) => ({
-      invitations: state.invitations,
-    })),
-  );
+  const hasCollab = category.has_category_collaborator;
 
-  const hasCollab = category.has_category_collaborator
-  console.log(hasCollab)
-
-  
-  return(
+  return (
     <SidebarLink
       href={`/tasks/${category.category_id}`}
       title={category.category_title}
@@ -25,6 +15,6 @@ export default function CategoryItem({ category, toggleSidebar }) {
       <span className="text-blue-600">
         <ListIcon />
       </span>
-    </SidebarLink>,
+    </SidebarLink>
   );
 }

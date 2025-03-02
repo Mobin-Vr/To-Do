@@ -34,7 +34,11 @@ export const RELEVENT_APP_PAGES = [
   "slug",
 ];
 
-export const DONT_SHOW_SPINNER_IN_THIS_PAGES = ["/", "/login", "/tasks/invite"];
+export const DONT_SHOW_SPINNER_IN_THIS_PAGES = [
+  "/",
+  "/log-in",
+  "/tasks/invite",
+];
 ///////////////////////////////////////////////////////////
 //////////////////   Route background   ///////////////////
 //////////////////    color settings    ///////////////////

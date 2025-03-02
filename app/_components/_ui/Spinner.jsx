@@ -3,6 +3,7 @@
 import { BG_COLORS, DONT_SHOW_SPINNER_IN_THIS_PAGES } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { validate } from "uuid";
 import { useShallow } from "zustand/react/shallow";
 
@@ -11,12 +12,27 @@ export default function Spinner({
   variant = "default",
 }) {
   const pathname = usePathname();
-
+  const [bgColor, setBgColor] = useState(null); // State to store the background color
+  const [isClient, setIsClient] = useState(false); // Track if the component is rendered on the client side
   const { showSpinner } = useTaskStore(
     useShallow((state) => ({
       showSpinner: state.showSpinner,
     })),
   );
+
+  // This ensures the background color is calculated on the client side after mount to prevent hydratation error
+  useEffect(() => {
+    const pageName = pathname.split("/").at(-1);
+    const isUUID = validate(pageName);
+    setBgColor(
+      BG_COLORS[isUUID ? "/slug" : `/${pageName}`] ||
+        BG_COLORS[`/${bgColorRoute}`],
+    );
+    setIsClient(true); // Mark the component as client-side rendered
+  }, [pathname, bgColorRoute]);
+
+  // Wait until the component is rendered on the client side
+  if (!isClient || !bgColor) return null;
 
   // Always render the default spinner unless variant="transparent" is explicitly set
   const shouldRenderDefault = variant !== "transparent";
@@ -29,13 +45,6 @@ export default function Spinner({
   ) {
     return null;
   }
-
-  const pageName = pathname.split("/").at(-1);
-
-  const isUUID = validate(pageName);
-  const bgColor =
-    BG_COLORS[isUUID ? "/slug" : `/${pageName}`] ||
-    BG_COLORS[`/${bgColorRoute}`];
 
   const ballStyle = { backgroundColor: bgColor.primaryText };
 

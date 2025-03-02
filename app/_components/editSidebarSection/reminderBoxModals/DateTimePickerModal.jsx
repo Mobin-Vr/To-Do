@@ -6,16 +6,24 @@ import DatePicker from "../../_ui/DatePicker";
 import TimePicker from "../../_ui/TimePicker";
 
 export default function DateTimePickerModal({
+  task,
   updateTaskInStore,
   toggleModal,
   setTaskReminder,
-  task,
+  InputSelectedDate,
   isForTaskInput = false,
 }) {
-  const d = task?.task_reminder ? new Date(task.task_reminder) : new Date();
-  const t = task?.task_reminder
-    ? getHourMinString(new Date(task.task_reminder))
-    : getHourMinString(new Date());
+  const d = task
+    ? task.task_reminder
+      ? new Date(task.task_reminder)
+      : ""
+    : new Date(InputSelectedDate);
+
+  const t = task
+    ? task.task_reminder
+      ? getHourMinString(new Date(task.task_reminder))
+      : getHourMinString(new Date())
+    : getHourMinString(new Date(InputSelectedDate));
 
   const timeInputRef = useRef(null);
   const [date, setDate] = useState(d);

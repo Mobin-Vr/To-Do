@@ -6,6 +6,7 @@ import AddRepeatModal from "../editSidebarSection/reminderBoxModals/AddRepeatMod
 
 export default function InputAddRepeat({
   setTaskRepeat,
+  selectedRepeat,
   setTaskDueDate,
   taskDueDate,
   taskRepeat,
@@ -28,11 +29,12 @@ export default function InputAddRepeat({
         parentRef={AddRepeatRef}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
-        className="bottom-[3rem] right-0 w-44 border border-gray-300 text-xs font-normal shadow-black"
+        className="bottom-[3rem] right-0 w-48 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddRepeatModal
           setTaskDueDate={setTaskDueDate}
           setTaskRepeat={setTaskRepeat}
+          selectedRepeat={selectedRepeat}
           isForTaskInput={true}
           taskDueDate={taskDueDate}
           taskRepeat={taskRepeat}

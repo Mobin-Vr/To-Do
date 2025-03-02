@@ -1,17 +1,14 @@
-import useCustomToast from "@/app/_lib/useCustomeToast";
+import { getInvitationLink } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useTransition } from "react";
 import { useShallow } from "zustand/react/shallow";
 import InitialView from "./InitialView";
 import LinkCreatedView from "./LinkCreatedView";
-import MoreOptionsView from "./MoreOptionsView";
 import ManageMembers from "./ManageMembers";
-import { getInvitationLink } from "@/app/_lib/utils";
+import MoreOptionsView from "./MoreOptionsView";
 
 export default function SharedListModal({ toggleModal, theCategoryId }) {
-  const showToast = useCustomToast();
-
   const [isPending, startTransition] = useTransition();
   const [direction, setDirection] = useState(1); // 1: forward, -1: backward
 
@@ -39,12 +36,9 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
   // Handlers for navigation
   function handleCreateLink() {
     startTransition(async () => {
-      const wasSuccessful = await createInvitationInStore(theCategoryId);
+      const res = await createInvitationInStore(theCategoryId);
 
-      if (wasSuccessful.status) setCurrentView("linkCreated");
-
-      if (!wasSuccessful.status)
-        showToast(`${wasSuccessful.message}. Tray again later!`);
+      if (res === true) setCurrentView("linkCreated");
     });
   }
 

@@ -2,13 +2,13 @@
 
 import {
   addManyCategories,
+  addManyErrorLog,
   addManyTasks,
   createInvitation,
   createUser,
   deleteManyCategories,
   deleteManyTasks,
   getCategoryInvId,
-  getInvitationUsers,
   getJoinedInvitations,
   getOwnerInvitations,
   getReleventCategories,
@@ -142,11 +142,6 @@ export async function removeUserFromInvitationAction(
   return await removeUserFromInvitation(invitationId, userId, ownerId);
 }
 
-// Retrieves the list of users in an invitation
-export async function getInvitationUsersAction(invitationId, ownerId) {
-  return await getInvitationUsers(invitationId, ownerId);
-}
-
 // Retrieves invitations created by a specific user
 export async function getOwnerInvitationsAction(userId) {
   return await getOwnerInvitations(userId);
@@ -155,4 +150,13 @@ export async function getOwnerInvitationsAction(userId) {
 // Retrieves invitations that a user has joined
 export async function getJoinedInvitationsAction(userId) {
   return await getJoinedInvitations(userId);
+}
+
+//////////////////////////////////
+//// Errors //////////////////////
+//////////////////////////////////
+
+// Adds a new error log entry to the "errors_log" table
+export async function addManyErrorLogAction(errorLogArr) {
+  return await addManyErrorLog(errorLogArr);
 }

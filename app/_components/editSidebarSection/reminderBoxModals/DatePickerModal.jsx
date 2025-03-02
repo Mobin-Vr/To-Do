@@ -7,11 +7,19 @@ export default function DatePickerModal({
   task,
   toggleModal,
   setTaskDueDate,
+  InputSelectedDate,
   updateTaskInStore,
   isForTaskInput = false,
 }) {
-  const d = task?.dueDate ? new Date(task.dueDat) : "";
+  const d = task
+    ? task.task_due_date
+      ? new Date(task.task_due_date)
+      : ""
+    : new Date(InputSelectedDate);
+
   const [date, setDate] = useState(d);
+
+  console.log(date);
 
   function hanldeSave() {
     const due = date.toISOString();

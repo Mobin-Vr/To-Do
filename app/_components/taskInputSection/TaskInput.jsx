@@ -134,14 +134,17 @@ export default function TaskInput({
           >
             <InputAddReminder
               setTaskReminder={setTaskReminder}
+              InputSelectedDate={taskReminder}
               className="opacity-60"
             />
             <InputAddDue
               setTaskDueDate={setTaskDueDate}
+              InputSelectedDate={taskDueDate}
               className="opacity-60"
             />
             <InputAddRepeat
               setTaskRepeat={setTaskRepeat}
+              selectedRepeat={taskRepeat}
               setTaskDueDate={setTaskDueDate}
               taskDueDate={taskDueDate}
               taskRepeat={taskRepeat}

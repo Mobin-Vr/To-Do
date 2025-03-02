@@ -6,7 +6,11 @@ import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
 import AddReminderModal from "../editSidebarSection/reminderBoxModals/AddReminderModal";
 import DateTimePickerModal from "../editSidebarSection/reminderBoxModals/DateTimePickerModal";
 
-export default function InputAddReminder({ setTaskReminder, className }) {
+export default function InputAddReminder({
+  setTaskReminder,
+  className,
+  InputSelectedDate,
+}) {
   const AddReminder = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDatePickerModalOpen, setIsDatePickerModalOpen] = useState(false);
@@ -28,7 +32,7 @@ export default function InputAddReminder({ setTaskReminder, className }) {
         parentRef={AddReminder}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
-        className="bottom-[3rem] right-0 w-44 border border-gray-300 text-xs font-normal shadow-black"
+        className="bottom-[3rem] right-0 w-48 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddReminderModal
           setTaskReminder={setTaskReminder}
@@ -45,6 +49,7 @@ export default function InputAddReminder({ setTaskReminder, className }) {
         <DateTimePickerModal
           setTaskReminder={setTaskReminder}
           toggleModal={toggleModalDatePicker}
+          InputSelectedDate={InputSelectedDate}
           isForTaskInput={true}
         />
       </ModalTemplatePrimary>

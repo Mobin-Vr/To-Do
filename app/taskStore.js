@@ -4,11 +4,11 @@ import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
 import {
   addManyCategoriesAction,
+  addManyErrorLogAction,
   addManyTasksAction,
   createInvitationAction,
   deleteManyCategoriesAction,
   deleteManyTasksAction,
-  getInvitationUsersAction,
   getJoinedInvitationsAction,
   getOwnerInvitationsAction,
   getReleventCategoriesAction,
@@ -24,42 +24,49 @@ import { defaultCategory } from "./_lib/configs";
 import { logger } from "./_lib/logger";
 import { delay, getDateNowIso } from "./_lib/utils";
 
+const initialState = {
+  // Sorting and Display
+  sortMethod: "importance", // Default sorting method for tasks
+  sortMethodForShared: "creationDate", // Default sorting method for shared lists
+  showSpinner: true, // Show spinner during initial data loading
+
+  // UI State
+  isSidebarOpen: false, // Sidebar open/close state
+  isEditSidebarOpen: false, // Edit sidebar open/close state
+  editTitleWhileCreating: false, // Auto-focus title when creating a new list
+
+  // Sync and Connection State
+  isSyncing: false, // Synchronization status
+  offlineLogMode: false, // Enables offline logging mode
+  conectionStatus: {}, // Connection details: {isConnected, isOnline, lastOnline}
+  changeLog: [], // Stores changes for offline mode
+  errorLog: [], // {method, message, time}
+
+  // User and Tasks Data
+  userState: {}, // Current user information
+  tasksList: [], // List of tasks
+  activeTask: {}, // Currently active task
+  categoriesList: [defaultCategory], // List of categories
+
+  // Sharing and Invitations
+  invitations: [], // List of invitations sent to others
+  sharedWithMe: [], // Tasks and categories shared with the user
+
+  // Delete Modal Management
+  isDeleteModalOpen: false, // Delete modal open/close state
+  deletingType: "", // Type of the item being deleted (task, category, step)
+  deletingItemName: "", // Name of the item being deleted
+  deleteCallback: null, // Callback function for deletion
+};
+
 const useTaskStore = create(
   devtools(
     persist(
       (set, get) => ({
-        // Sorting and Display
-        sortMethod: "importance", // Default sorting method for tasks
-        sortMethodForShared: "creationDate", // Default sorting method for shared lists
-        showSpinner: true, // Show spinner during initial data loading
+        ...initialState,
 
-        // UI State
-        isSidebarOpen: false, // Sidebar open/close state
-        isEditSidebarOpen: false, // Edit sidebar open/close state
-        editTitleWhileCreating: false, // Auto-focus title when creating a new list
-
-        // Sync and Connection State
-        isSyncing: false, // Synchronization status
-        offlineLogMode: false, // Enables offline logging mode
-        conectionStatus: {}, // Connection details: {isConnected, isOnline, lastOnline}
-        changeLog: [], // Stores changes for offline mode
-        errorLog: [], // {method, message, time}
-
-        // User and Tasks Data
-        userState: {}, // Current user information
-        tasksList: [], // List of tasks
-        activeTask: {}, // Currently active task
-        categoriesList: [defaultCategory], // List of categories
-
-        // Sharing and Invitations
-        invitations: [], // List of invitations sent to others
-        sharedWithMe: [], // Tasks and categories shared with the user
-
-        // Delete Modal Management
-        isDeleteModalOpen: false, // Delete modal open/close state
-        deletingType: "", // Type of the item being deleted (task, category, step)
-        deletingItemName: "", // Name of the item being deleted
-        deleteCallback: null, // Callback function for deletion
+        // # Reset state
+        resetStore: () => set(initialState),
 
         /////////////////////////////
         /////////// Task ////////////
@@ -75,11 +82,6 @@ const useTaskStore = create(
 
                 // Add to change log only if offline.
                 if (state.offlineLogMode) {
-                  // Remove if exist log with the same ID
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== task.task_id,
-                  );
-
                   // Save the chenges log
                   state.changeLog.push({
                     type: "add-task",
@@ -100,14 +102,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "addTaskToStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "addTaskToStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -118,6 +119,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -137,17 +142,33 @@ const useTaskStore = create(
 
                 // Add to change log only if offline.
                 if (state.offlineLogMode) {
-                  // Remove if exist a record in log with the same ID
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== task.task_id,
+                  // Checks if a log entry of type "add-task" exists for this specific task
+                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                    (log) => log.id === task.task_id && log.type === "add-task",
                   );
 
-                  // Save the chenges log
-                  state.changeLog.push({
-                    type: "delete-task",
-                    id: task.task_id,
-                    task,
-                  });
+                  // If this task exists only in the local state, so if we decide to delete it, there's no need to first add it and then delete it. Simply ignore the operation.
+                  if (isAlreadyAddTaskInChangeLog) {
+                    // Remove if exist a record in log with the same ID
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== task.task_id,
+                    );
+                  }
+
+                  // When deleting a task, there's no need to update or anything to it first; just delete it directly.
+                  if (!isAlreadyAddTaskInChangeLog) {
+                    // Remove if exist a record in log with the same ID
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== task.task_id,
+                    );
+
+                    // Save the chenges log
+                    state.changeLog.push({
+                      type: "delete-task",
+                      id: task.task_id,
+                      task,
+                    });
+                  }
                 }
               }),
             );
@@ -162,14 +183,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "deleteTaskFromStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "deleteTaskFromStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -180,14 +200,16 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
         // # Update a task
         updateTaskInStore: async (taskId, updatedParts) => {
           try {
-            const t = get().tasksList.find((task) => task.task_id === taskId);
-
             set(
               produce((state) => {
                 const task = state.tasksList.find(
@@ -203,17 +225,38 @@ const useTaskStore = create(
 
                 // Add to change log only if offline.
                 if (state.offlineLogMode) {
-                  // Remove if exist a record in log with the same ID
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== taskId,
+                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                    (log) => log.id === task.task_id && log.type === "add-task",
                   );
 
-                  // Save the changes logs
-                  state.changeLog.push({
-                    type: "update-task",
-                    id: taskId,
-                    task,
-                  });
+                  // If the task was added only in the local state and we want to update it, we should just add the updated task instead of adding it first and then updating it.
+                  if (isAlreadyAddTaskInChangeLog) {
+                    // Remove if exist a record in log with the same ID
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== taskId,
+                    );
+
+                    // Save the changes logs
+                    state.changeLog.push({
+                      type: "add-task",
+                      id: taskId,
+                      task,
+                    });
+                  }
+
+                  // If the task hasn't already been added to the log ("add-task"), it means it exists in the database and should be updated.
+                  if (!isAlreadyAddTaskInChangeLog) {
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== taskId,
+                    );
+
+                    // Save the changes logs
+                    state.changeLog.push({
+                      type: "update-task",
+                      id: taskId,
+                      task,
+                    });
+                  }
                 }
               }),
             );
@@ -232,14 +275,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "updateTaskInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "updateTaskInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -250,6 +292,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -296,10 +342,6 @@ const useTaskStore = create(
 
                 // Handle offline log mode
                 if (state.offlineLogMode) {
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== category.category_id,
-                  );
-
                   state.changeLog.push({
                     type: "add-category",
                     id: category.category_id,
@@ -319,14 +361,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "addCategoryToStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "addCategoryToStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -337,6 +378,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -361,17 +406,35 @@ const useTaskStore = create(
 
                 // Add changes to the offline log if offline mode is enabled
                 if (state.offlineLogMode) {
-                  // Remove existing logs related to this category
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== category.category_id,
+                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                    (log) =>
+                      log.id === category.category_id &&
+                      log.type === "add-category",
                   );
 
-                  // Save category deletion log
-                  state.changeLog.push({
-                    type: "delete-category",
-                    id: category.category_id,
-                    category,
-                  });
+                  // If this task exists only in the local state, so if we decide to delete it, there's no need to first add it and then delete it. Simply ignore the operation.
+                  if (isAlreadyAddTaskInChangeLog) {
+                    // Remove existing logs related to this category
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== category.category_id,
+                    );
+                  }
+
+                  if (!isAlreadyAddTaskInChangeLog) {
+                    // When deleting a task, there's no need to update or anything to it first; just delete it directly.
+
+                    // Remove existing logs related to this category
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== category.category_id,
+                    );
+
+                    // Save category deletion log
+                    state.changeLog.push({
+                      type: "delete-category",
+                      id: category.category_id,
+                      category,
+                    });
+                  }
                 }
               }),
             );
@@ -386,14 +449,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "deletecategoryFromstore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "deletecategoryFromstore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -404,6 +466,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -421,15 +487,37 @@ const useTaskStore = create(
                 }
 
                 if (state.offlineLogMode) {
-                  state.changeLog = state.changeLog.filter(
-                    (log) => log.id !== category.category_id,
+                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                    (log) =>
+                      log.id === category.category_id &&
+                      log.type === "add-category",
                   );
 
-                  state.changeLog.push({
-                    type: "update-category",
-                    id: category.category_id,
-                    category,
-                  });
+                  // If the category was added only in the local state and we want to update it, we should just add the updated category instead of adding it first and then updating it.
+                  if (isAlreadyAddTaskInChangeLog) {
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== category.category_id,
+                    );
+
+                    state.changeLog.push({
+                      type: "add-category",
+                      id: category.category_id,
+                      category,
+                    });
+                  }
+
+                  // If the category hasn't already been added to the log ("add-category"), it means it exists in the database and should be updated.
+                  if (!isAlreadyAddTaskInChangeLog) {
+                    state.changeLog = state.changeLog.filter(
+                      (log) => log.id !== category.category_id,
+                    );
+
+                    state.changeLog.push({
+                      type: "update-category",
+                      id: category.category_id,
+                      category,
+                    });
+                  }
                 }
               }),
             );
@@ -450,14 +538,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "updateCategoryInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "updateCategoryInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -468,6 +555,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -503,24 +594,18 @@ const useTaskStore = create(
               }),
             );
 
-            return {
-              status: true,
-              message: "the invitation link has been created",
-            }; // this is for some management in "SharedListModal" component
+            return true; // this is for some management in "SharedListModal" component
           } catch (error) {
             logger.error("Error creating invitation: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(error.message);
+            const newError = {
+              method: "createInvitationInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "createInvitationInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -532,7 +617,11 @@ const useTaskStore = create(
               }),
             );
 
-            return { status: false, message: error.message }; // this is for some management in "SharedListModal" component
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
+
+            return false; // this is for some management in "SharedListModal" component
           }
         },
 
@@ -566,14 +655,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "removeUserFromInvitationStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "removeUserFromInvitationStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -584,6 +672,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -623,14 +715,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "setInvitationAccessLimitInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "setInvitationAccessLimitInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -641,6 +732,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -674,14 +769,13 @@ const useTaskStore = create(
             toast.error(
               "Couldn't sync with the server. Will retry once connected.",
             );
+            const newError = {
+              method: "stopSharingInvitationInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "stopSharingInvitationInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -692,52 +786,10 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
-          }
-        },
 
-        // # Get list's users
-        getUsersByInvitationInStore: async (invitationId) => {
-          const owner = get().userState;
-
-          try {
-            const users = await getInvitationUsersAction(
-              invitationId,
-              owner.user_id,
-            );
-
-            set(
-              produce((state) => {
-                const invitation = state.invitations.find(
-                  (inv) => inv.invitation_id === invitationId,
-                );
-
-                if (invitation) invitation.sharedWith = users;
-              }),
-            );
-          } catch (error) {
-            logger.error("Error getting user by invitation id: ", error);
-
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
-
-            set(
-              produce((state) => {
-                const newError = {
-                  method: "getUsersByInvitationInStore",
-                  message: error.message,
-                };
-
-                // Check if the exact error object already exists
-                const isDuplicate = state.errorLog.some(
-                  (err) =>
-                    err.method === newError.method &&
-                    err.message === newError.message,
-                );
-
-                if (!isDuplicate) state.errorLog.push(newError);
-              }),
-            );
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
           }
         },
 
@@ -783,17 +835,14 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error joinning to the invitation: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(error.message);
+            const newError = {
+              method: "joinInvitationInStore",
+              message: error.message,
+            };
 
             set(
               produce((state) => {
-                const newError = {
-                  method: "joinInvitationInStore",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -805,7 +854,11 @@ const useTaskStore = create(
               }),
             );
 
-            return { status: false, message: error.message };
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
+
+            return { status: false, categoryId: null };
           }
         },
 
@@ -1084,10 +1137,15 @@ const useTaskStore = create(
                 ),
             );
 
-            console.log("Unique Tasks:", uniqueTasks);
-            console.log("Unique Categories:", uniqueCategories);
-            console.log("Unique Owner Invitations:", uniqueOwnerInvs);
-            console.log("Unique Joined Invitations:", uniqueJoinedInvs);
+            // Remove `owner` from `sharedWith` in all invitations
+            const updatedOwnerInvs = uniqueOwnerInvs.map((invitation) => {
+              return {
+                ...invitation,
+                sharedWith: invitation.sharedWith.filter(
+                  (user) => user.user_id !== get().userState.user_id,
+                ),
+              };
+            });
 
             // Update state with non-duplicate tasks, categories, and invitations
             set(
@@ -1100,7 +1158,7 @@ const useTaskStore = create(
                 ];
                 state.invitations = [
                   ...nonDuplicateOwnerInvs,
-                  ...uniqueOwnerInvs,
+                  ...updatedOwnerInvs,
                 ];
                 state.sharedWithMe = [
                   ...nonDuplicateJoinedInvs,
@@ -1110,7 +1168,7 @@ const useTaskStore = create(
             );
 
             // Turn off the loading spinner once data has finished loading
-            get().setShowpinnerFalse();
+            get().setShowpinner(false);
           } catch (error) {
             logger.error("Error syncing and getting data from server:", error);
 
@@ -1119,13 +1177,13 @@ const useTaskStore = create(
               "Couldn't sync with the server. Will retry once connected.",
             );
 
+            const newError = {
+              method: "fetchDataOnMount",
+              message: error.message,
+            };
+
             set(
               produce((state) => {
-                const newError = {
-                  method: "fetchDataOnMount",
-                  message: error.message,
-                };
-
                 // Check if the exact error object already exists in the error log
                 const isDuplicate = state.errorLog.some(
                   (err) =>
@@ -1137,6 +1195,110 @@ const useTaskStore = create(
                 if (!isDuplicate) state.errorLog.push(newError);
               }),
             );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
+          }
+        },
+
+        // # Send change log to DB to save unsaved chenges in local
+        syncChangeLog: async () => {
+          const changeLog = get().changeLog;
+          const errorLog = get().errorLog;
+
+          // Separate change logs by their types
+          const groupedChanges = {
+            "add-task": [],
+            "delete-task": [],
+            "update-task": [],
+            "add-category": [],
+            "delete-category": [],
+            "update-category": [],
+          };
+
+          changeLog.forEach((log) => {
+            if (groupedChanges[log.type]) {
+              groupedChanges[log.type].push(log.task || log.category);
+            }
+          });
+
+          try {
+            get().toggleIsSyncing(true); // Mark syncing as in progress
+
+            // Run tasks sequentially to prevent conflicts
+            if (groupedChanges["add-task"].length) {
+              await addManyTasksAction(groupedChanges["add-task"]);
+            }
+
+            if (groupedChanges["update-task"].length) {
+              await updateManyTasksAction(
+                groupedChanges["update-task"],
+                groupedChanges["update-task"].map((task) => task.task_id),
+              );
+            }
+
+            if (groupedChanges["delete-task"].length) {
+              await deleteManyTasksAction(
+                groupedChanges["delete-task"].map((task) => task.task_id),
+              );
+            }
+
+            // Run category operations sequentially
+            if (groupedChanges["add-category"].length) {
+              await addManyCategoriesAction(groupedChanges["add-category"]);
+            }
+
+            if (groupedChanges["update-category"].length) {
+              await updateManyCategoriesAction(
+                groupedChanges["update-category"],
+                groupedChanges["update-category"].map((cat) => cat.category_id),
+              );
+            }
+
+            if (groupedChanges["delete-category"].length) {
+              await deleteManyCategoriesAction(
+                groupedChanges["delete-category"].map((cat) => cat.category_id),
+              );
+            }
+
+            if (errorLog.length) {
+              await addManyErrorLogAction(errorLog);
+            }
+
+            get().clearLog(); // Clear the change log after successful sync
+          } catch (error) {
+            logger.error("Error syncing and getting data from server:", error);
+
+            // Show a toast error message when the data synchronization fails
+            toast.error(
+              "Couldn't sync with the server. Will retry once connected.",
+            );
+
+            const newError = {
+              method: "syncChangeLog",
+              message: error.message,
+            };
+
+            set(
+              produce((state) => {
+                // Check if the exact error object already exists in the error log
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                // Add the error if it doesn't already exist in the error log
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
+          } finally {
+            get().toggleIsSyncing(false); // Mark syncing as complete
           }
         },
 
@@ -1207,6 +1369,7 @@ const useTaskStore = create(
                 state.activeTask = tasksList[0] || null;
               } else if (isEditSidebarOpen && !cond) {
                 state.isEditSidebarOpen = false;
+                state.activeTask = tasksList[0] || null; // NOTE I currentlly added this. if an error has accured remove this
               }
             }),
           );
@@ -1244,10 +1407,10 @@ const useTaskStore = create(
         },
 
         // # show spinner on mount
-        setShowpinnerFalse: () => {
+        setShowpinner: (bool) => {
           set(
             produce((state) => {
-              state.showSpinner = false;
+              state.showSpinner = bool;
             }),
           );
         },

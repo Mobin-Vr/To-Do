@@ -1,16 +1,17 @@
 "use client";
 
-import useCustomToast from "@/app/_lib/useCustomeToast";
 import useTaskStore from "@/app/taskStore";
 import illsturation_login from "@/public/icons/login.svg";
 import illsturation from "@/public/icons/team.svg";
 import { SignInButton, useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { useTransition } from "react";
 import { useShallow } from "zustand/react/shallow";
+import SpinnerMini from "../_ui/SpinnerMini";
 
 export default function InvitationLandingContent({ token }) {
-  const showToast = useCustomToast();
+  const [isPending, startTransition] = useTransition();
   const { user } = useUser();
 
   const { joinInvitationInStore } = useTaskStore(
@@ -20,10 +21,11 @@ export default function InvitationLandingContent({ token }) {
   );
 
   async function handleJoin() {
-    const res = await joinInvitationInStore(token);
+    startTransition(async () => {
+      const res = await joinInvitationInStore(token);
 
-    if (res.status === true) redirect(`/tasks/${res.categoryId}`);
-    else showToast(res.message);
+      if (res.status === true) redirect(`/tasks/${res.categoryId}`);
+    });
   }
 
   return (
@@ -45,10 +47,21 @@ export default function InvitationLandingContent({ token }) {
         <div className="flex w-full justify-center">
           {user ? (
             <button
+              disabled={isPending}
               onClick={handleJoin}
-              className="w-1/2 rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700"
+              className={`flex h-10 w-1/2 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700 ${
+                isPending
+                  ? "cursor-not-allowed border-2 border-gray-400 bg-gray-300 hover:bg-gray-300"
+                  : ""
+              }`}
             >
-              Join to the list
+              {isPending ? (
+                <span>
+                  <SpinnerMini />
+                </span>
+              ) : (
+                "Join to the list"
+              )}
             </button>
           ) : (
             <div className="flex w-full flex-col items-center justify-center gap-3">

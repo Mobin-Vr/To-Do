@@ -63,9 +63,17 @@ export async function deleteManyTasks(tasksIdsArr) {
 
 // Updates multiple tasks based on their IDs
 export async function updateManyTasks(tasksArr, tasksIdsArr) {
+  // Remove task_id from each task object before updating
+  // Reason: task_id is the primary key and should not be updated. Supabase requires the update payload to only contain columns that need changes.
+  const cleanedTasksArr = tasksArr.map((task) => {
+    // eslint-disable-next-line no-unused-vars
+    const { task_id, ...rest } = task;
+    return rest;
+  });
+
   const { error } = await supabase
     .from("tasks")
-    .update(tasksArr)
+    .update(cleanedTasksArr)
     .in("task_id", tasksIdsArr);
 
   if (error) throw new Error(error.message || JSON.stringify(error));
@@ -105,9 +113,17 @@ export async function deleteManyCategories(categoryIdsArr) {
 
 // Updates multiple categories based on their IDs
 export async function updateManyCategories(categoriesArr, categoriesIdsArr) {
+  // Remove category_id from each task object before updating
+  // Reason: category_id is the primary key and should not be updated. Supabase requires the update payload to only contain columns that need changes.
+  const cleanedCategoriesArr = categoriesArr.map((cat) => {
+    // eslint-disable-next-line no-unused-vars
+    const { category_id, ...rest } = cat;
+    return rest;
+  });
+
   const { error } = await supabase
     .from("categories")
-    .update(categoriesArr)
+    .update(cleanedCategoriesArr)
     .in("category_id", categoriesIdsArr);
 
   if (error) throw new Error(error.message || JSON.stringify(error));
@@ -206,18 +222,6 @@ export async function removeUserFromInvitation(invitationId, userId, ownerId) {
   if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Retrieves the list of users in an invitation
-export async function getInvitationUsers(invitationId, ownerId) {
-  const { data, error } = await supabase.rpc("get_invitation_users", {
-    param_invitation_id: invitationId,
-    param_owner_id: ownerId,
-  });
-
-  if (error) throw new Error(error.message || JSON.stringify(error));
-
-  return data;
-}
-
 // Retrieves all invitations owned by a user
 export async function getOwnerInvitations(userId) {
   const { data, error } = await supabase.rpc("get_owner_invitations", {
@@ -234,6 +238,22 @@ export async function getJoinedInvitations(userId) {
   const { data, error } = await supabase.rpc("get_joined_invitations", {
     param_user_id: userId,
   });
+
+  if (error) throw new Error(error.message || JSON.stringify(error));
+
+  return data;
+}
+
+//////////////////////////////////
+//// Errors //////////////////////
+//////////////////////////////////
+
+// Adds a new error log entry to the "errors_log" table
+export async function addManyErrorLog(errorLogArr) {
+  const { data, error } = await supabase
+    .from("errors_log")
+    .insert(errorLogArr)
+    .select();
 
   if (error) throw new Error(error.message || JSON.stringify(error));
 

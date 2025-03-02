@@ -51,7 +51,11 @@ export default function AddRepeat({ task }) {
         justify="-50%"
         className="left-1/2 w-56 text-xs font-normal"
       >
-        <AddRepeatModal task={task} updateTaskInStore={updateTaskInStore} />
+        <AddRepeatModal
+          task={task}
+          selectedRepeat={task.task_repeat || null}
+          updateTaskInStore={updateTaskInStore}
+        />
       </ModalTemplateCloseAble>
     </div>
   );

@@ -26,20 +26,17 @@ export default function HealthStatusSync() {
     updateConnectionStatus,
     toggleOfflineLogMode,
     changeLog,
-    clearLog,
     isSyncing,
-    toggleIsSyncing,
-
     getConectionStatus,
+    syncChangeLog,
   } = useTaskStore(
     useShallow((state) => ({
       updateConnectionStatus: state.updateConnectionStatus,
       toggleOfflineLogMode: state.toggleOfflineLogMode,
       changeLog: state.changeLog,
-      clearLog: state.clearLog,
       isSyncing: state.isSyncing,
-      toggleIsSyncing: state.toggleIsSyncing,
       getConectionStatus: state.getConectionStatus,
+      syncChangeLog: state.syncChangeLog,
     })),
   );
 
@@ -52,66 +49,11 @@ export default function HealthStatusSync() {
     if (isSyncing) return; // Exit if already syncing
     if (!changeLog.length) return; // Exit if there is no log
 
-    toggleIsSyncing(true); // Mark syncing as in progress
-
-    // Separate change logs by their types
-    const addTasks = changeLog
-      .filter((log) => log.type === "add-task")
-      .map((log) => log.task);
-
-    const deleteTasks = changeLog
-      .filter((log) => log.type === "delete-task")
-      .map((log) => log.task);
-
-    const updateTasks = changeLog
-      .filter((log) => log.type === "update-task")
-      .map((log) => log.task);
-
-    const addCategories = changeLog
-      .filter((log) => log.type === "add-category")
-      .map((log) => log.category);
-
-    const deleteCategories = changeLog
-      .filter((log) => log.type === "delete-category")
-      .map((log) => log.category);
-
-    const updateCategories = changeLog
-      .filter((log) => log.type === "update-category")
-      .map((log) => log.category);
-
     // Perform database operations
-    try {
-      // Manage tasks
-      if (addTasks.length) await addManyTasksAction(addTasks);
+    syncChangeLog();
 
-      if (updateTasks.length)
-        await updateManyTasksAction(
-          updateTasks,
-          updateTasks.map((task) => task.id),
-        );
-
-      if (deleteTasks.length) await deleteManyTasksAction(deleteTasks);
-
-      // Manage categories
-      if (addCategories.length) await addManyCategoriesAction(addCategories);
-
-      if (updateTasks.length)
-        await updateManyCategoriesAction(
-          updateCategories,
-          updateCategories.map((cat) => cat.id),
-        );
-
-      if (deleteCategories.length)
-        await deleteManyCategoriesAction(deleteCategories);
-
-      clearLog(); // Clear the change log after successful sync
-    } catch (error) {
-      console.error("Error syncing with the database:", error);
-    } finally {
-      toggleIsSyncing(false); // Mark syncing as complete
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearLog, changeLog, isSyncing, toggleIsSyncing]);
+  }, [changeLog, isSyncing]);
 
   // Handle connection and online status checks
   const handleConnectionStatus = useCallback(async () => {

@@ -45,7 +45,14 @@ function TaskDetails({ task, listName, className }) {
     (s) => s.is_step_completed,
   ).length;
 
-  const cond_1 = task.task_reminder || task.task_due_date || task.task_repeat;
+  const cond_1 =
+    task.task_reminder ||
+    task.task_due_date ||
+    task.task_repeat ||
+    task.task_note ||
+    task.task_steps.length ||
+    false;
+
   const cond_2 = [
     "My Day",
     "Important",
