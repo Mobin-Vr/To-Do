@@ -259,3 +259,23 @@ export async function addManyErrorLog(errorLogArr) {
 
   return data;
 }
+
+//////////////////////////////////
+//// Conection health ////////////
+//////////////////////////////////
+
+// Checks the health status of the database
+export async function checkDatabaseHealth() {
+  const { data, error } = await supabase
+    .from("health_check")
+    .select("status")
+    .limit(1)
+    .single();
+
+  if (error) {
+    console.error("Database error:", error.message);
+    return { online: false, error: error.message };
+  }
+
+  return { online: true, status: data.status };
+}

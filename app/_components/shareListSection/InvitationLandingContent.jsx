@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { useTransition } from "react";
 import { useShallow } from "zustand/react/shallow";
 import SpinnerMini from "../_ui/SpinnerMini";
+import { useState, useEffect } from "react";
 
 export default function InvitationLandingContent({ token }) {
   const [isPending, startTransition] = useTransition();
@@ -20,6 +21,12 @@ export default function InvitationLandingContent({ token }) {
     })),
   );
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // This ensures client-side rendering
+  }, []);
+
   async function handleJoin() {
     startTransition(async () => {
       const res = await joinInvitationInStore(token);
@@ -27,6 +34,9 @@ export default function InvitationLandingContent({ token }) {
       if (res.status === true) redirect(`/tasks/${res.categoryId}`);
     });
   }
+
+  // Only render content when on the client
+  if (!isClient) return null;
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 text-center">

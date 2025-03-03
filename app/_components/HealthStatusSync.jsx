@@ -2,15 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import {
-  addManyCategoriesAction,
-  addManyTasksAction,
-  deleteManyCategoriesAction,
-  deleteManyTasksAction,
-  updateManyCategoriesAction,
-  updateManyTasksAction,
-} from "../_lib/Actions";
-import { checkDatabaseHealth } from "../_lib/healthCheck";
+import { checkDatabaseHealthAction } from "../_lib/Actions";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
@@ -68,7 +60,7 @@ export default function HealthStatusSync() {
 
     // If online, check database health
     setIsConnected(true);
-    const result = await checkDatabaseHealth();
+    const result = await checkDatabaseHealthAction();
     setIsOnline(result.online);
 
     if (result.online) {

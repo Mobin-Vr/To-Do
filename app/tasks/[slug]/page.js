@@ -17,12 +17,14 @@ export default function Page({}) {
 
   const {
     deleteCategoryFromStore,
+    leaveInvitationFromStore,
     tasksList,
     getCategoriesList,
     showDeleteModal,
   } = useTaskStore(
     useShallow((state) => ({
       deleteCategoryFromStore: state.deleteCategoryFromStore,
+      leaveInvitationFromStore: state.leaveInvitationFromStore,
       tasksList: state.tasksList,
       getCategoriesList: state.getCategoriesList,
       showDeleteModal: state.showDeleteModal,
@@ -73,6 +75,20 @@ export default function Page({}) {
     });
   }
 
+  async function handleLeaveInvitation() {
+    // 1. Show warn modal
+    showDeleteModal("leave", theCategory.category_title, async () => {
+      // 2.
+      setIsRedirecting(true);
+
+      // 3. leave the invitation
+      const res = await leaveInvitationFromStore(theCategory.category_id);
+
+      // 4. Redirect the url
+      if (res.status) redirect("/tasks");
+    });
+  }
+
   // CHANGE LATER with a real loader
   if (isRedirecting) return <Spinner defaultBgColor={BG_COLORS["/default"]} />;
 
@@ -81,6 +97,7 @@ export default function Page({}) {
       listRef={listRef}
       listConfig={listConfig}
       handleDeleteCategory={handleDeleteCategory}
+      handleLeaveInvitation={handleLeaveInvitation}
       theCategoryId={theCategory.category_id}
     />
   );

@@ -10,10 +10,11 @@ import SortMethodBtn from "./_ui/SortMethodBtn";
 import CategoryTitleEditor from "./CategoryTitleEditor";
 import ShareBtn from "./shareListSection/ShareBtn";
 
-export default function AppHeader({
+export default function ListHeader({
   listConfig,
   className,
   handleDeleteCategory,
+  handleLeaveInvitation,
   theCategoryId,
 }) {
   const { bgColor, listName, listIcon, theCategory, query = "" } = listConfig;
@@ -27,6 +28,10 @@ export default function AppHeader({
   const isCategoryOwner =
     theCategoryId !== defaultCategoryId &&
     theCategory.category_owner_id === getUserState().user_id;
+
+  const isCategoryPartner =
+    theCategoryId !== defaultCategoryId &&
+    theCategory.category_owner_id !== getUserState().user_id;
 
   const isEditable =
     theCategoryId !== defaultCategoryId &&
@@ -80,6 +85,10 @@ export default function AppHeader({
                 <ShareBtn theCategoryId={theCategoryId} bgColor={bgColor} />
                 <DeleteBtn onClick={handleDeleteCategory} bgColor={bgColor} />
               </>
+            )}
+
+            {isCategoryPartner && (
+              <DeleteBtn onClick={handleLeaveInvitation} bgColor={bgColor} />
             )}
 
             <SortMethodBtn bgColor={bgColor} />

@@ -1,7 +1,7 @@
 import { defaultCategoryId } from "@/app/_lib/configs";
 import { useEffect } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";
-import AppHeader from "./AppHeader";
+import ListHeader from "./ListHeader";
 import NoResults from "./NoResults";
 import NoTaskInMyDay from "./NoTaskInMyDay";
 import TaskInput from "./taskInputSection/TaskInput";
@@ -12,6 +12,7 @@ export default function Template({
   listRef,
   listConfig,
   handleDeleteCategory,
+  handleLeaveInvitation,
   theCategoryId = defaultCategoryId,
   showInput = true,
   showSearch = false,
@@ -49,10 +50,11 @@ export default function Template({
           className="flex h-full w-full flex-col items-center justify-center"
           style={{ backgroundColor: listConfig.bgColor.mainBackground }}
         >
-          <AppHeader
+          <ListHeader
             className="app-header z-10 max-h-28 min-h-24 w-full px-8 sm:px-10"
             listConfig={listConfig}
             handleDeleteCategory={handleDeleteCategory}
+            handleLeaveInvitation={handleLeaveInvitation}
             theCategoryId={theCategoryId}
           />
 

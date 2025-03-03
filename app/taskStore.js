@@ -14,6 +14,7 @@ import {
   getReleventCategoriesAction,
   getReleventTasksAction,
   joinInvitationAction,
+  leaveInvitationAction,
   removeUserFromInvitationAction,
   setInvitationLimitAction,
   stopSharingInvitationAction,
@@ -859,6 +860,70 @@ const useTaskStore = create(
             }
 
             return { status: false, categoryId: null };
+          }
+        },
+
+        // # Leave invitation
+        leaveInvitationFromStore: async (categoryId) => {
+          try {
+            const user = get().userState;
+
+            const { invitation_id } = get().sharedWithMe.find(
+              (inv) => inv.invitation_category_id === categoryId,
+            );
+
+            // Remove user from invitation in db
+            if (invitation_id) {
+              await leaveInvitationAction(invitation_id, user.user_id);
+            }
+
+            set(
+              produce((state) => {
+                // Remove the category from the list
+                state.categoriesList = state.categoriesList.filter(
+                  (cat) => cat.category_id !== categoryId,
+                );
+
+                // Remove also the category's relevent tasks from the tasksList
+                state.tasksList = state.tasksList.filter(
+                  (task) => task.task_category_id !== categoryId,
+                );
+
+                // Remove the category from sharedWithMe
+                state.sharedWithMe = state.sharedWithMe.filter(
+                  (cat) => cat.invitation_category_id !== categoryId,
+                );
+              }),
+            );
+
+            return { status: true };
+          } catch (error) {
+            logger.error("Error leaving the invitation: ", error);
+
+            toast.error(error.message);
+            const newError = {
+              method: "leaveInvitationInStore",
+              message: error.message,
+            };
+
+            set(
+              produce((state) => {
+                // Check if the exact error object already exists
+                const isDuplicate = state.errorLog.some(
+                  (err) =>
+                    err.method === newError.method &&
+                    err.message === newError.message,
+                );
+
+                if (!isDuplicate) state.errorLog.push(newError);
+              }),
+            );
+
+            if (get().conectionStatus.isOnline) {
+              await addManyErrorLogAction([newError]);
+            }
+
+            return { status: false };
           }
         },
 

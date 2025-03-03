@@ -60,15 +60,21 @@ export default function DeleteWarningModal() {
         </h1>
 
         <p className="mb-4 text-sm font-light">
-          {deletingType === "category"
-            ? "All list members will lose access to this list as well."
-            : `"${deletingItemName}" will be permanently deleted.`}
+          {deletingType === "category" &&
+            "All list members will lose access to this list as well."}
+
+          {deletingType === "leave" &&
+            "After deleting this list, you will lose access to its shared tasks."}
+
+          {deletingType === "task" ||
+            (deletingType === "step" &&
+              `${deletingItemName} will be permanently deleted.`)}
         </p>
 
         <div className="mt-10 flex justify-end gap-2 px-2">
           <OrdinaryBtn
             onClick={handleConfirmDelete}
-            text="Delete"
+            text={deletingType === "leave" ? "Leave" : "Delete"}
             mode="warn"
             className="confirm-delete w-full text-sm"
           />

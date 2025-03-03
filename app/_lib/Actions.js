@@ -4,6 +4,7 @@ import {
   addManyCategories,
   addManyErrorLog,
   addManyTasks,
+  checkDatabaseHealth,
   createInvitation,
   createUser,
   deleteManyCategories,
@@ -159,4 +160,13 @@ export async function getJoinedInvitationsAction(userId) {
 // Adds a new error log entry to the "errors_log" table
 export async function addManyErrorLogAction(errorLogArr) {
   return await addManyErrorLog(errorLogArr);
+}
+
+//////////////////////////////////
+//// Conection health ////////////
+//////////////////////////////////
+
+// Checks the health status of the database
+export async function checkDatabaseHealthAction() {
+  return await checkDatabaseHealth();
 }
