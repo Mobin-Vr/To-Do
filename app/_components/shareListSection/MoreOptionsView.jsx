@@ -2,7 +2,7 @@ import useTaskStore from "@/app/taskStore";
 import { ArrowIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
-import { Switch } from "../_ui/Switch";
+import { Switch } from "../_ui/switch";
 
 export default function MoreOptionsView({
   onBackToLinkCreated,
