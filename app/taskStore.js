@@ -1421,7 +1421,7 @@ const useTaskStore = create(
           )
             return;
 
-          const { isEditSidebarOpen, activeTask, tasksList } = get();
+          const { isEditSidebarOpen, activeTask } = get();
           const cond = selectedTask?.task_id === activeTask?.task_id;
 
           set(
@@ -1431,10 +1431,10 @@ const useTaskStore = create(
                 state.isEditSidebarOpen = true;
               } else if (isEditSidebarOpen && cond) {
                 state.isEditSidebarOpen = false;
-                state.activeTask = tasksList[0] || null;
+                state.activeTask = null;
               } else if (isEditSidebarOpen && !cond) {
                 state.isEditSidebarOpen = false;
-                state.activeTask = tasksList[0] || null; // NOTE I currentlly added this. if an error has accured remove this
+                state.activeTask = null; // NOTE I currentlly added this. if an error has accured remove this
               }
             }),
           );

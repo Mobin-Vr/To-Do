@@ -69,6 +69,7 @@ export default async function RootLayout({ children }) {
 
             {/* Absolute Sidebar */}
             <Sidebar />
+
             {/* Absolute Editsidebar */}
             <EditSidebar />
           </SignedIn>

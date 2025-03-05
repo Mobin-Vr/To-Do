@@ -44,6 +44,11 @@ export default function EditSidebar() {
     })),
   );
 
+  // Set active task as null on mount
+  useEffect(() => {
+    if (activeTask) setActiveTask(null);
+  }, []);
+
   // Refer to the comment "1"
   useEffect(() => {
     // Only update activeTask when it has changed and exists in tasksList
