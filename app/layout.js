@@ -49,7 +49,7 @@ export default async function RootLayout({ children }) {
     <ClerkProvider dynamic>
       <html lang="en">
         <body
-          className={`${roboto.className} ${iranSansRegular.className} relative z-50 flex h-screen flex-col overflow-hidden sm:flex-row`}
+          className={`${roboto.className} ${iranSansRegular.className} relative z-50 flex h-dvh flex-col overflow-hidden sm:flex-row`}
         >
           <SignedIn>
             {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}
