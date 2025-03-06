@@ -15,7 +15,7 @@ export default function TimePicker({
         onClick={handleInputClick}
         onChange={(e) => setTime(e.target.value)}
         value={time}
-        className="focus:ring-none flex w-1/2 select-none justify-center rounded-md border-none bg-inherit p-1.5 text-xl text-white outline-none focus:text-white focus:outline-none"
+        className="focus:ring-none flex w-1/2 select-none justify-center rounded-md border-none bg-inherit p-1.5 pr-2 text-xl text-white outline-none focus:text-white focus:outline-none"
       />
     </div>
   );
