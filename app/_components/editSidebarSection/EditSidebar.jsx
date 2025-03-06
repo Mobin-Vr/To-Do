@@ -47,6 +47,7 @@ export default function EditSidebar() {
   // Set active task as null on mount
   useEffect(() => {
     if (activeTask) setActiveTask(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Refer to the comment "1"
@@ -95,10 +96,10 @@ export default function EditSidebar() {
           isEditSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex h-full flex-col overflow-y-scroll px-3 py-3">
+        <div className="flex flex-col px-3 py-3">
           <CloseBtn toggleEditSidebar={toggleEditSidebar} />
 
-          <div className="flex flex-1 flex-col gap-2.5 justify-self-start">
+          <div className="flex flex-1 flex-col gap-2.5 justify-self-start overflow-y-scroll">
             <TaskOverView task={activeTask} bgColor={bgColor} />
             <AddToMyDay task={activeTask} />
             <ReminderBox task={activeTask} />

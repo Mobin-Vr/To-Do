@@ -35,7 +35,7 @@ export default function TaskItem({
       ref={listRef}
       id={task.task_id}
       onClick={(e) => handleActiveTaskSidebar(task, e)}
-      className={`task-item flex min-h-[3.25rem] flex-col justify-center rounded-md px-4 py-2 text-gray-400 ${className}`} // for click handeling
+      className={`task-item flex min-h-[3.5rem] flex-col justify-center rounded-md px-4 py-2 text-gray-400 ${className}`} // for click handeling
       style={{
         "--default-bg-color": bgColor.taskBackground,
         "--hover-bg-color": bgColor.taskHover,
