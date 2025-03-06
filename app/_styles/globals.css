@@ -13,7 +13,9 @@ body {
 
 input[type="time"]::-webkit-calendar-picker-indicator {
   display: none;
+  appearance: none;
   -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 ::-webkit-scrollbar {
