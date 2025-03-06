@@ -47,7 +47,7 @@ export default function Template({
       <DeleteWarningModal />
       {!showSearch ? (
         <div
-          className="flex h-dvh w-full flex-col items-center justify-center"
+          className="flex h-full w-full flex-col items-center justify-center"
           style={{ backgroundColor: listConfig.bgColor.mainBackground }}
         >
           <ListHeader
