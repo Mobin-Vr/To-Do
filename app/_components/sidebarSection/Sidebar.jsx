@@ -85,11 +85,11 @@ export default function Sidebar() {
 
       <div
         ref={sidebarRef}
-        className={`absolute bottom-0 left-0 top-0 z-30 flex w-4/5 transform flex-col justify-between overflow-hidden rounded-r-md border border-gray-300 bg-sidebar-main px-4 py-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:static md:max-w-80 md:translate-x-0 ${
+        className={`absolute bottom-0 left-0 top-0 z-30 flex w-4/5 transform flex-col justify-between overflow-hidden rounded-r-md border border-gray-300 bg-sidebar-main px-4 pt-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:static md:max-w-80 md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div>
+        <div className="flex-1">
           <MenuBtn
             menuButtonRef={menuButtonRef}
             className="-translate-x-1 -translate-y-1"
@@ -104,7 +104,7 @@ export default function Sidebar() {
 
           <TaskSearch />
 
-          <nav className="sidebar relative max-h-[calc(100dvh-200px)] overflow-y-auto pb-4">
+          <nav className="sidebar h-[calc(100svh-14.2rem)] overflow-y-scroll">
             <SidebarNav tasksList={tasksList} toggleSidebar={toggleSidebar} />
 
             <CategoriesList
@@ -114,7 +114,7 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        <div className="absolute bottom-0 w-full border-t border-t-gray-200 bg-gray-50">
+        <div className="mt-3 w-full border-t border-t-gray-200 bg-gray-50">
           <NewListBtn
             getUserState={getUserState}
             addCategoryToStore={addCategoryToStore}
