@@ -24,8 +24,7 @@ export default function CompleteBtn({ task, className, bgColor }) {
 
     updateTaskInStore(task.task_id, {
       is_task_completed: !task.is_task_completed,
-
-      task_completed_at: task.is_task_completed ? getDateNowIso() : null,
+      task_completed_at: !task.is_task_completed ? getDateNowIso() : null,
     });
   };
 

@@ -47,7 +47,7 @@ export default function DateTimePickerModal({
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <DatePicker date={date} setDate={setDate} />
 
       <TimePicker

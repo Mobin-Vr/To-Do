@@ -9,6 +9,12 @@ function AddNote({ updateTaskInStore, task, isEditSidebarOpen }) {
   const [note, setNote] = useState(task.task_note || ""); // Local state to store the note
 
   useEffect(() => {
+    setNote(task.task_note || "");
+  }, [task.task_note]);
+
+  console.log("task note:", task.task_note, "note:", note);
+
+  useEffect(() => {
     const textarea = textareaRef.current;
     textarea.style.height = "auto"; // Reset height
     textarea.style.height = `${textarea.scrollHeight}px`;

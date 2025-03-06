@@ -37,7 +37,7 @@ export default function NewListBtn({
   return (
     <button
       onClick={handleNewList}
-      className={`mt-1 flex w-full items-center gap-3 rounded-md px-1 py-3 text-sm hover:bg-sidebar-hover ${className}`}
+      className={`mt-1 flex h-12 w-full items-center gap-3 rounded-md px-1 text-sm hover:bg-sidebar-hover ${className}`}
     >
       <PlusIcon color="#000" />
       <span>New list</span>

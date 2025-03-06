@@ -29,7 +29,7 @@ export default function InputAddRepeat({
         parentRef={AddRepeatRef}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
-        className="bottom-[3rem] right-0 w-48 border border-gray-300 text-xs font-normal shadow-black"
+        className="-right-4 bottom-[3rem] w-48 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddRepeatModal
           setTaskDueDate={setTaskDueDate}

@@ -32,7 +32,7 @@ export default function InputAddReminder({
         parentRef={AddReminder}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
-        className="bottom-[3rem] right-0 w-48 border border-gray-300 text-xs font-normal shadow-black"
+        className="-right-4 bottom-[3rem] w-48 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddReminderModal
           setTaskReminder={setTaskReminder}
@@ -44,7 +44,7 @@ export default function InputAddReminder({
       <ModalTemplatePrimary
         isModalOpen={isDatePickerModalOpen}
         toggleModal={toggleModalDatePicker}
-        className="bottom-[3rem] right-0 w-fit border border-gray-300 text-xs font-normal shadow-black"
+        className="-right-4 bottom-[3rem] w-fit border border-gray-300 text-xs font-normal shadow-black"
       >
         <DateTimePickerModal
           setTaskReminder={setTaskReminder}

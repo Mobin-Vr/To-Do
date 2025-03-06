@@ -33,7 +33,7 @@ export default function InputAddDue({
         parentRef={AddDueRef}
         isModalOpen={isModalOpen}
         toggleModal={toggleModal}
-        className="bottom-[3rem] right-0 w-48 border border-gray-300 text-xs font-normal shadow-black"
+        className="-right-4 bottom-[3rem] w-48 border border-gray-300 text-xs font-normal shadow-black"
       >
         <AddDueModal
           setTaskDueDate={setTaskDueDate}
@@ -45,7 +45,7 @@ export default function InputAddDue({
       <ModalTemplatePrimary
         isModalOpen={isDatePickerModalOpen}
         toggleModal={toggleModalDatePicker}
-        className="bottom-[3rem] right-0 w-fit border border-gray-300 text-xs font-normal shadow-black"
+        className="-right-4 bottom-[3rem] w-fit border border-gray-300 text-xs font-normal shadow-black"
       >
         <DatePickerModal
           setTaskDueDate={setTaskDueDate}

@@ -5,7 +5,7 @@ export default function TimePicker({
   time,
 }) {
   return (
-    <div className="mx-1 mb-2 flex justify-between rounded-md bg-blue-700 px-12">
+    <div className="mx-1 mb-2 flex w-60 justify-between rounded-md bg-blue-700 px-12">
       <span className="my-auto text-xs text-white">Select Time</span>
       <input
         type="time"

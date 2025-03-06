@@ -49,22 +49,22 @@ export default function ListHeader({
           className="flex w-full items-center justify-between px-1"
           style={{ color: bgColor.primaryText }}
         >
-          <div className="flex flex-col justify-center">
+          <div className="flex w-11/12 flex-col items-start justify-center">
             <h1
-              className="flex items-center gap-3 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-3xl font-medium leading-tight"
+              className="flex items-center overflow-hidden text-3xl font-medium leading-tight"
               title={query}
             >
-              {listIcon}
+              {listIcon && (
+                <span className="mr-2 h-full w-full">{listIcon}</span>
+              )}
 
-              {theCategoryId === defaultCategoryId ? (
-                <p className="mt-1.5">{listName}</p>
-              ) : isEditable ? (
+              {theCategoryId === defaultCategoryId && !isEditable ? (
+                <p className="mt-1.5 text-nowrap">{listName}</p>
+              ) : (
                 <CategoryTitleEditor
                   theCategory={theCategory}
-                  className="w-fit max-w-64"
+                  className="mr-2 w-full overflow-hidden text-ellipsis"
                 />
-              ) : (
-                listName
               )}
             </h1>
 

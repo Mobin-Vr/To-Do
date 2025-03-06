@@ -62,17 +62,17 @@ const SidebarLink = ({
           isActive ? "rounded-md bg-sidebar-hover" : ""
         }`}
       >
-        <div className="flex gap-2">
+        <div className="mr-2 flex w-4/5 items-center justify-start gap-2 overflow-hidden">
           <div className="flex aspect-square h-5 items-center justify-center">
             {children}
           </div>
-          {title}
+          <p className="overflow-hidden text-ellipsis text-nowrap">{title}</p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex items-center justify-center gap-3">
           {hasCollab && (
             <span className="ml-1 text-gray-500">
-              <UsersIcon size="18px" />
+              <UsersIcon color="#999" size="16px" />
             </span>
           )}
 
@@ -82,6 +82,7 @@ const SidebarLink = ({
             </span>
           </span>
         </div>
+
         {isActive && (
           <div className="absolute left-0 h-[50%] rounded-md border-l-[3px] border-blue-500"></div>
         )}

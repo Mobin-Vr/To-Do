@@ -8,12 +8,9 @@ export default function ActionFooter({
 }) {
   if (!task.task_created_at) return;
 
-  const timeAgoCreated = getTimeAgo(task.task_created_at);
-  const timeAgoCompleted = getTimeAgo(task.task_completed_at);
-
   let ActionFooterText = task.is_task_completed
-    ? `Completed ${timeAgoCompleted}`
-    : `Created ${timeAgoCreated}`;
+    ? `Completed ${getTimeAgo(task.task_completed_at)}`
+    : `Created ${getTimeAgo(task.task_created_at)}`;
 
   async function handleDelete() {
     // 1. Show warn modal

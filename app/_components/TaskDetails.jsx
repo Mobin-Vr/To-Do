@@ -66,9 +66,16 @@ function TaskDetails({ task, listName, className }) {
 
   return (
     <div
-      className={`flex items-center gap-2.5 text-xs font-light text-gray-400 ${className}`}
+      className={`flex items-center gap-1.5 text-xs font-light text-gray-400 sm:gap-2.5 ${className}`}
     >
-      {text !== "" && <span>{text}</span>}
+      {text !== "" && (
+        <span
+          title={text}
+          className="max-w-[4.5rem] overflow-hidden text-ellipsis text-nowrap sm:max-w-28"
+        >
+          {text}
+        </span>
+      )}
 
       {cond_2 && steps.length > 0 && (
         <span className="mr-0.5 h-1 w-1 bg-gray-400"></span>
@@ -86,7 +93,7 @@ function TaskDetails({ task, listName, className }) {
         {task.task_reminder && (
           <span className="flex items-center gap-0.5">
             <BellIcon size="12px" color="#888" />
-            <span className="mt-0.5">
+            <span className="mt-0.5 hidden sm:inline-block">
               {checkIfToday(task.task_reminder)
                 ? "Today"
                 : checkIfTomorrow(task.task_reminder)
@@ -100,7 +107,7 @@ function TaskDetails({ task, listName, className }) {
           (hasDatePassed(task.task_due_date) ? (
             <span className="flex items-center gap-0.5 text-red-600">
               <DateIcon size="12px" />
-              <span className="mt-0.5">Overdue</span>
+              <span className="mt-0.5 hidden sm:inline-block">Overdue</span>
             </span>
           ) : (
             <span
@@ -109,7 +116,7 @@ function TaskDetails({ task, listName, className }) {
               }`}
             >
               <DateIcon size="12px" />
-              <span className="mt-0.5">
+              <span className="mt-0.5 hidden sm:inline-block">
                 {checkIfToday(task.task_due_date)
                   ? "Today"
                   : checkIfTomorrow(task.task_due_date)
