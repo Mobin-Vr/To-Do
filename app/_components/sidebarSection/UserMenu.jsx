@@ -52,7 +52,7 @@ function UserMenu({ user, createClerkPasskey, className }) {
           >
             <strong
               title={user.fullName}
-              className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-sm font-medium leading-tight"
+              className="overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-[0.95rem] font-medium leading-tight"
             >
               {user.fullName}
             </strong>

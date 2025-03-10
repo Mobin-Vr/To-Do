@@ -97,7 +97,7 @@ export default function Sidebar() {
           />
 
           <UserMenu
-            className={"mb-3 mt-2"}
+            className="mb-3 mt-2"
             user={user}
             createClerkPasskey={createClerkPasskey}
           />
@@ -114,7 +114,7 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        <div className="mt-3 w-full border-t border-t-gray-200 bg-gray-50">
+        <div className="mt-3 w-full border-t border-t-gray-200">
           <NewListBtn
             getUserState={getUserState}
             addCategoryToStore={addCategoryToStore}

@@ -58,7 +58,7 @@ const SidebarLink = ({
   return (
     <Link href={href} onClick={onClick}>
       <li
-        className={`relative flex items-center justify-between px-3 py-2 text-sm font-normal text-gray-700 transition-all duration-300 hover:rounded-lg hover:bg-sidebar-hover ${
+        className={`relative flex items-center justify-between px-3 py-2 text-[0.95rem] font-normal text-gray-700 transition-all duration-300 hover:rounded-lg hover:bg-sidebar-hover ${
           isActive ? "rounded-md bg-sidebar-hover" : ""
         }`}
       >

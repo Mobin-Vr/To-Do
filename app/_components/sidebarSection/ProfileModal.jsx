@@ -36,7 +36,7 @@ export default function ProfileModal({ user }) {
   }
 
   return (
-    <div className="relative w-full bg-[#d6e3ff]">
+    <div className="relative w-full bg-[#d6e3ff] text-[0.95rem] text-gray-700">
       <div className="h-14 w-full">
         <div className="absolute top-6 flex w-full flex-col items-center justify-center">
           <UserButton
@@ -46,7 +46,7 @@ export default function ProfileModal({ user }) {
 
           <strong
             title={user.fullName}
-            className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap text-sm font-medium leading-tight"
+            className="mt-2 overflow-hidden overflow-ellipsis whitespace-nowrap text-nowrap font-medium leading-tight"
           >
             {user.fullName}
           </strong>
@@ -55,7 +55,7 @@ export default function ProfileModal({ user }) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white text-black">
+      <div className="overflow-hidden rounded-2xl bg-white">
         <div className="h-24 border-b border-b-gray-100 bg-white"></div>
         <div className="flex flex-col justify-center border-b border-gray-100 py-2">
           <Link
@@ -83,7 +83,7 @@ export default function ProfileModal({ user }) {
           </SignOutButton>
         </div>
 
-        <div className="py-2 text-black">
+        <div className="py-2">
           <button
             className="flex w-full items-center gap-3 px-4 py-2 hover:bg-accent-50"
             onClick={handleSyncingClick}
