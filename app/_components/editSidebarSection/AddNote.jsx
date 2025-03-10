@@ -12,8 +12,6 @@ function AddNote({ updateTaskInStore, task, isEditSidebarOpen }) {
     setNote(task.task_note || "");
   }, [task.task_note]);
 
-  console.log("task note:", task.task_note, "note:", note);
-
   useEffect(() => {
     const textarea = textareaRef.current;
     textarea.style.height = "auto"; // Reset height

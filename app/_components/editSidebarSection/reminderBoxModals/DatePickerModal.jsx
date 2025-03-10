@@ -19,8 +19,6 @@ export default function DatePickerModal({
 
   const [date, setDate] = useState(d);
 
-  console.log(date);
-
   function hanldeSave() {
     const due = date.toISOString();
     if (!isForTaskInput)

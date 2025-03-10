@@ -41,10 +41,11 @@ export default function Template({
   return (
     <div
       onClick={handleClick}
-      className="relative flex h-full w-dvw overflow-hidden"
+      className="relative flex h-full w-full overflow-hidden"
     >
       {/* Delete warn modal */}
       <DeleteWarningModal />
+
       {!showSearch ? (
         <div
           className="flex h-full w-full flex-col items-center justify-center"
