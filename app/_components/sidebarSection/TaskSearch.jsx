@@ -33,7 +33,7 @@ export default function TaskSearch() {
 
   return (
     <div
-      className="border-1 z-10 mb-3 h-[1.875rem] w-full overflow-hidden rounded-md border border-b-[2px] border-gray-200"
+      className="border-1 z-10 mb-3 h-[2.2rem] w-full overflow-hidden rounded-md border border-b-[2px] border-gray-200"
       style={{
         borderBottom: isTyping ? "2.5px solid #2563EB" : "2.5px solid #d1d5db",
       }}
