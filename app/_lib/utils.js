@@ -239,7 +239,7 @@ export function hasDatePassed(dateString) {
 export function getInvitationLink(token) {
   const baseUrl =
     process.env.NODE_ENV === "production"
-      ? `https://${process.env.VERCEL_URL}`
+      ? `https://ms-todo100.vercel.app`
       : process.env.NEXT_PUBLIC_BASE_URL;
 
   console.log("Generated baseUrl:", baseUrl);
