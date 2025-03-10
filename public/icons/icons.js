@@ -202,7 +202,7 @@ export const CompletedIcon = ({ size = "20", color = "currentColor" }) => (
   </svg>
 );
 
-export const MagnifierIcon = ({ size = "10", color = "currentColor" }) => (
+export const MagnifierIcon = ({ size = "13", color = "currentColor" }) => (
   <svg
     height={size}
     width={size}
@@ -215,7 +215,7 @@ export const MagnifierIcon = ({ size = "10", color = "currentColor" }) => (
   </svg>
 );
 
-export const XIcon = ({ size = "16", color = "currentColor" }) => (
+export const XIcon = ({ size = "20", color = "currentColor" }) => (
   <svg
     width={size}
     height={size}

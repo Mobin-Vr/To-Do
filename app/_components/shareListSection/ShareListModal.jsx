@@ -82,7 +82,7 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
   };
 
   return (
-    <div className="relative z-50 h-full overflow-hidden">
+    <div className="relative z-50 h-full w-full overflow-hidden">
       <AnimatePresence custom={direction} exitBeforeEnter>
         {currentView === "initial" && (
           <motion.div

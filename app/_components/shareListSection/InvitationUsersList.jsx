@@ -23,7 +23,7 @@ export default function InvitationUsersList({
 function User({ number, user, onRemoveUser, invitationId }) {
   return (
     <li className="flex items-center justify-start gap-3 px-1 py-2">
-      <span className="flex h-4 w-4 select-none items-center justify-center rounded-full bg-accent-200 text-xs text-blue-800">
+      <span className="flex h-5 w-fit min-w-5 select-none items-center justify-center rounded-full bg-blue-100 px-2 pt-1 text-[0.7rem] font-extralight leading-none text-gray-500">
         {number}
       </span>
 

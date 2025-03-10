@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 export default function Overlay({
   isOpen,
-  onClick,
+  onClick = () => {}, // Nothing to do by default
   className,
   children = null,
   zIndex = 40,

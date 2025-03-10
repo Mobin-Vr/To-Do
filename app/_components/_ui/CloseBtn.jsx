@@ -10,8 +10,8 @@ export default function CloseBtn({ toggleEditSidebar }) {
 
   return (
     <div className="flex w-full justify-end">
-      <button ref={closeRef} onClick={handleClose} className="p-1 pb-3">
-        <XIcon />
+      <button ref={closeRef} onClick={handleClose} className="px-3 py-3 pb-4">
+        <XIcon size="20" />
       </button>
     </div>
   );

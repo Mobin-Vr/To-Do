@@ -25,13 +25,13 @@ export default function ShareBtn({ theCategoryId, bgColor }) {
         <ShareIcon />
       </button>
 
-      <Overlay isOpen={isModalOpen} onClick={() => {}} zIndex={30}>
+      <Overlay isOpen={isModalOpen} zIndex={30}>
         <ModalTemplatePrimary
           isModalOpen={isModalOpen}
           toggleModal={toggleModal}
           justify="50%"
           isCenteredModal={true}
-          className="h-full max-h-[28rem] w-4/6 max-w-80"
+          className="h-full max-h-[28rem] w-4/5 max-w-80"
         >
           <SharedListModal
             toggleModal={toggleModal}

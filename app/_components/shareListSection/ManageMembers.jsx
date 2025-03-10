@@ -22,6 +22,7 @@ export default function ManageMembers({
     <div className="flex h-full flex-col justify-between text-sm font-light text-black">
       <div className="w-full border-b border-b-gray-300 px-2 py-3 text-center">
         <p className="font-normal">Joined members</p>
+
         <button
           onClick={onBackToLinkCreated}
           className="absolute left-2 top-2 scale-x-[-1] transform p-2 text-gray-500"
