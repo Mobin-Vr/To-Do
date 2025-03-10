@@ -242,6 +242,8 @@ export function getInvitationLink(token) {
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NEXT_PUBLIC_BASE_URL;
 
+  console.log("Generated baseUrl:", baseUrl);
+
   const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
 
   return invitationLink;
