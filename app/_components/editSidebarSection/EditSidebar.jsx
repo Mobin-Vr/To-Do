@@ -4,16 +4,16 @@ import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { validate } from "uuid";
 import { useShallow } from "zustand/react/shallow";
 import CloseBtn from "../_ui/CloseBtn";
+import Overlay from "../_ui/Overlay";
 import ActionFooter from "./ActionFooter";
 import AddFile from "./AddFile";
 import AddNote from "./AddNote";
 import AddToMyDay from "./AddToMyDay";
 import ReminderBox from "./reminderBoxSection/ReminderBox";
 import TaskOverView from "./TaskOverView";
-import { validate } from "uuid";
-import Overlay from "../_ui/Overlay";
 
 export default function EditSidebar() {
   const pageName = usePathname().split("/").at(-1);
@@ -43,12 +43,6 @@ export default function EditSidebar() {
       deletingType: state.deletingType,
     })),
   );
-
-  // Set active task as null on mount
-  useEffect(() => {
-    if (activeTask) setActiveTask(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Refer to the comment "1"
   useEffect(() => {
@@ -92,26 +86,22 @@ export default function EditSidebar() {
       />
 
       <div
-        className={`edit-sidebar fixed bottom-0 right-0 top-0 z-40 flex w-3/4 max-w-full transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-all duration-300 ease-in-out sm:max-w-72 md:max-w-80 ${
+        className={`edit-sidebar fixed bottom-0 right-0 top-0 z-40 flex w-4/5 max-w-full transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-all duration-300 ease-in-out sm:max-w-72 md:max-w-80 ${
           isEditSidebarOpen
             ? "max-w-full translate-x-0"
             : "max-w-0 translate-x-full"
         }`}
         style={{ overflow: "hidden" }}
       >
-        <div className="flex flex-col px-3 py-3">
+        <div className="flex h-full flex-col overflow-y-scroll px-3 py-3">
           <CloseBtn toggleEditSidebar={toggleEditSidebar} />
 
-          <div className="flex flex-1 flex-col gap-2.5 justify-self-start overflow-y-scroll">
+          <div className="flex flex-1 flex-col gap-2.5 justify-self-start">
             <TaskOverView task={activeTask} bgColor={bgColor} />
             <AddToMyDay task={activeTask} />
             <ReminderBox task={activeTask} />
             <AddFile />
-            <AddNote
-              task={activeTask}
-              updateTaskInStore={updateTaskInStore}
-              isEditSidebarOpen={isEditSidebarOpen}
-            />
+            <AddNote task={activeTask} updateTaskInStore={updateTaskInStore} />
           </div>
         </div>
 

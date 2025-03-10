@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import BoxTemplate from "./BoxTemplate";
 import { MAX_INPUT_TEXTAREA } from "@/app/_lib/configs";
+import autosize from "autosize";
 
-function AddNote({ updateTaskInStore, task, isEditSidebarOpen }) {
+function AddNote({ updateTaskInStore, task }) {
   const textareaRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
 
@@ -12,11 +13,8 @@ function AddNote({ updateTaskInStore, task, isEditSidebarOpen }) {
     setNote(task.task_note || "");
   }, [task.task_note]);
 
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    textarea.style.height = "auto"; // Reset height
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  }, [isEditSidebarOpen, task.task_note]);
+  // Using the autosize library to automatically adjust the height of the textarea
+  autosize(textareaRef.current);
 
   // Handle blur event (when the textarea loses focus)
   function handleBlur() {
