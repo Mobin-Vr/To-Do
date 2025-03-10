@@ -572,6 +572,8 @@ const useTaskStore = create(
           try {
             const userState = get().userState;
 
+            throw new Error("ERR-ERR");
+
             const token = await createInvitationAction(
               categoryId,
               userState.user_id,

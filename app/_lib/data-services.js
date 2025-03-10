@@ -164,6 +164,8 @@ export async function createInvitation(categoryId, ownerId) {
     param_owner_id: ownerId,
   });
 
+  console.log("Supabase Error:", error);
+
   if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;
@@ -250,10 +252,7 @@ export async function getJoinedInvitations(userId) {
 
 // Adds a new error log entry to the "errors_log" table
 export async function addManyErrorLog(errorLogArr) {
-  const { data, error } = await supabase
-    .from("errors_log")
-    .insert(errorLogArr)
-    .select();
+  const { data, error } = await supabase.from("errors_log").insert(errorLogArr);
 
   if (error) throw new Error(error.message || JSON.stringify(error));
 
