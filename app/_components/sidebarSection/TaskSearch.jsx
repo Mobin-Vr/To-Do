@@ -47,9 +47,11 @@ export default function TaskSearch() {
             {searchInput && <XIcon />}
           </button>
 
-          <button className="flex h-4 w-4 items-center justify-center rounded-md hover:bg-gray-200">
-            <MagnifierIcon />
-          </button>
+          {!isTyping && !searchInput && (
+            <span className="flex h-4 w-4 items-center justify-center rounded-md hover:bg-gray-200">
+              <MagnifierIcon />
+            </span>
+          )}
         </div>
 
         <input

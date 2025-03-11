@@ -13,6 +13,7 @@ import Spinner from "./_components/_ui/Spinner";
 import UnsavedChangesWarning from "./_components/UnsavedChangesWarning";
 import { SignedOut } from "@clerk/nextjs";
 import ResetTaskStore from "./_components/ResetTaskStore";
+import ReloadStoreInitializer from "./_components/ReloadStoreInitializer";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -60,6 +61,9 @@ export default async function RootLayout({ children }) {
 
             {/* This component handles checking and creating a new user in the database upon sign-in */}
             <UserSignupHandler />
+
+            {/* Reset some store variables on page reload */}
+            <ReloadStoreInitializer />
 
             {/* get new tasks in real time */}
             <TaskRealTimeListener />

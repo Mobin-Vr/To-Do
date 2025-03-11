@@ -86,12 +86,11 @@ export default function EditSidebar() {
       />
 
       <div
-        className={`edit-sidebar fixed bottom-0 right-0 top-0 z-40 flex w-4/5 max-w-full transform flex-col justify-between rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-all duration-300 ease-in-out sm:max-w-72 md:max-w-80 ${
+        className={`edit-sidebar fixed bottom-0 right-0 top-0 z-40 flex w-4/5 transform flex-col justify-between overflow-hidden rounded-l-md border border-gray-300 bg-sidebar-main text-sm font-light text-black shadow-2xl transition-all duration-300 ease-in-out ${
           isEditSidebarOpen
-            ? "max-w-full translate-x-0"
+            ? "max-w-80 translate-x-0"
             : "max-w-0 translate-x-full"
         }`}
-        style={{ overflow: "hidden" }}
       >
         <div className="flex h-full flex-col overflow-y-scroll px-3 py-3">
           <CloseBtn toggleEditSidebar={toggleEditSidebar} />

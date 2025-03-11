@@ -64,10 +64,48 @@ const useTaskStore = create(
   devtools(
     persist(
       (set, get) => ({
-        ...initialState,
+        sortMethod: initialState.sortMethod,
+        sortMethodForShared: initialState.sortMethodForShared,
+        showSpinner: initialState.showSpinner,
+
+        // UI State
+        isSidebarOpen: initialState.isSidebarOpen,
+        isEditSidebarOpen: initialState.isEditSidebarOpen,
+        editTitleWhileCreating: initialState.editTitleWhileCreating,
+
+        // Sync and Connection State
+        isSyncing: initialState.isSyncing,
+        offlineLogMode: initialState.offlineLogMode,
+        conectionStatus: initialState.conectionStatus,
+        changeLog: initialState.changeLog,
+        errorLog: initialState.errorLog,
+
+        // User and Tasks Data
+        userState: initialState.userState,
+        tasksList: initialState.tasksList,
+        activeTask: initialState.activeTask,
+        categoriesList: initialState.categoriesList,
+
+        // Sharing and Invitations
+        invitations: initialState.invitations,
+        sharedWithMe: initialState.sharedWithMe,
+
+        // Delete Modal Management
+        isDeleteModalOpen: initialState.isDeleteModalOpen,
+        deletingType: initialState.deletingType,
+        deletingItemName: initialState.deletingItemName,
+        deleteCallback: initialState.deleteCallback,
 
         // # Reset state
         resetStore: () => set(initialState),
+
+        // # Reset on reload
+        resetOnReload: () => {
+          set({
+            isSidebarOpen: false,
+            isEditSidebarOpen: false,
+          });
+        },
 
         /////////////////////////////
         /////////// Task ////////////
