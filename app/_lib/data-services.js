@@ -164,8 +164,6 @@ export async function createInvitation(categoryId, ownerId) {
     param_owner_id: ownerId,
   });
 
-  console.log("Supabase Error:", error);
-
   if (error) throw new Error(error.message || JSON.stringify(error));
 
   return data;

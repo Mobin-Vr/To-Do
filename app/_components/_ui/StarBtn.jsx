@@ -20,7 +20,7 @@ export default function StarBtn({ task, starBtnRef, className, bgColor }) {
       }
     >
       {task.is_task_starred ? (
-        <span style={{ color: bgColor.iconSecondaryColor }}>
+        <span style={{ color: bgColor?.iconSecondaryColor }}>
           <FullStarIcon />
         </span>
       ) : (

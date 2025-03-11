@@ -35,7 +35,7 @@ export default function StepCompleteBtn({ task, step, className, bgColor }) {
       className={`group relative cursor-default bg-transparent transition-all duration-300 ease-in-out ${className}`}
     >
       {step.is_step_completed ? (
-        <span style={{ color: bgColor.iconSecondaryColor }}>
+        <span style={{ color: bgColor?.iconSecondaryColor }}>
           <CompletedIcon size="16" />
         </span>
       ) : (
@@ -49,7 +49,7 @@ export default function StepCompleteBtn({ task, step, className, bgColor }) {
 
           <span
             className="hidden group-hover:block"
-            style={{ color: bgColor.iconSecondaryColor }}
+            style={{ color: bgColor?.iconSecondaryColor }}
           >
             <TickCircleIcon size="16" />
           </span>
