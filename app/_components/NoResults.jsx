@@ -34,7 +34,7 @@ export default function NoResults({ query, bgColor }) {
         >
           We couldn&apos;t find any matches for &quot;{query}&quot;.
           <br />
-          Try searching with different keywords.
+          Try with different keywords.
         </p>
 
         <div className="flex w-full cursor-pointer justify-center">

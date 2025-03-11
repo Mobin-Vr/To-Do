@@ -39,16 +39,18 @@ export default function TaskSearch() {
       }}
     >
       <form className="relative flex h-full w-full items-center">
-        <div className="absolute right-2 flex cursor-pointer items-center gap-1">
-          <button
-            className="flex h-4 w-4 items-center justify-center rounded-md hover:bg-gray-200"
-            onClick={handleClearInputs}
-          >
-            {searchInput && <XIcon />}
-          </button>
+        <div className="absolute right-2 flex items-center gap-1">
+          {searchInput && (
+            <button
+              className="flex h-5 w-5 cursor-pointer items-center justify-center rounded-md p-0.5 hover:bg-gray-100"
+              onClick={handleClearInputs}
+            >
+              <XIcon />
+            </button>
+          )}
 
           {!isTyping && !searchInput && (
-            <span className="flex h-4 w-4 items-center justify-center rounded-md hover:bg-gray-200">
+            <span className="flex h-5 w-5 items-center justify-center">
               <MagnifierIcon />
             </span>
           )}

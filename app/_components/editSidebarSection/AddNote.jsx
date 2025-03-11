@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import BoxTemplate from "./BoxTemplate";
 import { MAX_INPUT_TEXTAREA } from "@/app/_lib/configs";
 import autosize from "autosize";
+import { useEffect, useRef, useState } from "react";
+import BoxTemplate from "./BoxTemplate";
 
 function AddNote({ updateTaskInStore, task }) {
   const textareaRef = useRef(null);
@@ -9,12 +9,13 @@ function AddNote({ updateTaskInStore, task }) {
 
   const [note, setNote] = useState(task.task_note || ""); // Local state to store the note
 
+  autosize(textareaRef.current);
+
   useEffect(() => {
     setNote(task.task_note || "");
   }, [task.task_note]);
 
   // Using the autosize library to automatically adjust the height of the textarea
-  autosize(textareaRef.current);
 
   // Handle blur event (when the textarea loses focus)
   function handleBlur() {

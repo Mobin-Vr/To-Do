@@ -1,6 +1,7 @@
 import { MAX_INPUT_TASK_TITLE } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
-import { useState, useEffect, useRef } from "react";
+import autosize from "autosize";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export default function TaskTitleEditor({ task, className }) {
@@ -15,13 +16,7 @@ export default function TaskTitleEditor({ task, className }) {
   const [currentTitle, setCurrentTitle] = useState(task.task_title);
   const [previousTitle, setPreviousTitle] = useState(task.task_title);
 
-  // Adjusts the height of the textarea dynamically based on content
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [currentTitle]);
+  autosize(textareaRef.current);
 
   // Syncs `currentTitle` with `task.task_title` when the task updates
   useEffect(() => {
