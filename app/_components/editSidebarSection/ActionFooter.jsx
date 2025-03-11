@@ -21,7 +21,7 @@ export default function ActionFooter({
   }
 
   return (
-    <div className="border-t-1 relative flex h-12 items-center justify-between gap-4 border border-gray-200 p-3 font-light text-gray-700">
+    <div className="border-t-1 relative flex h-12 items-center justify-between gap-4 border border-gray-300 p-3 font-light text-gray-700">
       <span className="w-full text-center text-[0.8rem]">
         {ActionFooterText}
       </span>

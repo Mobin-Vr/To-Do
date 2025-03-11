@@ -8,10 +8,10 @@ export default function ReminderBox({ task }) {
   return (
     <BoxTemplate className="flex flex-col justify-center">
       <AddReminder task={task} />
-      <Border />
+      <Border className="bg-gray-300" />
 
       <AddDue task={task} />
-      <Border />
+      <Border className="bg-gray-300" />
 
       <AddRepeat task={task} />
     </BoxTemplate>
