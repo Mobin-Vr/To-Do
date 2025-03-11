@@ -2,6 +2,7 @@ import useTaskStore from "@/app/taskStore";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { MAX_INPUT_CAT_TITLE } from "../_lib/configs";
+import autosize from "autosize";
 
 export default function CategoryTitleEditor({ theCategory, className }) {
   const textareaRef = useRef(null);
@@ -23,12 +24,7 @@ export default function CategoryTitleEditor({ theCategory, className }) {
     theCategory?.category_title,
   );
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [theCategory?.title]);
+  autosize(textareaRef.current);
 
   // Focus on textarea only when it has just created
   useEffect(() => {
@@ -49,10 +45,7 @@ export default function CategoryTitleEditor({ theCategory, className }) {
   function handleUpdateTitle(e) {
     setCurrentTitle(e.target.value);
 
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
+    autosize(textareaRef.current);
   }
 
   // 3. Store the title if it's not empty, otherwise restore the previous one (onBlur)

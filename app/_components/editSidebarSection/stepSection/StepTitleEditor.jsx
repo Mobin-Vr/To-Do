@@ -1,4 +1,5 @@
 import useTaskStore from "@/app/taskStore";
+import autosize from "autosize";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -16,12 +17,7 @@ export default function StepTitleEditor({ step, task, className }) {
   // Store the previous title value
   const [previousTitle, setPreviousTitle] = useState(step.title);
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [step.title]);
+  autosize(textareaRef.current);
 
   // 1. Save the current value when input is focused (onFocus)
   function handleFocus() {
@@ -33,10 +29,7 @@ export default function StepTitleEditor({ step, task, className }) {
   function handleUpdateTitle(e) {
     setCurrentTitle(e.target.value);
 
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
+    autosize(textareaRef.current);
   }
 
   // 3. Store the title if it's not empty, otherwise restore the previous one (onBlur)
