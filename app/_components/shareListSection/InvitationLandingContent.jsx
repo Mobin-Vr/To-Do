@@ -35,6 +35,8 @@ export default function InvitationLandingContent({ token }) {
     });
   }
 
+  if (!user) return null;
+
   // Only render content when on the client
   if (!isClient) return null;
 
@@ -81,7 +83,7 @@ export default function InvitationLandingContent({ token }) {
                 forceRedirectUrl={`/tasks/invite?token=${token}`}
               />
 
-              <span className="px-10 text-sm text-gray-600">
+              <span className="select-none px-10 text-sm text-gray-600">
                 You don&apos;t have an account. <br />
                 Sign in / up first.
               </span>

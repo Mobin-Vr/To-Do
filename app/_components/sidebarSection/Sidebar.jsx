@@ -62,6 +62,8 @@ export default function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isSidebarOpen, toggleSidebar]);
 
+  if (!user) return null;
+
   // Refer to the comment "1"
   const isAtaskPage = RELEVENT_APP_PAGES.some((page) => page === pageName);
   if (!isAtaskPage) return;
@@ -85,7 +87,7 @@ export default function Sidebar() {
 
       <div
         ref={sidebarRef}
-        className={`absolute bottom-0 left-0 top-0 z-30 flex w-4/5 transform flex-col justify-between overflow-hidden rounded-r-md border border-gray-300 bg-sidebar-main px-4 pt-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:static md:max-w-80 md:translate-x-0 ${
+        className={`absolute bottom-0 left-0 top-0 z-30 flex w-4/5 max-w-32 transform flex-col justify-between overflow-hidden rounded-r-md border border-gray-300 bg-sidebar-main px-4 pt-6 text-black shadow-2xl transition-transform duration-300 ease-in-out sm:max-w-72 md:static md:max-w-80 md:translate-x-0 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

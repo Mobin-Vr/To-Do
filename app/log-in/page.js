@@ -27,7 +27,7 @@ export default async function Page() {
 
           <div className="flex w-full cursor-pointer justify-center">
             <SignInButton mode="modal" forceRedirectUrl="/tasks">
-              <span className="w-1/2 rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700">
+              <span className="w-1/2 select-none rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700">
                 Sign In
               </span>
             </SignInButton>
