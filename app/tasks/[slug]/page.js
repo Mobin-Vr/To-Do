@@ -5,7 +5,7 @@ import NotFoundComponent from "@/app/_components/NotFoundComponent";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
-import { notFound, redirect, useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 

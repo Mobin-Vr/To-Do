@@ -1,8 +1,169 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### **Persian version ▶️ [نسخه فارسی](README.fa.md)**
 
-## Getting Started
+&nbsp;
 
-First, run the development server:
+# Task Management App
+
+A **feature-rich task management application** inspired by Microsoft To Do. Built with **Next.js 15 (App Router)** and **Supabase**, this app supports real-time collaboration, task organization, and offline change persistence.
+
+<br>
+
+## 📷 Preview
+
+_(Add a GIF or image showcasing the app UI here)_
+
+💡 **Built with precision, performance, and security in mind.**
+
+<br>
+
+## 🚀 Features
+
+- **Custom & Default Lists**: Users can create lists and organize their tasks. A special "My Day" list displays tasks for the current day.
+- **Real-time Task Sync**: Shared lists sync across users instantly using **Supabase Realtime & RLS**.
+- **List Invitation & Access Control**:
+
+  - Share lists with others through invitation links.
+  - Remove users from shared lists.
+  - Disable list sharing for users: This will restrict access to the list, allowing only the owner to view and modify it.
+  - Disable invitation links: This prevents new users from being added to the shared list through invitation links.
+
+- **Task Management**:
+  - Star, mark as completed, and categorize tasks.
+  - Add notes and subtasks (steps) to tasks.
+  - Set reminders, due dates, and repeat rules.
+- **Offline Support & Change Log Mechanism**:
+
+  - If the connection drops, changes are logged and synced when reconnected.
+  - Ensures data consistency even during network failures.
+
+- **Task Reminder Alarm**: A pop-up alarm triggers when a task's time reminder is up, ensuring that users are notified instantly at the scheduled time.
+
+- **Client-Side Optimizations**:
+
+  - Uses **Zustand for state management**, stored in **Session Storage** to boost performance.
+  - Prevents unnecessary database requests by only syncing relevant changes.
+
+- **Error Collection & Future Fixes**: Collects all client-side errors and sends them to the database to be addressed and fixed in future versions.
+
+- **Route Protection**: Implemented using middleware and Clerk, ensuring only authenticated users can access sensitive pages, protecting restricted areas of the app.
+
+- **Task Search**: Enables searching between the user’s tasks and tasks shared with the user, making it easy to find and manage tasks across all lists.
+
+- **Full Responsive & Mobile-First Design**:
+
+  - Carefully crafted UI with pixel-perfect details.
+  - **Framer Motion** is used for smooth transitions and modal animations, providing a soft and attractive user experience.
+  - **Custom Color System**: A separate color scheme for each list component, ensuring unique visual identities.
+  - **Themed Loading Spinner**: A loading spinner that aligns with the overall theme, ensuring all components feel integrated with the app's design.
+  - **Custom Images**: Used for designing key pages like login, join invitations, and "My Day," adding visually appealing, intricate elements to the UI.
+
+<br>
+
+## 🛠️ Tech Stack
+
+| Technology                  | Purpose                                      |
+| --------------------------- | -------------------------------------------- |
+| **Next.js 15 (App Router)** | Main framework                               |
+| **Supabase**                | Database, Realtime Sync (RLS, RPC)           |
+| **Clerk**                   | Authentication & User Management             |
+| **Server Actions**          | Secure database interactions                 |
+| **Zustand**                 | State Management (stored in Session Storage) |
+| **Tailwind CSS**            | Styling                                      |
+| **Framer Motion**           | Smooth animations for transitions and modals |
+|                             |
+
+<br>
+
+## 🏆 Technical Challenges & Solutions
+
+### **1️⃣ Real-Time Synchronization Issues**
+
+- **Challenge**: Keeping tasks **consistently synced** between multiple users while avoiding race conditions.
+- **Solution**: Used **Supabase Realtime + RPC functions** to ensure users always receive the latest data. If the real-time listener fails, an **RPC function is triggered on reload** to fetch the latest state.
+
+### **2️⃣ Security & Authorization (RLS & RPC)**
+
+- **Challenge**: Preventing unauthorized modifications.
+- **Solution**: Implemented **Row Level Security (RLS) & RPC functions**, enforcing strict authentication and authorization checks **directly at the database level**.
+
+### **3️⃣ Handling Offline Mode & Change Log**
+
+- **Challenge**: Ensuring tasks are **not lost** when users go offline.
+- **Solution**: Implemented a **Change Log Mechanism** that temporarily stores updates in **Session Storage** and syncs them when the connection is restored.
+
+  - All changes are consolidated to optimize database writes and prevent unnecessary operations.
+  - Multiple updates to the same task are batched into a single optimized request.
+
+### **4️⃣ Task Recurrence & Reminder System**
+
+- **Challenge**: Handling **due dates, repeat rules, and reminders** seamlessly.
+- **Solution**: Built a **custom recurrence logic** and integrated a notification system that triggers reminders via **modal pop-ups**.
+
+<br>
+
+## 🎯 Key Architectural Decisions
+
+- **Next.js**: I chose that for its seamless integration of front-end and back-end development. With **(SSR)** and **Server Actions**, it allows efficient and secure client-database communication, simplifying the architecture and enabling rapid, scalable development for feature-rich, real-time applications.
+
+- **Server Actions**: Server Actions serve as an intermediary, securely managing client-database communication and preventing direct client-to-database connections.
+
+  - Enhanced Security
+  - Control over Data Flow
+
+- **Security, Authentication & Authorization**:
+
+  - No Direct Client-Database Connection: All interactions are routed through Server Actions to enhance security and reliability.
+
+  - Authentication & Authorization: Managed at the database level using RLS and RPC functions, ensuring only authorized users can access sensitive data.
+
+- **RPC Functions for Critical Updates**: Ensures **atomic database operations**, preventing inconsistent states and ensuring reliable data updates across the app.
+
+- **Zustand for State Management**: State is stored in **Session Storage**, improving performance by persisting state and reducing unnecessary re-renders.
+
+<br>
+
+## 📌 Lessons Learned
+
+This project helped refine my skills in:
+
+- **Advanced Next.js & Server Actions**
+- **Database security (RLS, RPC, Supabase Functions)**
+- **Optimizing state management (Zustand + Session Storage)**
+- **Building resilient real-time systems**
+- **Handling offline sync & managing conflicts**
+
+&nbsp;
+
+&nbsp;
+
+# You can use or test the app in two ways
+
+### 🅰️ Use the live version on Vercel
+
+Simply visit the following URL:
+[Microsoft Todo](https://ms-todo100.vercel.app)
+
+### ⚠️ Note
+
+- Google login in Clerk requires a good VPN due to sanctions.
+- If login fails, use the following test account (Just for test):
+
+  ```
+  Username:  test1
+  Password:  11223344.Rr
+  ```
+
+---
+
+### 🅱️ Run the project locally:
+
+1️⃣ Clone the repository from GitHub
+
+```bash
+git clone https://github.com/Mobin-Vr/To-Do.git
+```
+
+2️⃣ Run the development server
 
 ```bash
 npm run dev
@@ -14,23 +175,4 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3️⃣ Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

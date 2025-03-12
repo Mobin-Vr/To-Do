@@ -16,7 +16,7 @@ export default function NewListBtn({
     })),
   );
 
-  function handleNewList() {
+  async function handleNewList() {
     const uuId = generateNewUuid();
 
     const newCategory = {
@@ -28,7 +28,7 @@ export default function NewListBtn({
       has_category_collaborator: false,
     };
 
-    addCategoryToStore(newCategory);
+    await addCategoryToStore(newCategory);
     toggleTitleFocus(true);
     toggleSidebar();
 
