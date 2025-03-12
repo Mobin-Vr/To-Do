@@ -155,7 +155,7 @@ Simply visit the following URL ▶️
 
 ---
 
-### 🅱️ Run the project locally:
+### 🅱️ Run the project locally
 
 1️⃣ Clone the repository from GitHub
 
