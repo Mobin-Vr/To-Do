@@ -1,4 +1,4 @@
-<div dir="rtl" align="right">
+
 
 ### **نسخه انگلیسی ◀️ [English version](README.fa.md)**
 
