@@ -140,7 +140,7 @@ This project helped refine my skills in:
 
 ### 🅰️ Use the live version on Vercel
 
-Simply visit the following URL:
+Simply visit the following URL ▶️
 [Microsoft Todo](https://ms-todo100.vercel.app)
 
 ### ⚠️ Note
