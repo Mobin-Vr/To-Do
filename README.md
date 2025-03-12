@@ -1,7 +1,7 @@
 <div style="display: flex; align-items: center; justify-content: center;">
   <h1 style="margin: 0; display: flex; align-items: center;">
     <img src="public/icons/logo.png" alt="persian" style="width: 35px; height: 35px; border-radius: 3px; margin-right: 10px;" />
-    Microsoft Todo&nbsp;<small style="font-size: 0.65em;">(clone)</small>
+    Microsoft Todo&nbsp;<small style="font-size: 0.7em;">(clone)</small>
   </h1>
 </div>
 
