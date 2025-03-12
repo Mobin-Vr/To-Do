@@ -1,10 +1,13 @@
-### **Persian version ▶️ [نسخه فارسی](README.fa.md)**
+<div style="display: flex; align-items: center; justify-content: center;">
+  <h1 style="margin: 0; display: flex; align-items: center;">
+    <img src="public/icons/logo.png" alt="persian" style="width: 35px; height: 35px; border-radius: 3px; margin-right: 10px;" />
+    Microsoft Todo&nbsp;<small style="font-size: 0.65em;">(clone)</small>
+  </h1>
+</div>
 
-&nbsp;
+<br>
 
-# Task Management App
-
-A **feature-rich task management application** inspired by Microsoft To Do. Built with **Next.js 15 (App Router)** and **Supabase**, this app supports real-time collaboration, task organization, and offline change persistence.
+A **feature-rich** **task management app** inspired by **Microsoft To Do**, with complete features for organizing and tracking your tasks. This app allows you to easily **share your task lists** with friends or colleagues. Manage your tasks anytime and anywhere, and never forget any of them.
 
 <br>
 
@@ -140,8 +143,7 @@ This project helped refine my skills in:
 
 ### 🅰️ Use the live version on Vercel
 
-Simply visit the following URL ▶️
-[Microsoft Todo](https://ms-todo100.vercel.app)
+#### Simply visit this link ▶️ [Microsoft Todo clone](https://ms-todo100.vercel.app)
 
 ### ⚠️ Note
 
@@ -155,7 +157,7 @@ Simply visit the following URL ▶️
 
 ---
 
-### 🅱️ Run the project locally
+### 🅱️ Run the project locally:
 
 1️⃣ Clone the repository from GitHub
 
