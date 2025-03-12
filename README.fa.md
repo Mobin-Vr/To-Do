@@ -1,8 +1,18 @@
+<style>
+  ul {
+    list-style-position: inside;
+    text-align: right;
+  }
+</style>
 
+<div dir="rtl" align="right">
 
 ### **نسخه انگلیسی ◀️ [English version](README.fa.md)**
 
 <br>
+
+<div id="user-content-toc">
+  <ul>
 
 # اپلیکیشن مدیریت تسک
 
@@ -183,4 +193,7 @@ bun dev
 
 3️⃣ Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+</div>
+
+  </ul>
 </div>
