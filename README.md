@@ -13,12 +13,13 @@ A **feature-rich** **task management app** inspired by **Microsoft To Do**, with
 
 ## 📷 Preview
 
-<div style="display: flex; flex-direction:column; align-items: center; justify-content: center;">
+<div style="display: flex; align-items: center; justify-content: center;">
 <img  src="public/screenshots/appPreview.gif" width="260" alt="App Preview">
-<h4>
-💡 Built with precision, performance, and security in mind.
-</h4>
 </div>
+
+<br>
+
+💡 **Built with precision, performance, and security in mind.**
 
 <br>
 
