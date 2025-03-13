@@ -13,7 +13,9 @@ A **feature-rich** **task management app** inspired by **Microsoft To Do**, with
 
 ## 📷 Preview
 
-![](public/screenshots/appPreview.gif)
+<div style="display: flex; align-items: center; justify-content: center;">
+<img src="https://github.com/Mobin-Vr/To-Do/blob/main/public/ScreenShots/appPreview.gif" width="260" alt="App Preview">
+</div>
 
 💡 **Built with precision, performance, and security in mind.**
 
