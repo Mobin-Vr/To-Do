@@ -56,9 +56,9 @@ A **feature-rich** **task management app** inspired by **Microsoft To Do**, with
 
 - **Full Responsive & Mobile-First Design**:
 
+  - Designed and implemented a dynamic theme system that applies custom colors for each route, independent from Tailwind or CSS variables — fully modular and runtime-configurable.
   - Carefully crafted UI with pixel-perfect details.
   - **Framer Motion** is used for smooth transitions and modal animations, providing a soft and attractive user experience.
-  - **Custom Color System**: A separate color scheme for each list component, ensuring unique visual identities.
   - **Themed Loading Spinner**: A loading spinner that aligns with the overall theme, ensuring all components feel integrated with the app's design.
   - **Custom Images**: Used for designing key pages like login, join invitations, and "My Day," adding visually appealing, intricate elements to the UI.
 
