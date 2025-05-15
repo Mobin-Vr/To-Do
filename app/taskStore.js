@@ -1161,11 +1161,18 @@ const useTaskStore = create(
 
             if (!userId) return;
 
-            // Fetch all relevant tasks, categories, and invitations (shared + owned)
-            const fetchedTasks = await getReleventTasksAction(userId);
-            const fetchedCategories = await getReleventCategoriesAction(userId);
-            const fetchedOwnerInvs = await getOwnerInvitationsAction(userId);
-            const fetchedJoinedInvs = await getJoinedInvitationsAction(userId);
+            // Fetch all relevant data in parallel
+            const [
+              fetchedTasks,
+              fetchedCategories,
+              fetchedOwnerInvs,
+              fetchedJoinedInvs,
+            ] = await Promise.all([
+              getReleventTasksAction(userId),
+              getReleventCategoriesAction(userId),
+              getOwnerInvitationsAction(userId),
+              getJoinedInvitationsAction(userId),
+            ]);
 
             // Remove duplicate tasks based on task_id
             // eslint-disable-next-line no-undef
