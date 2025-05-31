@@ -152,17 +152,6 @@ This project helped refine my skills in:
 
 &nbsp;
 
-# You can use or test the app in this way
-
-### Use the live version on Vercel
-
-#### Simply visit this link ▶️ [Microsoft Todo clone](https://ms-todo100.vercel.app)
-
-### ⚠️ Note
-
-- Google login in Clerk requires a good VPN due to sanctions.
-- If login fails, use the following test account (Just for test):
-
   ```
   Username:  test1
   Password:  11223344.Rr
