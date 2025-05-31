@@ -152,9 +152,9 @@ This project helped refine my skills in:
 
 &nbsp;
 
-# You can use or test the app in two ways
+# You can use or test the app in this way
 
-### 🅰️ Use the live version on Vercel
+### Use the live version on Vercel
 
 #### Simply visit this link ▶️ [Microsoft Todo clone](https://ms-todo100.vercel.app)
 
