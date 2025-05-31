@@ -11,6 +11,17 @@ A **feature-rich** **task management app** inspired by **Microsoft To Do**, with
 
 <br>
 
+## 🌐 Live Demo - [**Click to Try Now**](https://ms-todo100.vercel.app)
+> ⚠️ **Google** login in Clerk may requires a **VPN** (due to sanctions).  
+> If login fails, use this test account:
+
+```makefile
+Username:  test1
+Password:  11223344.Rr
+```
+
+<br>
+
 ## 📷 Preview
 
 <div style="display: flex; align-items: center; justify-content: center;">
