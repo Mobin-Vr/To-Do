@@ -68,14 +68,6 @@ export default function Sidebar() {
   const isAtaskPage = RELEVENT_APP_PAGES.some((page) => page === pageName);
   if (!isAtaskPage) return;
 
-  async function createClerkPasskey() {
-    try {
-      await user?.createPasskey();
-    } catch (err) {
-      console.error("Error:", JSON.stringify(err, null, 2));
-    }
-  }
-
   return (
     <>
       <Overlay
@@ -98,11 +90,7 @@ export default function Sidebar() {
             bgColor={BG_COLORS["/default"]}
           />
 
-          <UserMenu
-            className="mb-3 mt-2"
-            user={user}
-            createClerkPasskey={createClerkPasskey}
-          />
+          <UserMenu className="mb-3 mt-2" user={user} />
 
           <TaskSearch />
 

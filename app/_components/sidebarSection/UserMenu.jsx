@@ -5,7 +5,7 @@ import Overlay from "../_ui/Overlay";
 import ProfileModal from "./ProfileModal";
 import UserStatus from "./UserStatus";
 
-function UserMenu({ user, createClerkPasskey, className }) {
+function UserMenu({ user, className }) {
   const userMenuBtnRef = useRef(null);
   const modalRef = useRef(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

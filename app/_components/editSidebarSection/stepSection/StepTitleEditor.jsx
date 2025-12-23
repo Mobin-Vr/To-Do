@@ -1,6 +1,6 @@
 import useTaskStore from "@/app/taskStore";
 import autosize from "autosize";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export default function StepTitleEditor({ step, task, className }) {
