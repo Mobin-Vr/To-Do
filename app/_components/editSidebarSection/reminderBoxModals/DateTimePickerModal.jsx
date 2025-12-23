@@ -15,9 +15,9 @@ export default function DateTimePickerModal({
 }) {
   const d = task
     ? task.task_reminder
-      ? new Date(task.task_reminder)
-      : ""
-    : new Date(InputSelectedDate);
+      ? new Date(task.task_reminder) // use existing reminder date
+      : new Date() // default to now if no reminder set (avoid undefined error)
+    : new Date(InputSelectedDate); // use selected date from input
 
   const t = task
     ? task.task_reminder

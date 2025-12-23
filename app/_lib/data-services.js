@@ -274,5 +274,7 @@ export async function checkDatabaseHealth() {
     return { online: false, error: error.message };
   }
 
+  console.log(data);
+
   return { online: true, status: data.status };
 }

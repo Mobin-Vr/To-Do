@@ -1,3 +1,5 @@
+export const TASK_SYNC_FAIL_TOAST_MSG =
+  "Couldn't sync with the server. Will retry once connected.";
 ///////////////////////////////////////////////////////////
 const duration = 60000; // 1 min
 export const ALARM_STOP_TIMEOUT = duration;
