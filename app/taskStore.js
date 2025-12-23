@@ -21,7 +21,7 @@ import {
   updateManyCategoriesAction,
   updateManyTasksAction,
 } from "./_lib/Actions";
-import { defaultCategory } from "./_lib/configs";
+import { defaultCategory, TASK_SYNC_FAIL_TOAST_MSG } from "./_lib/configs";
 import { logger } from "./_lib/logger";
 import { delay, getDateNowIso } from "./_lib/utils";
 
@@ -136,11 +136,9 @@ const useTaskStore = create(
 
             if (onlineStatus) await addManyTasksAction([task]);
           } catch (error) {
-            logger.error("Error adding task: ", error);
+            logger.error("Error adding task: ", error.message);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "addTaskToStore",
               message: error.message,
@@ -219,9 +217,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error deleting task: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "deleteTaskFromStore",
               message: error.message,
@@ -311,9 +307,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error updating task: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "updateTaskInStore",
               message: error.message,
@@ -397,9 +391,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error adding category: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "addCategoryToStore",
               message: error.message,
@@ -485,9 +477,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error deleting category:", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "deletecategoryFromstore",
               message: error.message,
@@ -574,9 +564,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error updating category: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "updateCategoryInStore",
               message: error.message,
@@ -691,9 +679,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error removing user from invitation: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "removeUserFromInvitationStore",
               message: error.message,
@@ -751,9 +737,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error setting limit access for invitation: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "setInvitationAccessLimitInStore",
               message: error.message,
@@ -805,9 +789,7 @@ const useTaskStore = create(
           } catch (error) {
             logger.error("Error stop sharing invitation: ", error);
 
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
             const newError = {
               method: "stopSharingInvitationInStore",
               message: error.message,
@@ -1283,9 +1265,7 @@ const useTaskStore = create(
             logger.error("Error syncing and getting data from server:", error);
 
             // Show a toast error message when the data synchronization fails
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
 
             const newError = {
               method: "fetchDataOnMount",
@@ -1381,9 +1361,7 @@ const useTaskStore = create(
             logger.error("Error syncing and getting data from server:", error);
 
             // Show a toast error message when the data synchronization fails
-            toast.error(
-              "Couldn't sync with the server. Will retry once connected.",
-            );
+            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
 
             const newError = {
               method: "syncChangeLog",

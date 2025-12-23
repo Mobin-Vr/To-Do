@@ -27,13 +27,6 @@ CREATE TABLE public.errors_log (
 );
 
 
-CREATE TABLE public.health_check (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  status text NULL DEFAULT 'ok'::text,
-  last_updated timestamp without time zone NULL DEFAULT now(),
-  CONSTRAINT health_check_pkey PRIMARY KEY (id)
-);
-
 
 CREATE TABLE public.invitations (
   invitation_id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -79,6 +72,14 @@ CREATE TABLE public.users (
   CONSTRAINT users_pkey PRIMARY KEY (user_id),
   CONSTRAINT users_clerk_id_key UNIQUE (user_clerk_id),
   CONSTRAINT users_email_key UNIQUE (user_email)
+);
+
+
+CREATE TABLE public.health_check (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  status text NULL DEFAULT 'ok'::text,
+  last_updated timestamp without time zone NULL DEFAULT now(),
+  CONSTRAINT health_check_pkey PRIMARY KEY (id)
 );
 
 ----------------

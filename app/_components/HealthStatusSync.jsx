@@ -50,6 +50,8 @@ export default function HealthStatusSync() {
   // Handle connection and online status checks
   const handleConnectionStatus = useCallback(async () => {
     // If offline, update states
+    console.log(!navigator.onLine);
+
     if (!navigator.onLine) {
       setIsConnected(false);
       setIsOnline(false);

@@ -140,6 +140,7 @@ export function getHourMinString(date) {
 export function replaceTimeInIsoDate(inputDate, timeString) {
   const [hours, minutes] = timeString.split(":");
 
+  console.log(inputDate);
   const year = inputDate.getFullYear();
   const month = String(inputDate.getMonth() + 1).padStart(2, "0");
   const day = String(inputDate.getDate()).padStart(2, "0");
