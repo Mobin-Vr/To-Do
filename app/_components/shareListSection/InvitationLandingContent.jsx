@@ -1,19 +1,19 @@
 "use client";
 
 import useTaskStore from "@/app/taskStore";
-import illsturation_login from "@/public/icons/login.svg";
 import illsturation from "@/public/icons/team.svg";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import { useTransition } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useTransition, useState, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import SpinnerMini from "../_ui/SpinnerMini";
-import { useState, useEffect } from "react";
+import Spinner from "../_ui/Spinner";
 
 export default function InvitationLandingContent({ token }) {
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
+  const router = useRouter();
 
   const { joinInvitationInStore } = useTaskStore(
     useShallow((state) => ({
@@ -27,6 +27,15 @@ export default function InvitationLandingContent({ token }) {
     setIsClient(true); // This ensures client-side rendering
   }, []);
 
+  // Redirect to log-in, then back to this exact page, if not signed in
+  useEffect(() => {
+    if (!isClient) return;
+    if (user) return;
+
+    const returnUrl = `/tasks/invite?token=${encodeURIComponent(token)}`;
+    router.push(`/log-in?redirect_url=${encodeURIComponent(returnUrl)}`);
+  }, [isClient, user, token, router]);
+
   async function handleJoin() {
     startTransition(async () => {
       const res = await joinInvitationInStore(token);
@@ -35,10 +44,8 @@ export default function InvitationLandingContent({ token }) {
     });
   }
 
-  if (!user) return null;
-
-  // Only render content when on the client
-  if (!isClient) return null;
+  // Not on client yet, or not signed in (redirect effect above handles navigation)
+  if (!isClient || !user) return <Spinner />;
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 text-center">
@@ -50,45 +57,30 @@ export default function InvitationLandingContent({ token }) {
 
         <div className="flex items-center justify-center">
           <Image
-            src={user ? illsturation : illsturation_login}
+            src={illsturation}
             alt="invitation-illustration"
             className="mx-auto h-52 w-52 sm:h-64 sm:w-64"
           />
         </div>
 
         <div className="flex w-full justify-center">
-          {user ? (
-            <button
-              disabled={isPending}
-              onClick={handleJoin}
-              className={`flex h-10 w-1/2 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700 ${
-                isPending
-                  ? "cursor-not-allowed border-2 border-gray-400 bg-gray-300 hover:bg-gray-300"
-                  : ""
-              }`}
-            >
-              {isPending ? (
-                <span>
-                  <SpinnerMini />
-                </span>
-              ) : (
-                "Join to the list"
-              )}
-            </button>
-          ) : (
-            <div className="flex w-full flex-col items-center justify-center gap-3">
-              <SignInButton
-                mode="modal"
-                className="w-1/2 cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700"
-                forceRedirectUrl={`/tasks/invite?token=${token}`}
-              />
-
-              <span className="select-none px-10 text-sm text-gray-600">
-                You don&apos;t have an account. <br />
-                Sign in / up first.
+          <button
+            disabled={isPending}
+            onClick={handleJoin}
+            className={`flex h-10 w-1/2 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700 ${
+              isPending
+                ? "cursor-not-allowed border-2 border-gray-400 bg-gray-300 hover:bg-gray-300"
+                : ""
+            }`}
+          >
+            {isPending ? (
+              <span>
+                <SpinnerMini />
               </span>
-            </div>
-          )}
+            ) : (
+              "Join to the list"
+            )}
+          </button>
         </div>
       </div>
     </div>

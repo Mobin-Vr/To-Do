@@ -3,12 +3,14 @@ import { ClerkLoaded, SignInButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-export const dynamic = "force-dynamic";
 
-export default async function Page() {
+export default async function Page({ searchParams }) {
   const { userId } = await auth();
+  const { redirect_url } = await searchParams;
 
-  if (userId) redirect("/tasks"); // Redirect to /tasks if signed in. Automatically returns and prevents rendering of this component
+  if (userId) redirect(redirect_url || "/tasks");
+
+  const targetUrl = redirect_url || "/tasks";
 
   return (
     <ClerkLoaded>
@@ -27,7 +29,7 @@ export default async function Page() {
           </div>
 
           <div className="flex w-full cursor-pointer justify-center">
-            <SignInButton mode="modal" forceRedirectUrl="/tasks">
+            <SignInButton mode="modal" forceRedirectUrl={targetUrl}>
               <span className="w-1/2 select-none rounded-lg bg-blue-600 px-4 py-2 text-center font-normal text-white transition hover:bg-blue-700">
                 Sign In
               </span>

@@ -1,19 +1,18 @@
-import { ClerkProvider, SignedIn } from "@clerk/nextjs";
+import { ClerkProvider, Show } from "@clerk/nextjs";
 import { Roboto_Flex } from "next/font/google";
 import localFont from "next/font/local";
 import { Toaster } from "react-hot-toast";
-import HealthStatusSync from "./_components/HealthStatusSync";
-import ReminderHandler from "./_components/ReminderHandler";
-import TaskRealTimeListener from "./_components/TaskRealTimeListener";
-import "./_styles/globals.css";
-import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
-import Sidebar from "./_components/sidebarSection/Sidebar";
-import EditSidebar from "./_components/editSidebarSection/EditSidebar";
 import Spinner from "./_components/_ui/Spinner";
-import UnsavedChangesWarning from "./_components/UnsavedChangesWarning";
-import { SignedOut } from "@clerk/nextjs";
-import ResetTaskStore from "./_components/ResetTaskStore";
+import EditSidebar from "./_components/editSidebarSection/EditSidebar";
+import HealthStatusSync from "./_components/HealthStatusSync";
 import ReloadStoreInitializer from "./_components/ReloadStoreInitializer";
+import ReminderHandler from "./_components/ReminderHandler";
+import ResetTaskStore from "./_components/ResetTaskStore";
+import Sidebar from "./_components/sidebarSection/Sidebar";
+import UserSignupHandler from "./_components/sidebarSection/UserSignupHandler";
+import TaskRealTimeListener from "./_components/TaskRealTimeListener";
+import UnsavedChangesWarning from "./_components/UnsavedChangesWarning";
+import "./_styles/globals.css";
 
 const roboto = Roboto_Flex({
   subsets: ["latin"],
@@ -52,7 +51,7 @@ export default async function RootLayout({ children }) {
         <body
           className={`${roboto.className} ${iranSansRegular.className} relative z-50 flex h-dvh flex-col overflow-hidden sm:flex-row`}
         >
-          <SignedIn>
+          <Show when="signed-in">
             {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}
             <HealthStatusSync />
 
@@ -76,12 +75,12 @@ export default async function RootLayout({ children }) {
 
             {/* Absolute Editsidebar */}
             <EditSidebar />
-          </SignedIn>
+          </Show>
 
-          <SignedOut>
+          <Show when="signed-out">
             {/* Reset task store after sign out */}
             <ResetTaskStore />
-          </SignedOut>
+          </Show>
 
           <main className="h-full overflow-y-hidden sm:flex-1">
             <Spinner variant="transparent" bgColorRoute="tasks" />
