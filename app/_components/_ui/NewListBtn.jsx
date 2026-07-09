@@ -1,14 +1,16 @@
 import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/taskStore";
 import { PlusIcon } from "@/public/icons/icons";
-import { redirect } from "next/navigation";
 import { useShallow } from "zustand/react/shallow";
+import { useRouter } from "next/navigation";
 
 export default function NewListBtn({
   className,
   getUserState,
   addCategoryToStore,
 }) {
+  const router = useRouter();
+
   const { toggleSidebar, toggleTitleFocus } = useTaskStore(
     useShallow((state) => ({
       toggleSidebar: state.toggleSidebar,
@@ -32,7 +34,7 @@ export default function NewListBtn({
     toggleTitleFocus(true);
     toggleSidebar();
 
-    redirect(`/tasks/${uuId}`);
+    router.push(`/tasks/${uuId}`);
   }
   return (
     <button

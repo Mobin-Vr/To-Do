@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { checkDatabaseHealthAction } from "../_lib/Actions";
+import { checkDatabaseHealthAction, debugAuthAction } from "../_lib/Actions";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
@@ -50,7 +50,6 @@ export default function HealthStatusSync() {
   // Handle connection and online status checks
   const handleConnectionStatus = useCallback(async () => {
     // If offline, update states
-    console.log(!navigator.onLine);
 
     if (!navigator.onLine) {
       setIsConnected(false);
@@ -63,6 +62,7 @@ export default function HealthStatusSync() {
     // If online, check database health
     setIsConnected(true);
     const result = await checkDatabaseHealthAction();
+    await debugAuthAction(); // CHANGE (remove later just for test)
     setIsOnline(result.online);
 
     if (result.online) {

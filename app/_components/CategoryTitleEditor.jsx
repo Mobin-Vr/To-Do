@@ -6,6 +6,7 @@ import autosize from "autosize";
 
 export default function CategoryTitleEditor({ theCategory, className }) {
   const textareaRef = useRef(null);
+  const isFocused = useRef(false); // برای ردگیری فوکوس
 
   const { updateCategoryInStore, editTitleWhileCreating, toggleTitleFocus } =
     useTaskStore(
@@ -16,45 +17,63 @@ export default function CategoryTitleEditor({ theCategory, className }) {
       })),
     );
 
-  // Current value for display
-  const [currentTitle, setCurrentTitle] = useState(theCategory?.category_title);
-
-  // Store the previous title value
+  // State for current and previous title
+  const [currentTitle, setCurrentTitle] = useState(
+    theCategory?.category_title ?? "",
+  );
   const [previousTitle, setPreviousTitle] = useState(
-    theCategory?.category_title,
+    theCategory?.category_title ?? "",
   );
 
-  autosize(textareaRef.current);
+  // Apply autosize on mount and when value changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      autosize(textareaRef.current);
+    }
+  }, []);
 
-  // Focus on textarea only when it has just created
+  useEffect(() => {
+    if (textareaRef.current) {
+      autosize.update(textareaRef.current);
+    }
+  }, [currentTitle]);
+
+  // Sync state when theCategory prop changes, but only if not currently focused
+  useEffect(() => {
+    if (!isFocused.current && theCategory?.category_title !== undefined) {
+      setCurrentTitle(theCategory.category_title);
+      setPreviousTitle(theCategory.category_title);
+    }
+  }, [theCategory?.category_title]);
+
+  // Focus only when it has just been created
   useEffect(() => {
     if (textareaRef.current && editTitleWhileCreating) {
       textareaRef.current.focus();
       toggleTitleFocus(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [editTitleWhileCreating, toggleTitleFocus]);
 
-  // 1. Save the current value when input is focused (onFocus)
   function handleFocus() {
+    isFocused.current = true;
     setPreviousTitle(currentTitle);
     textareaRef.current?.select();
   }
 
-  // 2. Update the current title while typing (onChange)
   function handleUpdateTitle(e) {
     setCurrentTitle(e.target.value);
-
-    autosize(textareaRef.current);
   }
 
-  // 3. Store the title if it's not empty, otherwise restore the previous one (onBlur)
   function handleBlur() {
-    if (currentTitle.trim())
+    isFocused.current = false;
+    if (currentTitle.trim()) {
       updateCategoryInStore(theCategory.category_id, {
         category_title: currentTitle,
       });
-    if (currentTitle.trim() === "") setCurrentTitle(previousTitle);
+    } else {
+      // If empty, revert to previous title
+      setCurrentTitle(previousTitle);
+    }
   }
 
   return (

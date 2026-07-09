@@ -657,11 +657,7 @@ const useTaskStore = create(
           try {
             const owner = get().userState;
 
-            await removeUserFromInvitationAction(
-              invitationId,
-              userId,
-              owner.user_id,
-            );
+            await removeUserFromInvitationAction(invitationId, userId);
 
             set(
               produce((state) => {
@@ -719,7 +715,6 @@ const useTaskStore = create(
 
             await setInvitationLimitAction(
               invitation_id,
-              owner.user_id,
               !invitation_limit_access,
             );
 
@@ -771,7 +766,7 @@ const useTaskStore = create(
               (inv) => inv.invitation_category_id === categoryId,
             );
 
-            await stopSharingInvitationAction(invitation_id, owner.user_id);
+            await stopSharingInvitationAction(invitation_id);
 
             set(
               produce((state) => {
@@ -832,10 +827,8 @@ const useTaskStore = create(
             }
 
             // Request invitation details and relevent tasks
-            const { category, tasks } = await joinInvitationAction(
-              invitationId,
-              userState.user_id,
-            );
+            const { category, tasks } =
+              await joinInvitationAction(invitationId);
 
             // Add new invitation if not existing
             set(
@@ -894,7 +887,7 @@ const useTaskStore = create(
 
             // Remove user from invitation in db
             if (invitation_id) {
-              await leaveInvitationAction(invitation_id, user.user_id);
+              await leaveInvitationAction(invitation_id);
             }
 
             set(
@@ -1150,10 +1143,10 @@ const useTaskStore = create(
               fetchedOwnerInvs,
               fetchedJoinedInvs,
             ] = await Promise.all([
-              getReleventTasksAction(userId),
-              getReleventCategoriesAction(userId),
-              getOwnerInvitationsAction(userId),
-              getJoinedInvitationsAction(userId),
+              getReleventTasksAction(),
+              getReleventCategoriesAction(),
+              getOwnerInvitationsAction(),
+              getJoinedInvitationsAction(),
             ]);
 
             // Remove duplicate tasks based on task_id
@@ -1554,5 +1547,10 @@ const useTaskStore = create(
     { name: "Todo Store" }, // Redux DevTools name
   ),
 );
+
+//CHANGE remove later
+if (typeof window !== "undefined") {
+  window.__taskStore = useTaskStore;
+}
 
 export default useTaskStore;

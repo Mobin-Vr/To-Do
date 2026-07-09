@@ -1,18 +1,18 @@
 "use client";
 
 import useTaskStore from "@/app/taskStore";
-import illsturation from "@/public/icons/team.svg";
-import { useUser } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useTransition, useState, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import SpinnerMini from "../_ui/SpinnerMini";
 import Spinner from "../_ui/Spinner";
+import illsturation from "@/public/icons/team.svg";
 
 export default function InvitationLandingContent({ token }) {
   const [isPending, startTransition] = useTransition();
-  const { user } = useUser();
+  const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
 
   const { joinInvitationInStore } = useTaskStore(
@@ -24,28 +24,29 @@ export default function InvitationLandingContent({ token }) {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true); // This ensures client-side rendering
+    setIsClient(true);
   }, []);
 
-  // Redirect to log-in, then back to this exact page, if not signed in
+  // Redirect to login if not authenticated, with return URL
   useEffect(() => {
-    if (!isClient) return;
-    if (user) return;
-
-    const returnUrl = `/tasks/invite?token=${encodeURIComponent(token)}`;
-    router.push(`/log-in?redirect_url=${encodeURIComponent(returnUrl)}`);
-  }, [isClient, user, token, router]);
+    if (!isClient || !isLoaded) return;
+    if (!isSignedIn) {
+      const returnUrl = `/tasks/invite?token=${encodeURIComponent(token)}`;
+      router.push(`/log-in?redirect_url=${encodeURIComponent(returnUrl)}`);
+    }
+  }, [isClient, isLoaded, isSignedIn, token, router]);
 
   async function handleJoin() {
     startTransition(async () => {
       const res = await joinInvitationInStore(token);
-
-      if (res.status === true) redirect(`/tasks/${res.categoryId}`);
+      if (res.status === true) {
+        router.push(`/tasks/${res.categoryId}`);
+      }
     });
   }
 
-  // Not on client yet, or not signed in (redirect effect above handles navigation)
-  if (!isClient || !user) return <Spinner />;
+  // Show spinner while loading or not authenticated (redirect will happen in effect)
+  if (!isClient || !isLoaded || !isSignedIn) return <Spinner />;
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gray-100 text-center">

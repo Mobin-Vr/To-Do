@@ -54,25 +54,18 @@ export default async function RootLayout({ children }) {
           <Show when="signed-in">
             {/* Monitors database and internet connectivity. Updates the Zustand store with real-time health statuses for global access */}
             <HealthStatusSync />
-
             {/* Warns the user before leaving the page if there are unsaved changes */}
             <UnsavedChangesWarning />
-
             {/* This component handles checking and creating a new user in the database upon sign-in */}
             <UserSignupHandler />
-
             {/* Reset some store variables on page reload */}
             <ReloadStoreInitializer />
-
             {/* get new tasks in real time */}
-            <TaskRealTimeListener />
-
+            {<TaskRealTimeListener />}
             {/* handle reminders */}
             <ReminderHandler />
-
             {/* Absolute Sidebar */}
             <Sidebar />
-
             {/* Absolute Editsidebar */}
             <EditSidebar />
           </Show>

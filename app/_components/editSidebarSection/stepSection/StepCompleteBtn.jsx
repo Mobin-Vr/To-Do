@@ -42,7 +42,7 @@ export default function StepCompleteBtn({ task, step, className, bgColor }) {
         <>
           <span
             className="block group-hover:hidden"
-            style={{ color: bgColor.ternaryText }}
+            style={{ color: bgColor?.ternaryText }}
           >
             <CircleIcon size="16" />
           </span>

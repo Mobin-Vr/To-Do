@@ -7,6 +7,7 @@ import {
   checkDatabaseHealth,
   createInvitation,
   createUser,
+  debugAuth,
   deleteManyCategories,
   deleteManyTasks,
   getCategoryInvId,
@@ -64,8 +65,8 @@ export async function updateManyTasksAction(tasksArr, tasksIdsArr) {
 }
 
 // Retrieves relevant tasks for a user, including owned and shared tasks
-export async function getReleventTasksAction(userId) {
-  return await getReleventTasks(userId);
+export async function getReleventTasksAction() {
+  return await getReleventTasks();
 }
 
 //////////////////////////////////
@@ -91,8 +92,8 @@ export async function updateManyCategoriesAction(
 }
 
 // Retrieves relevant categories owned by a specific user
-export async function getReleventCategoriesAction(userId) {
-  return await getReleventCategories(userId);
+export async function getReleventCategoriesAction() {
+  return await getReleventCategories();
 }
 
 // Retrieves the invitation ID associated with a specific category
@@ -105,52 +106,44 @@ export async function getCategoryInvIdAction(categoryId) {
 //////////////////////////////////
 
 // Creates a new invitation for a category
-export async function createInvitationAction(categoryId, ownerId) {
-  return await createInvitation(categoryId, ownerId);
+export async function createInvitationAction(categoryId) {
+  return await createInvitation(categoryId);
 }
 
 // Allows a user to join an existing invitation
-export async function joinInvitationAction(invitationId, userId) {
-  return await joinInvitation(invitationId, userId);
+export async function joinInvitationAction(invitationId) {
+  return await joinInvitation(invitationId);
 }
 
 // Allows a user to leave an invitation
 // LATER Currently not used
-export async function leaveInvitationAction(invitationId, userId) {
-  return await leaveInvitation(invitationId, userId);
+export async function leaveInvitationAction(invitationId) {
+  return await leaveInvitation(invitationId);
 }
 
 // Stops sharing an invitation, making it inactive
-export async function stopSharingInvitationAction(invitationId, ownerId) {
-  return await stopSharingInvitation(invitationId, ownerId);
+export async function stopSharingInvitationAction(invitationId) {
+  return await stopSharingInvitation(invitationId);
 }
 
 // Sets the access limit for an invitation
-export async function setInvitationLimitAction(
-  invitationId,
-  ownerId,
-  limitAccess,
-) {
-  return await setInvitationLimit(invitationId, ownerId, limitAccess);
+export async function setInvitationLimitAction(invitationId, limitAccess) {
+  return await setInvitationLimit(invitationId, limitAccess);
 }
 
 // Removes a user from an invitation by the owner
-export async function removeUserFromInvitationAction(
-  invitationId,
-  userId,
-  ownerId,
-) {
-  return await removeUserFromInvitation(invitationId, userId, ownerId);
+export async function removeUserFromInvitationAction(invitationId, userId) {
+  return await removeUserFromInvitation(invitationId, userId);
 }
 
 // Retrieves invitations created by a specific user
-export async function getOwnerInvitationsAction(userId) {
-  return await getOwnerInvitations(userId);
+export async function getOwnerInvitationsAction() {
+  return await getOwnerInvitations();
 }
 
 // Retrieves invitations that a user has joined
-export async function getJoinedInvitationsAction(userId) {
-  return await getJoinedInvitations(userId);
+export async function getJoinedInvitationsAction() {
+  return await getJoinedInvitations();
 }
 
 //////////////////////////////////
@@ -169,4 +162,7 @@ export async function addManyErrorLogAction(errorLogArr) {
 // Checks the health status of the database
 export async function checkDatabaseHealthAction() {
   return await checkDatabaseHealth();
+}
+export async function debugAuthAction() {
+  return await debugAuth();
 }

@@ -5,11 +5,13 @@ import NotFoundComponent from "@/app/_components/NotFoundComponent";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskStore from "@/app/taskStore";
-import { redirect, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export default function Page() {
+  const router = useRouter();
+
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [slugId, setSlugId] = useState(null);
 
@@ -21,14 +23,16 @@ export default function Page() {
     deleteCategoryFromStore,
     leaveInvitationFromStore,
     tasksList,
-    getCategoriesList,
+    // getCategoriesList,
+    categoriesList,
     showDeleteModal,
   } = useTaskStore(
     useShallow((state) => ({
       deleteCategoryFromStore: state.deleteCategoryFromStore,
       leaveInvitationFromStore: state.leaveInvitationFromStore,
       tasksList: state.tasksList,
-      getCategoriesList: state.getCategoriesList,
+      // getCategoriesList: state.getCategoriesList,
+      categoriesList: state.categoriesList,
       showDeleteModal: state.showDeleteModal,
     })),
   );
@@ -39,7 +43,8 @@ export default function Page() {
     }
   }, [params]);
 
-  const categories = getCategoriesList();
+  // const categories = getCategoriesList();
+  const categories = categoriesList;
 
   if (!categories || !slugId)
     return <Spinner defaultBgColor={BG_COLORS["/default"]} />;
@@ -66,7 +71,7 @@ export default function Page() {
     showDeleteModal("category", theCategory.category_title, async () => {
       setIsRedirecting(true);
       await deleteCategoryFromStore(theCategory.category_id);
-      redirect("/tasks");
+      router.push("/tasks");
     });
   }
 
@@ -74,7 +79,7 @@ export default function Page() {
     showDeleteModal("leave", theCategory.category_title, async () => {
       setIsRedirecting(true);
       const res = await leaveInvitationFromStore(theCategory.category_id);
-      if (res.status) redirect("/tasks");
+      if (res.status) router.push("/tasks");
     });
   }
 
