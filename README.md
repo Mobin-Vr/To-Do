@@ -12,6 +12,7 @@ A **feature-rich** **task management app** inspired by **Microsoft To Do**, with
 <br>
 
 ## 🌐 Live Demo - [**Click to Try Now**](https://ms-todo100.vercel.app)
+
 > ⚠️ **Google** login in Clerk may require a **VPN** (due to sanctions).  
 > If login fails, use this test account:
 
@@ -79,7 +80,7 @@ Password:  11223344.Rr
 
 | Technology                  | Purpose                                      |
 | --------------------------- | -------------------------------------------- |
-| **Next.js 15 (App Router)** | Main framework                               |
+| **Next.js 16 (App Router)** | Main framework                               |
 | **Supabase**                | Database, Realtime Sync (RLS, RPC)           |
 | **Clerk**                   | Authentication & User Management             |
 | **Server Actions**          | Secure database interactions                 |
