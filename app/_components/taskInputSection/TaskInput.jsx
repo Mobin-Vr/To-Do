@@ -5,7 +5,8 @@ import { CircleIcon, PlusIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { checkIfToday, generateNewUuid, getDateNowIso } from "../../_lib/utils";
-import useTaskStore from "../../taskStore";
+import useTaskStore from "../../_store/useTaskStore";
+import useUserStore from "../../_store/useUserStore";
 import InputAddDue from "./InputAddDue";
 import InputAddReminder from "./InputAddReminder";
 import InputAddRepeat from "./InputAddRepeat";
@@ -21,9 +22,13 @@ export default function TaskInput({
   mustFocus,
   setMustFocus,
 }) {
-  const { addTaskToStore, getUserState } = useTaskStore(
+  const { addTaskToStore } = useTaskStore(
     useShallow((state) => ({
       addTaskToStore: state.addTaskToStore,
+    })),
+  );
+  const { getUserState } = useUserStore(
+    useShallow((state) => ({
       getUserState: state.getUserState,
     })),
   );

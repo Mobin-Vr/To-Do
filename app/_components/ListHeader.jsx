@@ -3,7 +3,7 @@
 import { useShallow } from "zustand/react/shallow";
 import { defaultCategoryId } from "../_lib/configs";
 import { getFormattedDate } from "../_lib/utils";
-import useTaskStore from "../taskStore";
+import useUserStore from "../_store/useUserStore";
 import DeleteBtn from "./_ui/DeleteBtn";
 import MenuBtn from "./_ui/MenuBtn";
 import SortMethodBtn from "./_ui/SortMethodBtn";
@@ -19,7 +19,7 @@ export default function ListHeader({
 }) {
   const { bgColor, listName, listIcon, theCategory, query = "" } = listConfig;
 
-  const { getUserState } = useTaskStore(
+  const { getUserState } = useUserStore(
     useShallow((state) => ({
       getUserState: state.getUserState,
     })),
@@ -68,7 +68,6 @@ export default function ListHeader({
               )}
             </h1>
 
-            {/* if the page is my day we should also render the date  */}
             {listName === "My Day" && (
               <span
                 className="ml-1 text-sm font-extralight leading-tight"
@@ -107,9 +106,9 @@ export default function ListHeader({
           </span>
 
           <div className="text-3xl font-normal leading-none">
-            <span className="opacity-60">&quot;</span>
+            <span className="opacity-60">"</span>
             <span>{query}</span>
-            <span className="opacity-60">&quot;</span>
+            <span className="opacity-60">"</span>
           </div>
         </div>
       )}

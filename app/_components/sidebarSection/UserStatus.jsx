@@ -1,10 +1,10 @@
 import { ChevronIcon } from "@/public/icons/icons";
 import { getTimeAgo } from "@/app/_lib/utils";
-import useTaskStore from "@/app/taskStore";
+import useSyncStore from "@/app/_store/useSyncStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function UserStatus({ user, showIcon = true }) {
-  const { conectionStatus } = useTaskStore(
+  const { conectionStatus } = useSyncStore(
     useShallow((state) => ({
       conectionStatus: state.conectionStatus,
     })),

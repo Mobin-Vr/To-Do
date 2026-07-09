@@ -1,7 +1,8 @@
 "use client";
 
 import { BG_COLORS } from "@/app/_lib/configs";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
+import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { validate } from "uuid";
@@ -28,8 +29,6 @@ export default function EditSidebar() {
     activeTask,
     setActiveTask,
     tasksList,
-    showDeleteModal,
-    deletingType,
   } = useTaskStore(
     useShallow((state) => ({
       isEditSidebarOpen: state.isEditSidebarOpen,
@@ -39,6 +38,10 @@ export default function EditSidebar() {
       activeTask: state.activeTask,
       setActiveTask: state.setActiveTask,
       tasksList: state.tasksList,
+    })),
+  );
+  const { showDeleteModal, deletingType } = useDeleteModalStore(
+    useShallow((state) => ({
       showDeleteModal: state.showDeleteModal,
       deletingType: state.deletingType,
     })),
@@ -52,7 +55,7 @@ export default function EditSidebar() {
         (task) => task.task_id === activeTask.task_id,
       );
 
-      if (updatedTask) setActiveTask(updatedTask); // LATER do we need to this?
+      if (updatedTask) setActiveTask(updatedTask);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasksList, activeTask?.task_id]);
@@ -65,7 +68,7 @@ export default function EditSidebar() {
         !e.target.closest(".task-item") &&
         !e.target.closest(".edit-sidebar") &&
         !e.target.closest(".cancel-delete") &&
-        !(deletingType === "step" && e.target.closest(".confirm-delete")) // Prevent closing sidebar when we are delete a step
+        !(deletingType === "step" && e.target.closest(".confirm-delete"))
       )
         toggleEditSidebar();
     }
@@ -112,7 +115,3 @@ export default function EditSidebar() {
     </>
   );
 }
-
-/* Comments:
- * 1. Without this useEffect, activeTask would only update when toggleSidebar runs. This causes the activeTask to become stale if tasks changes elsewhere. This useEffect ensures activeTask dynamically updates whenever tasks changes, keeping the UI in sync with the latest state.
- */

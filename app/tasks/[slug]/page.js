@@ -4,7 +4,10 @@ import Spinner from "@/app/_components/_ui/Spinner";
 import NotFoundComponent from "@/app/_components/NotFoundComponent";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
+import useCategoryStore from "@/app/_store/useCategoryStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
+import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -19,18 +22,28 @@ export default function Page() {
   const listRef = useRef(null);
   const bgColor = BG_COLORS["/slug"];
 
-  const {
-    deleteCategoryFromStore,
-    leaveInvitationFromStore,
-    tasksList,
-    categoriesList,
-    showDeleteModal,
-  } = useTaskStore(
+  const { deleteCategoryFromStore } = useCategoryStore(
     useShallow((state) => ({
       deleteCategoryFromStore: state.deleteCategoryFromStore,
+    })),
+  );
+  const { leaveInvitationFromStore } = useInvitationStore(
+    useShallow((state) => ({
       leaveInvitationFromStore: state.leaveInvitationFromStore,
+    })),
+  );
+  const { tasksList } = useTaskStore(
+    useShallow((state) => ({
       tasksList: state.tasksList,
+    })),
+  );
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({
       categoriesList: state.categoriesList,
+    })),
+  );
+  const { showDeleteModal } = useDeleteModalStore(
+    useShallow((state) => ({
       showDeleteModal: state.showDeleteModal,
     })),
   );

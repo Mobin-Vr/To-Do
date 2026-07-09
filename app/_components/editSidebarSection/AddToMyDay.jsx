@@ -1,4 +1,4 @@
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import BoxBtn from "./BoxBtn";
 import BoxTemplate from "./BoxTemplate";
 import { useShallow } from "zustand/react/shallow";

@@ -7,7 +7,7 @@ import {
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import UserStatus from "./UserStatus";
-import useTaskStore from "@/app/taskStore";
+import useUiStore from "@/app/_store/useUiStore";
 import { useShallow } from "zustand/react/shallow";
 
 const userButtonAppearance = {
@@ -17,7 +17,7 @@ const userButtonAppearance = {
 };
 
 export default function ProfileModal({ user }) {
-  const { toggleSidebar } = useTaskStore(
+  const { toggleSidebar } = useUiStore(
     useShallow((state) => ({
       toggleSidebar: state.toggleSidebar,
     })),

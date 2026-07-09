@@ -2,7 +2,8 @@
 
 import { useShallow } from "zustand/react/shallow";
 import { defaultCategoryId } from "../_lib/configs";
-import useTaskStore from "../taskStore";
+import useUiStore from "../_store/useUiStore";
+import useCategoryStore from "../_store/useCategoryStore";
 import AllMinimizer from "./minimizerSection/AllMinimizer";
 import DefaultMinimizer from "./minimizerSection/DefaultMinimizer";
 import PlannedMinimizer from "./minimizerSection/PlannedMinimizer";
@@ -15,13 +16,19 @@ export default function TasksList({
   tasks,
   listName,
 }) {
-  const { sortMethod, sortMethodForShared, getCategoriesList } = useTaskStore(
+  const { sortMethod, sortMethodForShared } = useUiStore(
     useShallow((state) => ({
       sortMethod: state.sortMethod,
       sortMethodForShared: state.sortMethodForShared,
-      getCategoriesList: state.getCategoriesList,
     })),
   );
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({
+      categoriesList: state.categoriesList,
+    })),
+  );
+
+  const getCategoriesList = useCategoryStore.getState().getCategoriesList;
 
   if (tasks?.length === 0 && categoryId) return null;
 
@@ -75,7 +82,6 @@ export default function TasksList({
       )}
 
       {listName === "Important" && (
-        // No need to minimizer for important tasks
         <TaskGroup
           tasks={tasks}
           listRef={listRef}

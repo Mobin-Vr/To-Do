@@ -1,6 +1,6 @@
 "use client";
 
-import useTaskStore from "@/app/taskStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -15,7 +15,7 @@ export default function InvitationLandingContent({ token }) {
   const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
 
-  const { joinInvitationInStore } = useTaskStore(
+  const { joinInvitationInStore } = useInvitationStore(
     useShallow((state) => ({
       joinInvitationInStore: state.joinInvitationInStore,
     })),

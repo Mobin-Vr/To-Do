@@ -1,5 +1,5 @@
 import { MAX_INPUT_TASK_TITLE } from "@/app/_lib/configs";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import autosize from "autosize";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";

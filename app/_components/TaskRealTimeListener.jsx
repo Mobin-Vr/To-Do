@@ -3,7 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { useSupabaseRealtimeToken } from "../_lib/useSupabaseRealtimeToken";
-import useTaskStore from "../taskStore";
+import useTaskStore from "../_store/useTaskStore";
+import useCategoryStore from "../_store/useCategoryStore";
+import useInvitationStore from "../_store/useInvitationStore";
+import useUserStore from "../_store/useUserStore";
 
 export default function TaskRealTimeListener() {
   const { supabase, isTokenReady } = useSupabaseRealtimeToken();
@@ -16,13 +19,13 @@ export default function TaskRealTimeListener() {
     // Grab all needed actions once – their references are stable
     const {
       addTaskFromRealtime,
-      addUserFromRealtime,
       updateTaskFromRealtime,
-      updateCategoryNameFromRealTime,
       deleteTaskFromRealtime,
-      removeUserWhenNotOwner,
-      getUserState,
     } = useTaskStore.getState();
+    const { updateCategoryNameFromRealTime } = useCategoryStore.getState();
+    const { addUserFromRealtime, removeUserWhenNotOwner } =
+      useInvitationStore.getState();
+    const { getUserState } = useUserStore.getState();
 
     const channel = supabase
       .channel("realtime-changes", {
@@ -86,11 +89,3 @@ export default function TaskRealTimeListener() {
 
   return null;
 }
-
-// This component renders nothing (returns null) and only sets up a realtime
-// listener. Subscribing to the store with useTaskStore(selector) would cause
-// it to re‑run on every store change, even though it never displays data.
-// By reading actions directly from useTaskStore.getState() inside the effect,
-// the component stays completely outside the React render cycle, avoids
-// unnecessary re‑renders, and keeps the Supabase channel stable across
-// unrelated state updates.

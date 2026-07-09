@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import useTaskStore from "../taskStore";
+import useSyncStore from "../_store/useSyncStore";
 
 function UnsavedChangesWarning() {
   useEffect(() => {
     function handleBeforeUnload(e) {
-      const { changeLog } = useTaskStore.getState();
+      const { changeLog } = useSyncStore.getState();
       if (changeLog.length) e.preventDefault();
     }
 

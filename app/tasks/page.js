@@ -4,15 +4,20 @@ import { HomeIcon } from "@/public/icons/icons";
 import { useEffect, useRef } from "react";
 
 import { BG_COLORS, defaultCategoryId } from "../_lib/configs";
-import useTaskStore from "../taskStore";
+import useTaskStore from "../_store/useTaskStore";
+import useCategoryStore from "../_store/useCategoryStore";
 import Template from "../_components/Template";
 import { useShallow } from "zustand/react/shallow";
 
 export default function Page() {
-  const { tasksList, getCategoriesList } = useTaskStore(
+  const { tasksList } = useTaskStore(
     useShallow((state) => ({
       tasksList: state.tasksList,
-      getCategoriesList: state.getCategoriesList,
+    })),
+  );
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({
+      categoriesList: state.categoriesList,
     })),
   );
 
@@ -20,7 +25,7 @@ export default function Page() {
     (task) => task.task_category_id === defaultCategoryId,
   );
 
-  const theCategory = getCategoriesList()?.find(
+  const theCategory = categoriesList?.find(
     (cat) => cat.category_id === defaultCategoryId,
   );
 

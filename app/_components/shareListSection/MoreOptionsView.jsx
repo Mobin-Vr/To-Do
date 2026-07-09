@@ -1,4 +1,4 @@
-import useTaskStore from "@/app/taskStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
 import { ArrowIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
@@ -14,7 +14,7 @@ export default function MoreOptionsView({
     invitations,
     setInvitationAccessLimitInStore: setLimit,
     stopSharingInvitationInStore: stopSharing,
-  } = useTaskStore(
+  } = useInvitationStore(
     useShallow((state) => ({
       invitations: state.invitations,
       setInvitationAccessLimitInStore: state.setInvitationAccessLimitInStore,

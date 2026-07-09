@@ -1,5 +1,5 @@
 import { useShallow } from "zustand/react/shallow";
-import useTaskStore from "../taskStore";
+import useTaskStore from "../_store/useTaskStore";
 import CompleteBtn from "./_ui/CompleteBtn";
 import StarBtn from "./_ui/StarBtn";
 import TaskDetails from "./TaskDetails";

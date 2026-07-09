@@ -1,5 +1,5 @@
 import { getInvitationLink } from "@/app/_lib/utils";
-import useTaskStore from "@/app/taskStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useTransition } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -10,9 +10,9 @@ import MoreOptionsView from "./MoreOptionsView";
 
 export default function SharedListModal({ toggleModal, theCategoryId }) {
   const [isPending, startTransition] = useTransition();
-  const [direction, setDirection] = useState(1); // 1: forward, -1: backward
+  const [direction, setDirection] = useState(1);
 
-  const { createInvitationInStore, invitations } = useTaskStore(
+  const { createInvitationInStore, invitations } = useInvitationStore(
     useShallow((state) => ({
       createInvitationInStore: state.createInvitationInStore,
       invitations: state.invitations,
@@ -33,7 +33,6 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
     link ? "linkCreated" : "initial",
   );
 
-  // Handlers for navigation
   function handleCreateLink() {
     startTransition(async () => {
       const res = await createInvitationInStore(theCategoryId);
@@ -43,21 +42,20 @@ export default function SharedListModal({ toggleModal, theCategoryId }) {
   }
 
   const handleMoreOptions = () => {
-    setDirection(1); // Forward
+    setDirection(1);
     setCurrentView("moreOptions");
   };
 
   const handleManageMembers = () => {
-    setDirection(1); // Forward
+    setDirection(1);
     setCurrentView("manageMembers");
   };
 
   const handleBackToLinkCreated = () => {
-    setDirection(-1); // Backward
+    setDirection(-1);
     setCurrentView("linkCreated");
   };
 
-  // Animation variants for slide transitions
   const slideVariants = {
     opacityIn: { opacity: 0, duration: 0.2 },
     opacityAnimate: { opacity: 1, duration: 0.2 },

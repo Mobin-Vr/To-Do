@@ -1,5 +1,7 @@
 import { getDateNowIso } from "@/app/_lib/utils";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
+import useUserStore from "@/app/_store/useUserStore";
+import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import {
   CircleIcon,
   PlusIcon,
@@ -10,15 +12,22 @@ import { useShallow } from "zustand/react/shallow";
 import { ModalActionButton } from "../reminderBoxModals/ModalActionBtn";
 
 export default function StepActionModal({ task, step }) {
-  const { updateTaskInStore, addTaskToStore, getUserState, showDeleteModal } =
-    useTaskStore(
-      useShallow((state) => ({
-        updateTaskInStore: state.updateTaskInStore,
-        addTaskToStore: state.addTaskToStore,
-        getUserState: state.getUserState,
-        showDeleteModal: state.showDeleteModal,
-      })),
-    );
+  const { updateTaskInStore, addTaskToStore } = useTaskStore(
+    useShallow((state) => ({
+      updateTaskInStore: state.updateTaskInStore,
+      addTaskToStore: state.addTaskToStore,
+    })),
+  );
+  const { getUserState } = useUserStore(
+    useShallow((state) => ({
+      getUserState: state.getUserState,
+    })),
+  );
+  const { showDeleteModal } = useDeleteModalStore(
+    useShallow((state) => ({
+      showDeleteModal: state.showDeleteModal,
+    })),
+  );
 
   function handleUpdate() {
     const updatedFields = {

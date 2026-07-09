@@ -3,7 +3,7 @@
 import { ArrowIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "../_ui/OrdinaryBtn";
 import InvitationUsersList from "./InvitationUsersList";
-import useTaskStore from "@/app/taskStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function ManageMembers({
@@ -12,7 +12,7 @@ export default function ManageMembers({
   invitationUsers,
   invitationId,
 }) {
-  const { removeUserFromInvitationStore } = useTaskStore(
+  const { removeUserFromInvitationStore } = useInvitationStore(
     useShallow((state) => ({
       removeUserFromInvitationStore: state.removeUserFromInvitationStore,
     })),

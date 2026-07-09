@@ -1,5 +1,5 @@
 import { getDateNowIso } from "@/app/_lib/utils";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import {
   CircleIcon,
   CompletedIcon,

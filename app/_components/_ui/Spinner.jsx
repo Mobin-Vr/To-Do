@@ -1,7 +1,7 @@
 "use client";
 
 import { BG_COLORS, DONT_SHOW_SPINNER_IN_THIS_PAGES } from "@/app/_lib/configs";
-import useTaskStore from "@/app/taskStore";
+import useUiStore from "@/app/_store/useUiStore";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { validate } from "uuid";
@@ -14,7 +14,7 @@ export default function Spinner({
   const pathname = usePathname();
   const [bgColor, setBgColor] = useState(null); // State to store the background color
   const [isClient, setIsClient] = useState(false); // Track if the component is rendered on the client side
-  const { showSpinner } = useTaskStore(
+  const { showSpinner } = useUiStore(
     useShallow((state) => ({
       showSpinner: state.showSpinner,
     })),

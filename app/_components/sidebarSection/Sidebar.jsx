@@ -4,7 +4,10 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect, useRef } from "react";
 
 import { BG_COLORS, RELEVENT_APP_PAGES } from "@/app/_lib/configs";
-import useTaskStore from "@/app/taskStore";
+import useUiStore from "@/app/_store/useUiStore";
+import useTaskStore from "@/app/_store/useTaskStore";
+import useCategoryStore from "@/app/_store/useCategoryStore";
+import useUserStore from "@/app/_store/useUserStore";
 import { usePathname } from "next/navigation";
 import { validate } from "uuid";
 import { useShallow } from "zustand/react/shallow";
@@ -26,21 +29,26 @@ export default function Sidebar() {
   const isUUID = validate(pathName);
   const pageName = isUUID ? "slug" : pathName;
 
-  const {
-    isSidebarOpen,
-    toggleSidebar,
-    tasksList,
-    categoriesList,
-    getUserState,
-    addCategoryToStore,
-  } = useTaskStore(
+  const { isSidebarOpen, toggleSidebar } = useUiStore(
     useShallow((state) => ({
       isSidebarOpen: state.isSidebarOpen,
       toggleSidebar: state.toggleSidebar,
+    })),
+  );
+  const { tasksList } = useTaskStore(
+    useShallow((state) => ({
       tasksList: state.tasksList,
+    })),
+  );
+  const { categoriesList, addCategoryToStore } = useCategoryStore(
+    useShallow((state) => ({
       categoriesList: state.categoriesList,
-      getUserState: state.getUserState,
       addCategoryToStore: state.addCategoryToStore,
+    })),
+  );
+  const { getUserState } = useUserStore(
+    useShallow((state) => ({
+      getUserState: state.getUserState,
     })),
   );
 
@@ -64,7 +72,6 @@ export default function Sidebar() {
 
   if (!user) return null;
 
-  // Refer to the comment "1"
   const isAtaskPage = RELEVENT_APP_PAGES.some((page) => page === pageName);
   if (!isAtaskPage) return;
 
@@ -114,7 +121,3 @@ export default function Sidebar() {
     </>
   );
 }
-
-/**
- * 1: Sidebar should only render for pages related to tasks, profile management, settings, and search. It should not render for pages like Invite.
- */

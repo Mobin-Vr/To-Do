@@ -2,13 +2,13 @@
 
 import { MenuIcon } from "@/public/icons/icons";
 import React, { useState } from "react";
-import useTaskStore from "../../taskStore";
+import useUiStore from "../../_store/useUiStore";
 import { useShallow } from "zustand/react/shallow";
 
 function MenuBtn({ menuButtonRef, className, bgColor }) {
   const [hover, setHover] = useState(false);
 
-  const { toggleSidebar, isSidebarOpen } = useTaskStore(
+  const { toggleSidebar, isSidebarOpen } = useUiStore(
     useShallow((state) => ({
       toggleSidebar: state.toggleSidebar,
       isSidebarOpen: state.isSidebarOpen,

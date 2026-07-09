@@ -1,6 +1,6 @@
 import { SortIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import useTaskStore from "../../taskStore";
+import useUiStore from "../../_store/useUiStore";
 import ModalTemplateCloseAble from "./ModalTemplateCloseAble";
 import SortMethodModal from "./SortMethodModal";
 import { useShallow } from "zustand/react/shallow";
@@ -10,7 +10,7 @@ function SortMethodBtn({ bgColor }) {
   const [hover, setHover] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { setSortMethod } = useTaskStore(
+  const { setSortMethod } = useUiStore(
     useShallow((state) => ({
       setSortMethod: state.setSortMethod,
     })),

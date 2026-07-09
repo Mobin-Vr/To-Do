@@ -6,20 +6,30 @@ import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Template from "../../_components/Template";
 import { BG_COLORS, defaultCategoryId } from "../../_lib/configs";
-import useTaskStore from "../../taskStore";
+import useTaskStore from "../../_store/useTaskStore";
+import useCategoryStore from "../../_store/useCategoryStore";
+import useUiStore from "../../_store/useUiStore";
 
 export default function Page() {
   const listRef = useRef(null);
 
-  const { tasksList, getCategoriesList, showSpinner } = useTaskStore(
+  const { tasksList } = useTaskStore(
     useShallow((state) => ({
       tasksList: state.tasksList,
-      getCategoriesList: state.getCategoriesList,
+    })),
+  );
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({
+      categoriesList: state.categoriesList,
+    })),
+  );
+  const { showSpinner } = useUiStore(
+    useShallow((state) => ({
       showSpinner: state.showSpinner,
     })),
   );
 
-  const theCategory = getCategoriesList()?.find(
+  const theCategory = categoriesList?.find(
     (cat) => cat.category_id === defaultCategoryId,
   );
 

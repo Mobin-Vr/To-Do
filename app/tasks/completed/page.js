@@ -6,13 +6,18 @@ import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Template from "../../_components/Template";
 import { BG_COLORS, defaultCategoryId } from "../../_lib/configs";
-import useTaskStore from "../../taskStore";
+import useTaskStore from "../../_store/useTaskStore";
+import useCategoryStore from "../../_store/useCategoryStore";
 
 export default function Page() {
-  const { tasksList, getCategoriesList } = useTaskStore(
+  const { tasksList } = useTaskStore(
     useShallow((state) => ({
       tasksList: state.tasksList,
-      getCategoriesList: state.getCategoriesList,
+    })),
+  );
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({
+      categoriesList: state.categoriesList,
     })),
   );
 
@@ -22,7 +27,7 @@ export default function Page() {
 
   const bgColor = BG_COLORS["/completed"];
 
-  const theCategory = getCategoriesList()?.find(
+  const theCategory = categoriesList?.find(
     (cat) => cat.category_id === defaultCategoryId,
   );
 

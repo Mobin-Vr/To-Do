@@ -1,4 +1,4 @@
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import autosize from "autosize";
 import { useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";

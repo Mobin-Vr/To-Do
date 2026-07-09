@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import { defaultCategoryId } from "@/app/_lib/configs";
 import { UsersIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";

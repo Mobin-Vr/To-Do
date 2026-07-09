@@ -1,5 +1,5 @@
 import { getWeekendForWeekdays, isWeekday } from "@/app/_lib/utils";
-import useTaskStore from "@/app/taskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import { useEffect, useRef, useState } from "react";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
 import BoxBtn from "../BoxBtn";

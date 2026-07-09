@@ -1,6 +1,6 @@
 "use client";
 
-import useTaskStore from "@/app/taskStore";
+import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import { motion } from "framer-motion";
 import Overlay from "./Overlay";
 import OrdinaryBtn from "./OrdinaryBtn";
@@ -14,7 +14,7 @@ export default function DeleteWarningModal() {
     deletingItemName,
     hideDeleteModal,
     handleConfirmDelete,
-  } = useTaskStore(
+  } = useDeleteModalStore(
     useShallow((state) => ({
       isDeleteModalOpen: state.isDeleteModalOpen,
       deletingType: state.deletingType,

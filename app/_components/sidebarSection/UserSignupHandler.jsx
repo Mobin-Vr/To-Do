@@ -3,14 +3,15 @@
 import { useUser } from "@clerk/nextjs";
 import { useCallback, useEffect } from "react";
 
-import useTaskStore from "@/app/taskStore";
+import useUserStore from "@/app/_store/useUserStore";
+import useSyncStore from "@/app/_store/useSyncStore";
 import { useShallow } from "zustand/react/shallow";
 import { createUserAction, getUserByEmailAction } from "@/app/_lib/Actions";
 
 export default function UserSignupHandler() {
   const { user } = useUser();
 
-  const { setUserState } = useTaskStore(
+  const { setUserState } = useUserStore(
     useShallow((state) => ({
       setUserState: state.setUserState,
     })),
@@ -18,7 +19,10 @@ export default function UserSignupHandler() {
 
   // Use useCallback to prevent unnecessary re-renders
   const memoized_setUserState = useCallback(
-    (userState) => setUserState(userState),
+    (userState) => {
+      setUserState(userState);
+      useSyncStore.getState().fetchDataOnMount();
+    },
     [setUserState],
   );
 

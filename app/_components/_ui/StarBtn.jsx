@@ -1,5 +1,5 @@
 import { FullStarIcon, StarIcon } from "@/public/icons/icons";
-import useTaskStore from "../../taskStore";
+import useTaskStore from "../../_store/useTaskStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function StarBtn({ task, starBtnRef, className, bgColor }) {

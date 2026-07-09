@@ -5,7 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 import { checkDatabaseHealthAction } from "../_lib/Actions";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
-import useTaskStore from "../taskStore";
+import useSyncStore from "../_store/useSyncStore";
 import {
   HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS,
   HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS,
@@ -25,7 +25,7 @@ export default function HealthStatusSync() {
     isSyncing,
     getConectionStatus,
     syncChangeLog,
-  } = useTaskStore(
+  } = useSyncStore(
     useShallow((state) => ({
       updateConnectionStatus: state.updateConnectionStatus,
       toggleOfflineLogMode: state.toggleOfflineLogMode,
