@@ -6,7 +6,7 @@ import autosize from "autosize";
 
 export default function CategoryTitleEditor({ theCategory, className }) {
   const textareaRef = useRef(null);
-  const isFocused = useRef(false); // برای ردگیری فوکوس
+  const isFocused = useRef(false); // Keep track of focus
 
   const { updateCategoryInStore, editTitleWhileCreating, toggleTitleFocus } =
     useTaskStore(

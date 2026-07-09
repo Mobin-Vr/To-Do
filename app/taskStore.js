@@ -104,6 +104,7 @@ const useTaskStore = create(
           set({
             isSidebarOpen: false,
             isEditSidebarOpen: false,
+            activeTask: null,
           });
         },
 
@@ -422,7 +423,7 @@ const useTaskStore = create(
             set(
               produce((state) => {
                 const category = state.categoriesList.find(
-                  (cat) => cat.category_id !== id,
+                  (cat) => cat.category_id === id,
                 );
 
                 // Remove the category from the list
@@ -437,21 +438,21 @@ const useTaskStore = create(
 
                 // Add changes to the offline log if offline mode is enabled
                 if (state.offlineLogMode) {
-                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                  const isAlreadyAddCategoryInChangeLog = state.changeLog.some(
                     (log) =>
                       log.id === category.category_id &&
                       log.type === "add-category",
                   );
 
                   // If this task exists only in the local state, so if we decide to delete it, there's no need to first add it and then delete it. Simply ignore the operation.
-                  if (isAlreadyAddTaskInChangeLog) {
+                  if (isAlreadyAddCategoryInChangeLog) {
                     // Remove existing logs related to this category
                     state.changeLog = state.changeLog.filter(
                       (log) => log.id !== category.category_id,
                     );
                   }
 
-                  if (!isAlreadyAddTaskInChangeLog) {
+                  if (!isAlreadyAddCategoryInChangeLog) {
                     // When deleting a task, there's no need to update or anything to it first; just delete it directly.
 
                     // Remove existing logs related to this category
@@ -516,14 +517,14 @@ const useTaskStore = create(
                 }
 
                 if (state.offlineLogMode) {
-                  const isAlreadyAddTaskInChangeLog = state.changeLog.some(
+                  const isAlreadyAddCategoryInChangeLog = state.changeLog.some(
                     (log) =>
                       log.id === category.category_id &&
                       log.type === "add-category",
                   );
 
                   // If the category was added only in the local state and we want to update it, we should just add the updated category instead of adding it first and then updating it.
-                  if (isAlreadyAddTaskInChangeLog) {
+                  if (isAlreadyAddCategoryInChangeLog) {
                     state.changeLog = state.changeLog.filter(
                       (log) => log.id !== category.category_id,
                     );
@@ -536,7 +537,7 @@ const useTaskStore = create(
                   }
 
                   // If the category hasn't already been added to the log ("add-category"), it means it exists in the database and should be updated.
-                  if (!isAlreadyAddTaskInChangeLog) {
+                  if (!isAlreadyAddCategoryInChangeLog) {
                     state.changeLog = state.changeLog.filter(
                       (log) => log.id !== category.category_id,
                     );
@@ -598,10 +599,7 @@ const useTaskStore = create(
           try {
             const userState = get().userState;
 
-            const token = await createInvitationAction(
-              categoryId,
-              userState.user_id,
-            );
+            const token = await createInvitationAction(categoryId);
 
             set(
               produce((state) => {
@@ -1429,8 +1427,7 @@ const useTaskStore = create(
           );
         },
 
-        // # Toggle Edit sidebar
-        handleActiveTaskSidebar: async (selectedTask, e) => {
+        handleActiveTaskSidebar: (selectedTask, e) => {
           if (
             e?.target?.closest(".complete-btn") ||
             e?.target?.closest(".star-btn")
@@ -1438,29 +1435,31 @@ const useTaskStore = create(
             return;
 
           const { isEditSidebarOpen, activeTask } = get();
-          const cond = selectedTask?.task_id === activeTask?.task_id;
+          const isSameTask = selectedTask?.task_id === activeTask?.task_id;
 
-          set(
-            produce((state) => {
-              if (!isEditSidebarOpen) {
-                state.activeTask = selectedTask;
-                state.isEditSidebarOpen = true;
-              } else if (isEditSidebarOpen && cond) {
-                state.isEditSidebarOpen = false;
-                state.activeTask = null;
-              } else if (isEditSidebarOpen && !cond) {
-                state.isEditSidebarOpen = false;
-                state.activeTask = null; // NOTE I currentlly added this. if an error has accured remove this
-              }
-            }),
-          );
-
-          if (isEditSidebarOpen && !cond) {
-            await delay(200);
+          if (!isEditSidebarOpen) {
+            // Sidebar is closed → open with the selected task
             set(
               produce((state) => {
                 state.activeTask = selectedTask;
                 state.isEditSidebarOpen = true;
+              }),
+            );
+          } else if (isSameTask) {
+            // Clicking the already active task → close sidebar
+            set(
+              produce((state) => {
+                state.isEditSidebarOpen = false;
+                state.activeTask = null;
+              }),
+            );
+          } else {
+            // Sidebar is open, but a different task clicked → just update activeTask
+            // EditSidebar's internal useEffect will resync data automatically.
+            set(
+              produce((state) => {
+                state.activeTask = selectedTask;
+                // Keep isEditSidebarOpen: true
               }),
             );
           }
@@ -1540,17 +1539,16 @@ const useTaskStore = create(
         },
       }),
       {
-        name: "Todo Store", // Key name for storage
-        storage: createJSONStorage(() => sessionStorage), // Use localStorage for persisting the data
+        name: "Todo Store",
+        storage: createJSONStorage(() => sessionStorage),
+        partialize: (state) => ({
+          userState: state.userState,
+          changeLog: state.changeLog,
+        }),
       },
     ),
     { name: "Todo Store" }, // Redux DevTools name
   ),
 );
-
-//CHANGE remove later
-if (typeof window !== "undefined") {
-  window.__taskStore = useTaskStore;
-}
 
 export default useTaskStore;

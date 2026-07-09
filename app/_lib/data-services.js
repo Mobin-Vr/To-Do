@@ -305,11 +305,3 @@ export async function checkDatabaseHealth() {
 
   return { online: true, status: data.status };
 }
-
-export async function debugAuth() {
-  const supabase = await createSupabaseServerClient();
-
-  const { data, error } = await supabase.rpc("debug_whoami");
-
-  return data;
-}

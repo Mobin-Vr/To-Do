@@ -15,9 +15,11 @@ export default function StepCompleteBtn({ task, step, className, bgColor }) {
   );
 
   function handleCompleteClick() {
+    const newIsCompleted = !step.is_step_completed;
+
     const updatedFields = {
-      is_step_completed: !step.is_step_completed,
-      step_completed_at: !step.is_step_completed ? null : getDateNowIso(),
+      is_step_completed: newIsCompleted,
+      step_completed_at: newIsCompleted ? getDateNowIso() : null,
     };
 
     updateTaskInStore(task.task_id, {

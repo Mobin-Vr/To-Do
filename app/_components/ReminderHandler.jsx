@@ -40,30 +40,52 @@ export default function ReminderHandler() {
     document.addEventListener("click", handleUserInteraction);
 
     function checkReminders() {
-      if (!isUserInteracted || getTaskList() === null) return;
+      if (!isUserInteracted) return;
 
-      getTaskList().forEach((task) => {
-        // In each interval, we need to check if the task's due date or reminder is today. If either is today, we should set `is_task_in_myday` to `true`.
-        if (!task.is_task_in_myday && checkIfToday(task.task_reminder))
+      const tasks = getTaskList();
+      if (!tasks) return;
+
+      // Only process tasks that have a reminder or due date (others can't trigger any condition)
+      const tasksWithDates = tasks.filter(
+        (task) => task.task_reminder != null || task.task_due_date != null,
+      );
+
+      tasksWithDates.forEach((task) => {
+        // Set is_task_in_myday if reminder or due date is today
+        if (
+          !task.is_task_in_myday &&
+          task.task_reminder &&
+          checkIfToday(task.task_reminder)
+        ) {
           updateTaskInStore(task.task_id, {
             is_task_in_myday: !task.is_task_in_myday,
           });
+        }
 
-        if (!task.is_task_in_myday && checkIfToday(task.task_due_date))
+        if (
+          !task.is_task_in_myday &&
+          task.task_due_date &&
+          checkIfToday(task.task_due_date)
+        ) {
           updateTaskInStore(task.task_id, {
             is_task_in_myday: !task.is_task_in_myday,
           });
+        }
 
-        // Check if the task's due date is before today (yesterday or earlier), then apply the repeat!
-        if (task.task_repeat && isDateBeforeToday(task.task_due_date)) {
+        // Handle repeat tasks whose due date has passed
+        if (
+          task.task_repeat &&
+          task.task_due_date &&
+          isDateBeforeToday(task.task_due_date)
+        ) {
           const nextRepeatDate = calculateNextDate(
             task.task_due_date,
             task.task_repeat,
           );
-
           updateTaskInStore(task.task_id, { task_due_date: nextRepeatDate });
         }
 
+        // Trigger reminder if reminder time reached
         if (
           task.task_reminder !== null &&
           !task.is_task_completed &&

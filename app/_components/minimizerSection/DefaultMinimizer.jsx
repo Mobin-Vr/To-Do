@@ -10,11 +10,25 @@ export default function DefaultMinimizer({
   listName,
   isVisibleByDefault,
 }) {
-  const completedTasks = tasks.filter((task) => task.is_task_completed);
-  const uncompletedTasks = tasks.filter((task) => !task.is_task_completed);
+  const completedTasks = useMemo(
+    () => tasks.filter((task) => task.is_task_completed),
+    [tasks],
+  );
 
-  const sortedCompletedTasks = sortTasks(completedTasks, sortMethod);
-  const sortedUncompletedTasks = sortTasks(uncompletedTasks, sortMethod);
+  const uncompletedTasks = useMemo(
+    () => tasks.filter((task) => !task.is_task_completed),
+    [tasks],
+  );
+
+  const sortedCompletedTasks = useMemo(
+    () => sortTasks(completedTasks, sortMethod),
+    [completedTasks, sortMethod],
+  );
+
+  const sortedUncompletedTasks = useMemo(
+    () => sortTasks(uncompletedTasks, sortMethod),
+    [uncompletedTasks, sortMethod],
+  );
 
   return (
     <>

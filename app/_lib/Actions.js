@@ -163,6 +163,3 @@ export async function addManyErrorLogAction(errorLogArr) {
 export async function checkDatabaseHealthAction() {
   return await checkDatabaseHealth();
 }
-export async function debugAuthAction() {
-  return await debugAuth();
-}

@@ -1,6 +1,23 @@
+// ============================================================
+//  Health & Connection Monitoring Configuration
+//  Used in: HealthStatusSync component
+// ============================================================
+
+// Debounce delay (ms) for the browser 'online' event before triggering a health check.
+// Prevents multiple rapid database queries when network fluctuates.
+export const HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS = 2000;
+
+// Minimum interval (ms) between two successful database health checks.
+// Skips redundant `checkDatabaseHealthAction` calls if a check was performed recently.
+export const HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS = 10_000;
+
+// ============================================================
+//  General App Messages & Timers
+// ============================================================
+
 export const TASK_SYNC_FAIL_TOAST_MSG =
   "Couldn't sync with the server. Will retry once connected.";
-///////////////////////////////////////////////////////////
+
 const duration = 60000; // 1 min
 
 export const ALARM_STOP_TIMEOUT = duration;
@@ -8,16 +25,24 @@ export const TOAST_SHOWN_DURATION = duration;
 export const CHECK_REMINDERS_INTERVAL = 30000; // 30 sec
 export const SNOOZE_DURATION = 5 * 60 * 1000; // 5 min
 
-///////////////////////////////////////////////////////////
+// ============================================================
+//  Input Field Character Limits
+// ============================================================
+
 export const MAX_INPUT_TASK_TITLE = 100; // Character limit on the task title input
 export const MAX_INPUT_CAT_TITLE = 60; // Character limit on the category title input
-export const MAX_INPUT_TEXTAREA = 400; // Character limit on the text aria input
+export const MAX_INPUT_TEXTAREA = 400; // Character limit on the text area input
 
-///////////////////////////////////////////////////////////
+// ============================================================
+//  Debounce Timing for UI Interactions
+// ============================================================
+
 export const DEBOUNCE_TIME = 500;
 
-///////////////////////////////////////////////////////////
-// Default category object
+// ============================================================
+//  Default Category Definition
+// ============================================================
+
 export const defaultCategoryId = "00000000-0000-0000-0000-000000000000";
 export const defaultCategory = {
   category_id: defaultCategoryId,
@@ -28,7 +53,10 @@ export const defaultCategory = {
   has_category_invitation: false,
 };
 
-///////////////////////////////////////////////////////////
+// ============================================================
+//  Page Lists for Sidebar & Spinner Visibility
+// ============================================================
+
 // Sidebar should only render for pages related to tasks, profile management, settings, and search.
 // It should not render for pages like Invite.
 export const RELEVENT_APP_PAGES = [
@@ -49,10 +77,11 @@ export const DONT_SHOW_SPINNER_IN_THIS_PAGES = [
   "/tasks/invite",
 ];
 
-///////////////////////////////////////////////////////////
-//////////////////   Route background   ///////////////////
-//////////////////    color settings    ///////////////////
-///////////////////////////////////////////////////////////
+// ============================================================
+//  Route Background Color Settings
+//  (Defines color themes for different app routes)
+// ============================================================
+
 export const BG_COLORS = {
   "/my-day": {
     mainBackground: "#dfedf9",

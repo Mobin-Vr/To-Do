@@ -1,40 +1,28 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import useTaskStore from "../taskStore";
-import { useShallow } from "zustand/react/shallow";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { useSupabaseRealtimeToken } from "../_lib/useSupabaseRealtimeToken";
+import useTaskStore from "../taskStore";
 
 export default function TaskRealTimeListener() {
   const { supabase, isTokenReady } = useSupabaseRealtimeToken();
   const router = useRouter();
-
-  const {
-    addTaskFromRealtime,
-    addUserFromRealtime,
-    updateTaskFromRealtime,
-    updateCategoryNameFromRealTime,
-    deleteTaskFromRealtime,
-    removeUserWhenNotOwner,
-    getUserState,
-  } = useTaskStore(
-    useShallow((state) => ({
-      addTaskFromRealtime: state.addTaskFromRealtime,
-      addUserFromRealtime: state.addUserFromRealtime,
-      updateTaskFromRealtime: state.updateTaskFromRealtime,
-      updateCategoryNameFromRealTime: state.updateCategoryNameFromRealTime,
-      deleteTaskFromRealtime: state.deleteTaskFromRealtime,
-      removeUserWhenNotOwner: state.removeUserWhenNotOwner,
-      getUserState: state.getUserState,
-    })),
-  );
-
   const channelRef = useRef(null);
 
   useEffect(() => {
-    // wait until the Clerk token is actually set on the realtime socket
     if (!supabase || !isTokenReady) return;
+
+    // Grab all needed actions once – their references are stable
+    const {
+      addTaskFromRealtime,
+      addUserFromRealtime,
+      updateTaskFromRealtime,
+      updateCategoryNameFromRealTime,
+      deleteTaskFromRealtime,
+      removeUserWhenNotOwner,
+      getUserState,
+    } = useTaskStore.getState();
 
     const channel = supabase
       .channel("realtime-changes", {
@@ -60,10 +48,6 @@ export default function TaskRealTimeListener() {
         { event: "INSERT", schema: "public", table: "collaborators" },
         (payload) => {
           const currentUserId = getUserState().user_id;
-          // if (payload.new.user_id === currentUserId) {
-          //   // joined via another tab/flow – hook this up if you need a live refresh
-          // }
-
           addUserFromRealtime(payload.new.invitation_id, payload.new);
         },
       )
@@ -83,8 +67,6 @@ export default function TaskRealTimeListener() {
         { event: "UPDATE", schema: "public", table: "categories" },
         (payload) => {
           const currentUserId = getUserState().user_id;
-          console.log("RT>>>", payload.new.category_title);
-
           if (payload.new.category_owner_id !== currentUserId) {
             updateCategoryNameFromRealTime(
               payload.new.category_id,
@@ -100,17 +82,15 @@ export default function TaskRealTimeListener() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [
-    supabase,
-    isTokenReady,
-    addTaskFromRealtime,
-    updateTaskFromRealtime,
-    deleteTaskFromRealtime,
-    updateCategoryNameFromRealTime,
-    removeUserWhenNotOwner,
-    getUserState,
-    router,
-  ]);
+  }, [supabase, isTokenReady, router]);
 
   return null;
 }
+
+// This component renders nothing (returns null) and only sets up a realtime
+// listener. Subscribing to the store with useTaskStore(selector) would cause
+// it to re‑run on every store change, even though it never displays data.
+// By reading actions directly from useTaskStore.getState() inside the effect,
+// the component stays completely outside the React render cycle, avoids
+// unnecessary re‑renders, and keeps the Supabase channel stable across
+// unrelated state updates.

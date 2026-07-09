@@ -1,11 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { checkDatabaseHealthAction, debugAuthAction } from "../_lib/Actions";
+import { checkDatabaseHealthAction } from "../_lib/Actions";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useTaskStore from "../taskStore";
+import {
+  HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS,
+  HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS,
+} from "../_lib/configs";
 
 export default function HealthStatusSync() {
   const showToast = useCustomToast();
@@ -32,74 +36,91 @@ export default function HealthStatusSync() {
     })),
   );
 
+  // Ref for online event debounce timeout
+  const onlineDebounceRef = useRef(null);
+  // Timestamp of the last successful database health check (cooldown mechanism)
+  const lastHealthCheckRef = useRef(0);
+
+  // Initialize isConnected state on the client
   useEffect(() => {
     if (typeof window !== "undefined") setIsConnected(navigator.onLine);
   }, []);
 
-  // Sync local changes (changeLog) with the database
+  // Sync local change log with the database
   const syncData = useCallback(async () => {
-    if (isSyncing) return; // Exit if already syncing
-    if (!changeLog.length) return; // Exit if there is no log
-
-    // Perform database operations
+    if (isSyncing || !changeLog.length) return;
     syncChangeLog();
+  }, [changeLog, isSyncing, syncChangeLog]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [changeLog, isSyncing]);
-
-  // Handle connection and online status checks
+  // Core logic to handle online/offline status and database health
   const handleConnectionStatus = useCallback(async () => {
-    // If offline, update states
-
+    // Offline path
     if (!navigator.onLine) {
       setIsConnected(false);
       setIsOnline(false);
-
-      showToast(`You're offline! Changes will be saved locally.`);
+      showToast("You're offline! Changes will be saved locally.");
       return;
     }
 
-    // If online, check database health
+    // Online path
     setIsConnected(true);
+
+    // Cooldown: skip health check if the last successful check was < HEALTH_CHECK_COOLDOWN_MS ago
+    const now = Date.now();
+    if (
+      now - lastHealthCheckRef.current <
+      HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS
+    ) {
+      return; // Keep previous isOnline state; no redundant DB call
+    }
+
     const result = await checkDatabaseHealthAction();
-    await debugAuthAction(); // CHANGE (remove later just for test)
     setIsOnline(result.online);
 
     if (result.online) {
-      setLastOnline(getDateNowIso()); // Update last online time
+      lastHealthCheckRef.current = Date.now(); // Update cooldown timestamp
+      setLastOnline(getDateNowIso());
 
-      // show the taost when it becames online but not in app mount!
+      // Show "back online" toast only if we were previously offline
       if (getConectionStatus().lastOnline) {
         showToast("You're back online! Syncing data...");
       }
-      await syncData(); // Start syncing log with the database
+      await syncData(); // Sync any pending offline changes
     }
+  }, [syncData, getConectionStatus, showToast]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [syncData]);
-
-  // Update connection status in the store when local states change
+  // Keep the global store in sync with local connection state
   useEffect(() => {
     updateConnectionStatus({ isConnected, isOnline, lastOnline });
   }, [isConnected, isOnline, lastOnline, updateConnectionStatus]);
 
-  /* Toggle offline logging based on online status. Refer to the comment "1" */
+  // Toggle offline logging mode when online status changes
   useEffect(() => {
     toggleOfflineLogMode(!isOnline);
   }, [isOnline, toggleOfflineLogMode]);
 
-  // Add event listeners for browser's online/offline events
+  // Register browser online/offline event listeners
   useEffect(() => {
-    window.addEventListener("online", handleConnectionStatus);
+    // Debounced version for the 'online' event to avoid spamming DB health checks during rapid network fluctuations.
+    const debouncedOnlineHandler = () => {
+      if (onlineDebounceRef.current) clearTimeout(onlineDebounceRef.current);
+      onlineDebounceRef.current = setTimeout(() => {
+        handleConnectionStatus();
+      }, HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS);
+    };
+
+    window.addEventListener("online", debouncedOnlineHandler);
+    // Offline event is immediate – no debounce needed
     window.addEventListener("offline", handleConnectionStatus);
 
     return () => {
-      window.removeEventListener("online", handleConnectionStatus);
+      window.removeEventListener("online", debouncedOnlineHandler);
       window.removeEventListener("offline", handleConnectionStatus);
+      if (onlineDebounceRef.current) clearTimeout(onlineDebounceRef.current);
     };
   }, [handleConnectionStatus]);
 
-  //Check connection status on mount
+  // Initial health check on mount (without debounce)
   useEffect(() => {
     handleConnectionStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -107,27 +128,3 @@ export default function HealthStatusSync() {
 
   return null;
 }
-
-/*
- * 1. When offlineLogMode is on, tasks are logged for later syncing after being recorded in the store.
- */
-
-/**
- * HealthStatusSync used to manage the synchronization of tasks with the database based on the connection status.
- 
- * It tracks the online/offline state of the app and checks the database health periodically.
-
- * When the app is online, it syncs changes (from the change log) with the database.
-
- * If the app is offline, it toggles the offline logging mode and logs tasks for later syncing.
-
- * It updates the connection status in the global state (using Zustand) whenever the connection or online status changes.
-
- * Key features:
-  - Syncs tasks (add, update, delete) with the database when online.
-  - Handles toggling of offline logging mode based on online status.
-  - Periodically checks the database health and updates the status.
-  - Uses event listeners to track the browser's online/offline status.
-
- * This component does not render any UI but manages syncing and connection logic.
- */

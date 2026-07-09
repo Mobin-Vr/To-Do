@@ -65,7 +65,6 @@ export default function EditSidebar() {
         !e.target.closest(".task-item") &&
         !e.target.closest(".edit-sidebar") &&
         !e.target.closest(".cancel-delete") &&
-        !e.target.closest(".cancel-delete") &&
         !(deletingType === "step" && e.target.closest(".confirm-delete")) // Prevent closing sidebar when we are delete a step
       )
         toggleEditSidebar();

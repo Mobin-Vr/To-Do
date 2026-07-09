@@ -240,7 +240,7 @@ export function getInvitationLink(token) {
   const baseUrl =
     process.env.NODE_ENV === "production"
       ? `https://ms-todo100.vercel.app`
-      : process.env.NEXT_PUBLIC_BASE_URL; // LATER fix this
+      : window.location.origin;
 
   const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
 

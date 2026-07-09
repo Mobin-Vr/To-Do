@@ -23,7 +23,6 @@ export default function Page() {
     deleteCategoryFromStore,
     leaveInvitationFromStore,
     tasksList,
-    // getCategoriesList,
     categoriesList,
     showDeleteModal,
   } = useTaskStore(
@@ -31,7 +30,6 @@ export default function Page() {
       deleteCategoryFromStore: state.deleteCategoryFromStore,
       leaveInvitationFromStore: state.leaveInvitationFromStore,
       tasksList: state.tasksList,
-      // getCategoriesList: state.getCategoriesList,
       categoriesList: state.categoriesList,
       showDeleteModal: state.showDeleteModal,
     })),
@@ -43,7 +41,6 @@ export default function Page() {
     }
   }, [params]);
 
-  // const categories = getCategoriesList();
   const categories = categoriesList;
 
   if (!categories || !slugId)

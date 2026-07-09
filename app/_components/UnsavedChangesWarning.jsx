@@ -2,27 +2,19 @@
 
 import { useEffect } from "react";
 import useTaskStore from "../taskStore";
-import { useShallow } from "zustand/react/shallow";
 
-const UnsavedChangesWarning = () => {
-  const { changeLog } = useTaskStore(
-    useShallow((state) => ({
-      changeLog: state.changeLog,
-    })),
-  );
-
+function UnsavedChangesWarning() {
   useEffect(() => {
     function handleBeforeUnload(e) {
+      const { changeLog } = useTaskStore.getState();
       if (changeLog.length) e.preventDefault();
     }
 
     window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [changeLog.length]);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, []); // Only attach once – read length directly from store inside handler
 
   return null;
-};
+}
 
 export default UnsavedChangesWarning;
