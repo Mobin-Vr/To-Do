@@ -2,8 +2,7 @@
 
 import { MagnifierIcon, XIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
-
-const { useState, useEffect } = require("react");
+import { useEffect, useState } from "react";
 
 export default function TaskSearch() {
   const [searchInput, setSearchInput] = useState("");

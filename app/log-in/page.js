@@ -25,6 +25,7 @@ export default async function Page({ searchParams }) {
               src={illsturation}
               alt="completed-task"
               className="mx-auto h-52 w-52 sm:h-64 sm:w-64"
+              priority
             />
           </div>
 

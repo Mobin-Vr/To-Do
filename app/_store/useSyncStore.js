@@ -292,9 +292,12 @@ const useSyncStore = create(
 
             // Filter out duplicates with existing data
             const currentTasks = useTaskStore.getState().tasksList || [];
-            const currentCategories = useCategoryStore.getState().categoriesList || [];
-            const currentInvitations = useInvitationStore.getState().invitations || [];
-            const currentSharedWithMe = useInvitationStore.getState().sharedWithMe || [];
+            const currentCategories =
+              useCategoryStore.getState().categoriesList || [];
+            const currentInvitations =
+              useInvitationStore.getState().invitations || [];
+            const currentSharedWithMe =
+              useInvitationStore.getState().sharedWithMe || [];
 
             const nonDuplicateTasks = currentTasks.filter(
               (task) => !uniqueTasks.some((t) => t.task_id === task.task_id),
@@ -327,22 +330,24 @@ const useSyncStore = create(
             }));
 
             // Set data in respective stores
-            useTaskStore.getState().setTasksList([
-              ...nonDuplicateTasks,
-              ...uniqueTasks,
-            ]);
-            useCategoryStore.getState().setCategoriesList([
-              ...nonDuplicateCategories,
-              ...uniqueCategories,
-            ]);
-            useInvitationStore.getState().setInvitations([
-              ...nonDuplicateOwnerInvs,
-              ...updatedOwnerInvs,
-            ]);
-            useInvitationStore.getState().setSharedWithMe([
-              ...nonDuplicateJoinedInvs,
-              ...uniqueJoinedInvs,
-            ]);
+            useTaskStore
+              .getState()
+              .setTasksList([...nonDuplicateTasks, ...uniqueTasks]);
+            useCategoryStore
+              .getState()
+              .setCategoriesList([
+                ...nonDuplicateCategories,
+                ...uniqueCategories,
+              ]);
+            useInvitationStore
+              .getState()
+              .setInvitations([...nonDuplicateOwnerInvs, ...updatedOwnerInvs]);
+            useInvitationStore
+              .getState()
+              .setSharedWithMe([
+                ...nonDuplicateJoinedInvs,
+                ...uniqueJoinedInvs,
+              ]);
 
             useUiStore.getState().setShowpinner(false);
           } catch (error) {
@@ -352,7 +357,12 @@ const useSyncStore = create(
           }
         },
 
-        resetStore: () => set(initialState),
+        resetStore: () => {
+          set(initialState);
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("sync-store");
+          }
+        },
       }),
       {
         name: "sync-store",
