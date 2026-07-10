@@ -1,14 +1,13 @@
 "use client";
 
 import { defaultCategoryId } from "@/app/_lib/configs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";
 import ListHeader from "./ListHeader";
 import NoResults from "./NoResults";
 import NoTaskInMyDay from "./NoTaskInMyDay";
 import TaskInput from "./taskInputSection/TaskInput";
 import TasksList from "./TasksList";
-import { useState } from "react";
 
 export default function Template({
   listRef,
@@ -22,13 +21,16 @@ export default function Template({
 }) {
   const [mustFocus, setMustFocus] = useState(false);
 
-  // To ensure consistent background, the body background matches the page's. Without this, border-radius on some elements would reveal the white page background at the corners.
+  // Fix: cleanup body background on unmount
   useEffect(() => {
     if (typeof document !== "undefined") {
+      const originalBg = document.body.style.backgroundColor;
       document.body.style.backgroundColor = listConfig.bgColor.mainBackground;
+      return () => {
+        document.body.style.backgroundColor = originalBg;
+      };
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [listConfig.bgColor.mainBackground]); // depend on actual color so it updates when list changes
 
   function handleClick(e) {
     if (
