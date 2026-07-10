@@ -1,5 +1,4 @@
 "use client";
-
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,10 +11,13 @@ export default function ModalTemplatePrimary({
   isCenteredModal = false,
 }) {
   const modalRef = useRef(null);
-  const [shouldRender, setShouldRender] = useState(isModalOpen); // Control rendering in DOM
+  const [shouldRender, setShouldRender] = useState(isModalOpen);
 
+  // Defer setShouldRender to avoid React 19 synchronous setState warning
   useEffect(() => {
-    if (isModalOpen) setShouldRender(true); // Render the modal in the DOM when it's open
+    if (isModalOpen) {
+      queueMicrotask(() => setShouldRender(true));
+    }
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -31,8 +33,7 @@ export default function ModalTemplatePrimary({
       return () =>
         document.removeEventListener("mousedown", handleClickOutside);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isModalOpen]);
+  }, [isModalOpen, toggleModal]);
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8, x: isCenteredModal ? 0 : justify },
@@ -40,10 +41,8 @@ export default function ModalTemplatePrimary({
     exit: { opacity: 0, scale: 0.8, x: isCenteredModal ? 0 : justify },
   };
 
-  // Define variants with translate-x on large screens
   const modalVariantsWithTranslate = {
     ...modalVariants,
-
     hidden: {
       ...modalVariants.hidden,
       x:
@@ -53,17 +52,15 @@ export default function ModalTemplatePrimary({
             ? "0"
             : justify,
     },
-
     visible: {
       ...modalVariants.visible,
       x:
         isCenteredModal && window.innerWidth >= 768
-          ? "10rem" // Half of the max-width of the sidebar
+          ? "10rem"
           : isCenteredModal
             ? "0"
             : justify,
     },
-
     exit: {
       ...modalVariants.exit,
       x:
@@ -75,7 +72,7 @@ export default function ModalTemplatePrimary({
     },
   };
 
-  if (!shouldRender) return null; // Remove the modal from DOM after exit animation is complete
+  if (!shouldRender) return null;
 
   return (
     <AnimatePresence onExitComplete={() => setShouldRender(false)}>

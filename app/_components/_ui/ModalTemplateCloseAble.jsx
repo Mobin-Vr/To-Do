@@ -11,10 +11,13 @@ export default function ModalTemplateCloseAble({
   justify = "0",
 }) {
   const modalRef = useRef(null);
-  const [shouldRender, setShouldRender] = useState(isModalOpen); // Control rendering in DOM
+  const [shouldRender, setShouldRender] = useState(isModalOpen);
 
   useEffect(() => {
-    if (isModalOpen) setShouldRender(true); // Render the modal in the DOM when it's open
+    if (isModalOpen) {
+      const timeout = setTimeout(() => setShouldRender(true), 0);
+      return () => clearTimeout(timeout);
+    }
   }, [isModalOpen]);
 
   useEffect(() => {
@@ -37,7 +40,7 @@ export default function ModalTemplateCloseAble({
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
   };
 
-  if (!shouldRender) return null; // Remove the modal from DOM after exit animation is complete
+  if (!shouldRender) return null;
 
   return (
     <AnimatePresence onExitComplete={() => setShouldRender(false)}>
