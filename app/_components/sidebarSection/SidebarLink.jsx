@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import useTaskStore from "@/app/_store/useTaskStore";
@@ -25,7 +25,8 @@ const SidebarLink = ({
     })),
   );
 
-  function count() {
+  // Memoize count calculation to avoid recomputation on every render
+  const count = useMemo(() => {
     if (!tasksList) return 0;
 
     if (title === "My Day")
@@ -53,7 +54,9 @@ const SidebarLink = ({
     if (categoryId !== defaultCategoryId)
       return tasksList.filter((task) => task.task_category_id === categoryId)
         .length;
-  }
+
+    return 0;
+  }, [tasksList, title, categoryId]);
 
   return (
     <Link href={href} onClick={onClick}>
@@ -77,7 +80,7 @@ const SidebarLink = ({
           )}
 
           <span className="flex h-5 w-fit min-w-5 items-center justify-center rounded-full bg-blue-100 px-2 pt-0.5 text-[0.7rem] font-extralight leading-none text-gray-500">
-            {count()}
+            {count}
           </span>
         </div>
 
