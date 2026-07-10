@@ -40,10 +40,11 @@ export default function EditSidebar() {
       tasksList: state.tasksList,
     })),
   );
-  const { showDeleteModal, deletingType } = useDeleteModalStore(
+
+  // FIX L-6: Only get showDeleteModal from store; we will read deletingType on demand
+  const { showDeleteModal } = useDeleteModalStore(
     useShallow((state) => ({
       showDeleteModal: state.showDeleteModal,
-      deletingType: state.deletingType,
     })),
   );
 
@@ -63,6 +64,9 @@ export default function EditSidebar() {
   // Handle outside clicks
   useEffect(() => {
     async function handleClickOutside(e) {
+      // Read deletingType directly from the store when needed – avoids unnecessary re-renders
+      const { deletingType } = useDeleteModalStore.getState();
+
       if (
         isEditSidebarOpen &&
         !e.target.closest(".task-item") &&
@@ -75,7 +79,7 @@ export default function EditSidebar() {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [toggleEditSidebar, isEditSidebarOpen, deletingType]);
+  }, [toggleEditSidebar, isEditSidebarOpen]); // deletingType dependency removed
 
   if (!activeTask) return;
 
