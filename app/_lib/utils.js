@@ -20,9 +20,7 @@ export function cn(...inputs) {
 }
 
 export function getTimeAgo(fromDate) {
-  return formatDistanceToNow(new Date(fromDate).toISOString(), {
-    addSuffix: true,
-  });
+  return formatDistanceToNow(new Date(fromDate), { addSuffix: true });
 }
 
 export function generateNewUuid() {
@@ -237,12 +235,12 @@ export function hasDatePassed(dateString) {
 }
 
 export function getInvitationLink(token) {
-  const baseUrl =
-    process.env.NODE_ENV === "production"
-      ? `https://ms-todo100.vercel.app`
-      : window.location.origin;
+  const isProduction = process.env.NODE_ENV === "production";
+  const baseUrl = isProduction
+    ? "https://ms-todo100.vercel.app"
+    : typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost:3000";
 
-  const invitationLink = `${baseUrl}/tasks/invite?token=${token}`;
-
-  return invitationLink;
+  return `${baseUrl}/tasks/invite?token=${token}`;
 }
