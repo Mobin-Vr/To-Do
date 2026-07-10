@@ -1,3 +1,5 @@
+"use client";
+
 import { getHourMinString, replaceTimeInIsoDate } from "@/app/_lib/utils";
 import { useRef, useState } from "react";
 

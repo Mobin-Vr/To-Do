@@ -1,3 +1,5 @@
+"use client";
+
 import { SyncIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import InputBtnTempl from "../_ui/InputBtnTempl";

@@ -1,3 +1,5 @@
+"use client";
+
 import { MAX_INPUT_TEXTAREA } from "@/app/_lib/configs";
 import autosize from "autosize";
 import { useEffect, useRef, useState } from "react";

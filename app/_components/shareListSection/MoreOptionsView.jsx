@@ -1,3 +1,5 @@
+"use client";
+
 import useInvitationStore from "@/app/_store/useInvitationStore";
 import { ArrowIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";

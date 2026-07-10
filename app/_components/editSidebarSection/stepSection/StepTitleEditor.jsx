@@ -1,3 +1,5 @@
+"use client";
+
 import useTaskStore from "@/app/_store/useTaskStore";
 import autosize from "autosize";
 import { useRef, useState } from "react";

@@ -1,3 +1,5 @@
+"use client";
+
 import { MagnifierIcon, XIcon } from "@/public/icons/icons";
 import { useRouter } from "next/navigation";
 

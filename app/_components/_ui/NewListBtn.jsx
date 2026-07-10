@@ -1,8 +1,10 @@
+"use client";
+
 import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
 import useUiStore from "@/app/_store/useUiStore";
 import { PlusIcon } from "@/public/icons/icons";
-import { useShallow } from "zustand/react/shallow";
 import { useRouter } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
 
 export default function NewListBtn({
   className,

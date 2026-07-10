@@ -1,48 +1,5 @@
-"use client";
+import SearchContent from "@/app/_components/pageContent/SearchContent";
 
-import Template from "@/app/_components/Template";
-import { BG_COLORS } from "@/app/_lib/configs";
-import useTaskStore from "@/app/_store/useTaskStore";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { useShallow } from "zustand/react/shallow";
-
-export default function Page({}) {
-  const listRef = useRef(null);
-  const query = useSearchParams().get("query");
-
-  const bgColor = BG_COLORS["/search"];
-
-  const { tasksList } = useTaskStore(
-    useShallow((state) => ({
-      tasksList: state.tasksList,
-    })),
-  );
-
-  const tasks = tasksList.filter((task) =>
-    task.task_title.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [tasksList.length]);
-
-  const listConfig = {
-    bgColor,
-    listName: "Search",
-    listIcon: "",
-    tasks,
-    query,
-  };
-
-  return (
-    <Template
-      listRef={listRef}
-      listConfig={listConfig}
-      showInput={false}
-      showSearch={tasks.length > 0 ? false : true}
-    />
-  );
+export default function Page() {
+  return <SearchContent />;
 }

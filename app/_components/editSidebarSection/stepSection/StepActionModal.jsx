@@ -1,7 +1,9 @@
+"use client";
+
 import { getDateNowIso } from "@/app/_lib/utils";
+import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import useTaskStore from "@/app/_store/useTaskStore";
 import useUserStore from "@/app/_store/useUserStore";
-import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import {
   CircleIcon,
   PlusIcon,

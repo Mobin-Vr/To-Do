@@ -1,8 +1,10 @@
+"use client";
+
 import { CalendarIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import InputBtnTempl from "../_ui/InputBtnTempl";
 import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import AddDueModal from "../editSidebarSection/reminderBoxModals/AddDueModal";
 import DatePickerModal from "../editSidebarSection/reminderBoxModals/DatePickerModal";
 

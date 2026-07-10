@@ -1,3 +1,5 @@
+"use client";
+
 import useCategoryStore from "@/app/_store/useCategoryStore";
 import useUiStore from "@/app/_store/useUiStore";
 import { useEffect, useRef, useState } from "react";

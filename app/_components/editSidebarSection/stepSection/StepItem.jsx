@@ -1,3 +1,5 @@
+"use client";
+
 import { DotIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";

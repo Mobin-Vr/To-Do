@@ -1,6 +1,8 @@
+"use client";
+
 import { FullStarIcon, StarIcon } from "@/public/icons/icons";
-import useTaskStore from "../../_store/useTaskStore";
 import { useShallow } from "zustand/react/shallow";
+import useTaskStore from "../../_store/useTaskStore";
 
 export default function StarBtn({ task, starBtnRef, className, bgColor }) {
   const { updateTaskInStore } = useTaskStore(

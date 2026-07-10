@@ -1,3 +1,5 @@
+"use client";
+
 import { XIcon } from "@/public/icons/icons";
 import { useRef } from "react";
 

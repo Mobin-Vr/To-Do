@@ -1,3 +1,5 @@
+"use client";
+
 import { SortIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import useUiStore from "../../_store/useUiStore";

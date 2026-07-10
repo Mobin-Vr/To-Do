@@ -1,8 +1,10 @@
+"use client";
+
 import { BellIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
 import InputBtnTempl from "../_ui/InputBtnTempl";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
 import AddReminderModal from "../editSidebarSection/reminderBoxModals/AddReminderModal";
 import DateTimePickerModal from "../editSidebarSection/reminderBoxModals/DateTimePickerModal";
 

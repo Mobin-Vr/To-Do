@@ -1,13 +1,15 @@
+"use client";
+
 import { getRelativeDay } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
 import { format } from "date-fns";
 import { useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
 import BoxBtn from "../BoxBtn";
 import AddDueModal from "../reminderBoxModals/AddDueModal";
 import DatePickerModal from "../reminderBoxModals/DatePickerModal";
-import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
-import { useShallow } from "zustand/react/shallow";
 
 export default function AddDue({ task }) {
   const AddDueRef = useRef(null);

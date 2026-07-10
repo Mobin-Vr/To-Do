@@ -1,3 +1,5 @@
+"use client";
+
 import { getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
 import {

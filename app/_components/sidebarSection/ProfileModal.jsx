@@ -1,14 +1,16 @@
+"use client";
+
+import useUiStore from "@/app/_store/useUiStore";
 import {
-  SyncIcon,
   SettingsIcon,
   SignOutIcon,
+  SyncIcon,
   UserSettingsIcon,
 } from "@/public/icons/icons";
 import { SignOutButton, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
-import UserStatus from "./UserStatus";
-import useUiStore from "@/app/_store/useUiStore";
 import { useShallow } from "zustand/react/shallow";
+import UserStatus from "./UserStatus";
 
 const userButtonAppearance = {
   elements: {

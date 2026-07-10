@@ -1,6 +1,8 @@
-import { ChevronIcon } from "@/public/icons/icons";
+"use client";
+
 import { getTimeAgo } from "@/app/_lib/utils";
 import useSyncStore from "@/app/_store/useSyncStore";
+import { ChevronIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
 
 export default function UserStatus({ user, showIcon = true }) {

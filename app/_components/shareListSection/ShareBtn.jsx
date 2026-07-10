@@ -1,3 +1,5 @@
+"use client";
+
 import { ShareIcon } from "@/public/icons/icons";
 import { useState } from "react";
 import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";

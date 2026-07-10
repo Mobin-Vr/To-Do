@@ -1,3 +1,5 @@
+"use client";
+
 import { generateNewUuid, getDateNowIso } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
 import { CircleIcon, PlusIcon } from "lucide-react";

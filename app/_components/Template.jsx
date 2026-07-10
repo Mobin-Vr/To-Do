@@ -1,3 +1,5 @@
+"use client";
+
 import { defaultCategoryId } from "@/app/_lib/configs";
 import { useEffect } from "react";
 import DeleteWarningModal from "./_ui/DeleteWarningModal";

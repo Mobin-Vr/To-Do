@@ -1,3 +1,5 @@
+"use client";
+
 import { getInvitationLink } from "@/app/_lib/utils";
 import useInvitationStore from "@/app/_store/useInvitationStore";
 import { AnimatePresence, motion } from "framer-motion";

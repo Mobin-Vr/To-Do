@@ -1,10 +1,12 @@
+"use client";
+
 import { getWeekendForWeekdays, isWeekday } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
 import { useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
 import BoxBtn from "../BoxBtn";
 import AddRepeatModal from "../reminderBoxModals/AddRepeatModal";
-import { useShallow } from "zustand/react/shallow";
 
 export default function AddRepeat({ task }) {
   const repeatRef = useRef(null);

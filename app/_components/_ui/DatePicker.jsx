@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar } from "./Calendar";
 
 export default function DatePicker({ date, setDate }) {

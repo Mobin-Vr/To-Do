@@ -1,7 +1,9 @@
+"use client";
+
 import useTaskStore from "@/app/_store/useTaskStore";
+import { useShallow } from "zustand/react/shallow";
 import BoxBtn from "./BoxBtn";
 import BoxTemplate from "./BoxTemplate";
-import { useShallow } from "zustand/react/shallow";
 
 function AddToMyDay({ task }) {
   const { updateTaskInStore } = useTaskStore(
