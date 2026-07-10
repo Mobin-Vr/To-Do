@@ -19,23 +19,24 @@ export default function ListHeader({
 }) {
   const { bgColor, listName, listIcon, theCategory, query = "" } = listConfig;
 
-  const { getUserState } = useUserStore(
+  // FIX L-5: Subscribe only to userId, not the whole getUserState function
+  const { userId } = useUserStore(
     useShallow((state) => ({
-      getUserState: state.getUserState,
+      userId: state.userState?.user_id,
     })),
   );
 
   const isCategoryOwner =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getUserState().user_id;
+    theCategory.category_owner_id === userId;
 
   const isCategoryPartner =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id !== getUserState().user_id;
+    theCategory.category_owner_id !== userId;
 
   const isEditable =
     theCategoryId !== defaultCategoryId &&
-    theCategory.category_owner_id === getUserState().user_id;
+    theCategory.category_owner_id === userId;
 
   return (
     <div
@@ -106,9 +107,9 @@ export default function ListHeader({
           </span>
 
           <div className="text-3xl font-normal leading-none">
-            <span className="opacity-60">"</span>
+            <span className="opacity-60">&quot;</span>
             <span>{query}</span>
-            <span className="opacity-60">"</span>
+            <span className="opacity-60">&quot;</span>
           </div>
         </div>
       )}
