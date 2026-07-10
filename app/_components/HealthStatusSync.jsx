@@ -14,43 +14,33 @@ import {
 export default function HealthStatusSync() {
   const showToast = useCustomToast();
 
-  const [isConnected, setIsConnected] = useState(false);
+  // Fix: initialize isConnected lazily to avoid setState in useEffect
+  const [isConnected, setIsConnected] = useState(
+    () => typeof window !== "undefined" && navigator.onLine,
+  );
   const [isOnline, setIsOnline] = useState(true);
   const [lastOnline, setLastOnline] = useState(null);
 
-  const {
-    updateConnectionStatus,
-    toggleOfflineLogMode,
-    changeLog,
-    isSyncing,
-    getConectionStatus,
-    syncChangeLog,
-  } = useSyncStore(
-    useShallow((state) => ({
-      updateConnectionStatus: state.updateConnectionStatus,
-      toggleOfflineLogMode: state.toggleOfflineLogMode,
-      changeLog: state.changeLog,
-      isSyncing: state.isSyncing,
-      getConectionStatus: state.getConectionStatus,
-      syncChangeLog: state.syncChangeLog,
-    })),
-  );
+  const { updateConnectionStatus, toggleOfflineLogMode, getConectionStatus } =
+    useSyncStore(
+      useShallow((state) => ({
+        updateConnectionStatus: state.updateConnectionStatus,
+        toggleOfflineLogMode: state.toggleOfflineLogMode,
+        getConectionStatus: state.getConectionStatus,
+      })),
+    );
 
   // Ref for online event debounce timeout
   const onlineDebounceRef = useRef(null);
   // Timestamp of the last successful database health check (cooldown mechanism)
   const lastHealthCheckRef = useRef(0);
 
-  // Initialize isConnected state on the client
-  useEffect(() => {
-    if (typeof window !== "undefined") setIsConnected(navigator.onLine);
-  }, []);
-
-  // Sync local change log with the database
+  // ✅ FIX H-3: syncData now uses getState() to avoid stale closures / recreating listeners
   const syncData = useCallback(async () => {
+    const { isSyncing, changeLog, syncChangeLog } = useSyncStore.getState();
     if (isSyncing || !changeLog.length) return;
     syncChangeLog();
-  }, [changeLog, isSyncing, syncChangeLog]);
+  }, []); // empty deps → stable reference
 
   // Core logic to handle online/offline status and database health
   const handleConnectionStatus = useCallback(async () => {
@@ -101,7 +91,6 @@ export default function HealthStatusSync() {
 
   // Register browser online/offline event listeners
   useEffect(() => {
-    // Debounced version for the 'online' event to avoid spamming DB health checks during rapid network fluctuations.
     const debouncedOnlineHandler = () => {
       if (onlineDebounceRef.current) clearTimeout(onlineDebounceRef.current);
       onlineDebounceRef.current = setTimeout(() => {
@@ -110,7 +99,6 @@ export default function HealthStatusSync() {
     };
 
     window.addEventListener("online", debouncedOnlineHandler);
-    // Offline event is immediate – no debounce needed
     window.addEventListener("offline", handleConnectionStatus);
 
     return () => {
@@ -122,7 +110,12 @@ export default function HealthStatusSync() {
 
   // Initial health check on mount (without debounce)
   useEffect(() => {
-    handleConnectionStatus();
+    // Wrap in setTimeout to avoid synchronous setState inside effect (React 19 strict mode)
+    const timeoutId = setTimeout(() => {
+      handleConnectionStatus();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
