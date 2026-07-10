@@ -54,7 +54,7 @@ export default function SlugContent() {
     return <Spinner defaultBgColor={BG_COLORS["/default"]} />;
   }
 
-  // Category not found → trigger the closest not-found page (app/tasks/[slug]/not-found.js)
+  // Category not found → trigger the closest not-found page ONLY if data has been loaded
   if (!theCategory) {
     notFound();
   }

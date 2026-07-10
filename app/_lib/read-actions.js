@@ -1,28 +1,6 @@
 "use server";
 
-/**
- * READ-ACTIONS
- * ------------
- * This file re‑exports pure fetch functions from "data-services.js" as Server Actions
- * so that Client Components can call them directly (e.g. for initial data loading).
- *
- * Why it exists:
- *   - data-services.js contains plain async functions (no "use server" directive).
- *   - Client Components cannot import plain server modules – they need a Server Action
- *     (a function marked with "use server") to invoke code on the server.
- *   - By re‑exporting through this file, we keep data‑fetching logic centralized in
- *     data-services.js while still making it available to the client.
- *
- * When it can be removed:
- *   - Once we move all initial data fetching to React Server Components (RSC) – i.e. we
- *     perform the fetch inside async page/layout components on the server and pass the
- *     data down as props – there will be no more Client Components that need to call
- *     these functions directly.
- *   - At that point this file becomes unnecessary and can be safely deleted.
- */
-
-"use server";
-
+import { auth } from "@clerk/nextjs/server";
 import {
   getUserByEmail as _getUserByEmail,
   getReleventTasks as _getReleventTasks,
@@ -32,24 +10,38 @@ import {
   checkDatabaseHealth as _checkDatabaseHealth,
 } from "./data-services";
 
+// Each wrapper obtains the Supabase token via Clerk’s auth(),
+// then passes it to the underlying cached function.
+// This keeps the cached functions free of dynamic APIs like headers().
+
 export async function getUserByEmail(userEmail) {
-  return _getUserByEmail(userEmail);
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  return _getUserByEmail(userEmail, token);
 }
 
 export async function getReleventTasks() {
-  return _getReleventTasks();
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  return _getReleventTasks(token);
 }
 
 export async function getReleventCategories() {
-  return _getReleventCategories();
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  return _getReleventCategories(token);
 }
 
 export async function getOwnerInvitations() {
-  return _getOwnerInvitations();
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  return _getOwnerInvitations(token);
 }
 
 export async function getJoinedInvitations() {
-  return _getJoinedInvitations();
+  const { getToken } = await auth();
+  const token = await getToken({ template: "supabase" });
+  return _getJoinedInvitations(token);
 }
 
 export async function checkDatabaseHealth() {

@@ -1,8 +1,10 @@
 import { ClerkProvider, Show } from "@clerk/nextjs";
 import { Roboto_Flex } from "next/font/google";
 import localFont from "next/font/local";
+import { Suspense } from "react";
 import { Toaster } from "react-hot-toast";
 import Spinner from "./_components/_ui/Spinner";
+import SpinnerMini from "./_components/_ui/SpinnerMini";
 import EditSidebar from "./_components/editSidebarSection/EditSidebar";
 import HealthStatusSync from "./_components/HealthStatusSync";
 import ReloadStoreInitializer from "./_components/ReloadStoreInitializer";
@@ -65,9 +67,13 @@ export default async function RootLayout({ children }) {
             {/* handle reminders */}
             <ReminderHandler />
             {/* Absolute Sidebar */}
-            <Sidebar />
+            <Suspense fallback={null}>
+              <Sidebar />
+            </Suspense>
             {/* Absolute Editsidebar */}
-            <EditSidebar />
+            <Suspense fallback={null}>
+              <EditSidebar />
+            </Suspense>
           </Show>
 
           <Show when="signed-out">
@@ -76,7 +82,9 @@ export default async function RootLayout({ children }) {
           </Show>
 
           <main className="h-full overflow-y-hidden sm:flex-1">
-            <Spinner variant="transparent" bgColorRoute="tasks" />
+            <Suspense fallback={null}>
+              <Spinner variant="transparent" bgColorRoute="tasks" />
+            </Suspense>
 
             {children}
           </main>

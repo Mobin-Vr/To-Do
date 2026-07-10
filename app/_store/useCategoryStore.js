@@ -13,7 +13,7 @@ import useSyncStore from "./useSyncStore";
 import useTaskStore from "./useTaskStore";
 
 const initialState = {
-  categoriesList: [],
+  categoriesList: null,
 };
 
 const useCategoryStore = create(
@@ -55,14 +55,23 @@ const useCategoryStore = create(
 
           const { offlineLogMode, conectionStatus } = useSyncStore.getState();
           if (offlineLogMode) {
-            useSyncStore.getState().logCategoryChange("add-category", category.category_id, category);
+            useSyncStore
+              .getState()
+              .logCategoryChange(
+                "add-category",
+                category.category_id,
+                category,
+              );
           }
 
-          if (conectionStatus.isOnline) await addManyCategoriesAction([category]);
+          if (conectionStatus.isOnline)
+            await addManyCategoriesAction([category]);
         } catch (error) {
           logger.error("Error adding category: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("addCategoryToStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("addCategoryToStore", error.message);
         }
       },
 
@@ -87,14 +96,18 @@ const useCategoryStore = create(
 
           const { offlineLogMode, conectionStatus } = useSyncStore.getState();
           if (offlineLogMode && category) {
-            useSyncStore.getState().logCategoryChange("delete-category", id, category);
+            useSyncStore
+              .getState()
+              .logCategoryChange("delete-category", id, category);
           }
 
           if (conectionStatus.isOnline) await deleteManyCategoriesAction([id]);
         } catch (error) {
           logger.error("Error deleting category:", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("deleteCategoryFromStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("deleteCategoryFromStore", error.message);
         }
       },
 
@@ -117,7 +130,9 @@ const useCategoryStore = create(
             const category = get().categoriesList.find(
               (cat) => cat.category_id === id,
             );
-            useSyncStore.getState().logCategoryChange("update-category", id, category);
+            useSyncStore
+              .getState()
+              .logCategoryChange("update-category", id, category);
           }
 
           if (conectionStatus.isOnline) {
@@ -132,7 +147,9 @@ const useCategoryStore = create(
         } catch (error) {
           logger.error("Error updating category: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("updateCategoryInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("updateCategoryInStore", error.message);
         }
       },
 

@@ -1,13 +1,16 @@
-import { createSupabaseServerClient } from "./supabase-server";
+import {
+  createSupabaseClientWithToken,
+  createSupabaseServerClient,
+} from "./supabase-server";
 import { cacheLife, cacheTag } from "next/cache";
 
 // ========== User Reads ==========
-export async function getUserByEmail(userEmail) {
-  "use cache";
-  cacheLife("hours");
-  cacheTag("user", `email-${userEmail}`);
+export async function getUserByEmail(userEmail, supabaseToken) {
+  // "use cache";
+  // cacheLife("hours");
+  // cacheTag("user", `email-${userEmail}`);
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClientWithToken(supabaseToken);
   const { data } = await supabase
     .from("users")
     .select("*")
@@ -17,54 +20,54 @@ export async function getUserByEmail(userEmail) {
 }
 
 // ========== Tasks Reads ==========
-export async function getReleventTasks() {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("tasks");
+export async function getReleventTasks(supabaseToken) {
+  // "use cache";
+  // cacheLife("minutes");
+  // cacheTag("tasks");
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClientWithToken(supabaseToken);
   const { data, error } = await supabase.rpc("get_relevent_tasks");
   if (error) throw new Error(error.message || JSON.stringify(error));
   return data;
 }
 
 // ========== Categories Reads ==========
-export async function getReleventCategories() {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("categories");
+export async function getReleventCategories(supabaseToken) {
+  // "use cache";
+  // cacheLife("minutes");
+  // cacheTag("categories");
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClientWithToken(supabaseToken);
   const { data, error } = await supabase.rpc("get_relevent_categories");
   if (error) throw new Error(error.message || JSON.stringify(error));
   return data;
 }
 
 // ========== Invitation Reads ==========
-export async function getOwnerInvitations() {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("invitations", "owner");
+export async function getOwnerInvitations(supabaseToken) {
+  // "use cache";
+  // cacheLife("minutes");
+  // cacheTag("invitations", "owner");
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClientWithToken(supabaseToken);
   const { data, error } = await supabase.rpc("get_owner_invitations");
   if (error) throw new Error(error.message || JSON.stringify(error));
   return data;
 }
 
-export async function getJoinedInvitations() {
-  "use cache";
-  cacheLife("minutes");
-  cacheTag("invitations", "joined");
+export async function getJoinedInvitations(supabaseToken) {
+  // "use cache";
+  // cacheLife("minutes");
+  // cacheTag("invitations", "joined");
 
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseClientWithToken(supabaseToken);
   const { data, error } = await supabase.rpc("get_joined_invitations");
   if (error) throw new Error(error.message || JSON.stringify(error));
   return data;
 }
 
 // ========== Health Check ==========
-// NOTE: No cache! This must always be real‑time.
+// NOTE: intentionally not cached – must always be real‑time.
 export async function checkDatabaseHealth() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
