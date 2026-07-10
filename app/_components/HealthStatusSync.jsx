@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { checkDatabaseHealthAction } from "../_lib/Actions";
+import { checkDatabaseHealth } from "../_lib/read-actions";
 import useCustomToast from "../_lib/useCustomeToast";
 import { getDateNowIso } from "../_lib/utils";
 import useSyncStore from "../_store/useSyncStore";
@@ -64,7 +64,7 @@ export default function HealthStatusSync() {
       return; // Keep previous isOnline state; no redundant DB call
     }
 
-    const result = await checkDatabaseHealthAction();
+    const result = await checkDatabaseHealth();
     setIsOnline(result.online);
 
     if (result.online) {

@@ -2,26 +2,31 @@ import { produce } from "immer";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import { createJSONStorage, devtools, persist } from "zustand/middleware";
+
 import {
-  addManyCategoriesAction,
-  addManyErrorLogAction,
   addManyTasksAction,
-  deleteManyCategoriesAction,
   deleteManyTasksAction,
-  getJoinedInvitationsAction,
-  getOwnerInvitationsAction,
-  getReleventCategoriesAction,
-  getReleventTasksAction,
-  updateManyCategoriesAction,
   updateManyTasksAction,
+  addManyCategoriesAction,
+  deleteManyCategoriesAction,
+  updateManyCategoriesAction,
+  addManyErrorLogAction,
 } from "../_lib/Actions";
+
+import {
+  getReleventTasks,
+  getReleventCategories,
+  getOwnerInvitations,
+  getJoinedInvitations,
+} from "../_lib/read-actions";
+
 import { TASK_SYNC_FAIL_TOAST_MSG } from "../_lib/configs";
 import { logger } from "../_lib/logger";
-import useUserStore from "./useUserStore";
-import useTaskStore from "./useTaskStore";
 import useCategoryStore from "./useCategoryStore";
 import useInvitationStore from "./useInvitationStore";
+import useTaskStore from "./useTaskStore";
 import useUiStore from "./useUiStore";
+import useUserStore from "./useUserStore";
 
 const initialState = {
   isSyncing: false,
@@ -247,10 +252,10 @@ const useSyncStore = create(
               fetchedOwnerInvs,
               fetchedJoinedInvs,
             ] = await Promise.all([
-              getReleventTasksAction(),
-              getReleventCategoriesAction(),
-              getOwnerInvitationsAction(),
-              getJoinedInvitationsAction(),
+              getReleventTasks(),
+              getReleventCategories(),
+              getOwnerInvitations(),
+              getJoinedInvitations(),
             ]);
 
             // Remove duplicates

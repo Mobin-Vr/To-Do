@@ -6,7 +6,8 @@ import { useCallback, useEffect } from "react";
 import useUserStore from "@/app/_store/useUserStore";
 import useSyncStore from "@/app/_store/useSyncStore";
 import { useShallow } from "zustand/react/shallow";
-import { createUserAction, getUserByEmailAction } from "@/app/_lib/Actions";
+import { createUserAction } from "@/app/_lib/Actions";
+import { getUserByEmail } from "@/app/_lib/read-actions";
 
 export default function UserSignupHandler() {
   const { user } = useUser();
@@ -33,7 +34,7 @@ export default function UserSignupHandler() {
 
       const email = user.emailAddresses[0].emailAddress;
 
-      const existingUser = await getUserByEmailAction(email);
+      const existingUser = await getUserByEmail(email);
 
       // If the user doesn't exist, create a new user and store their data in the store
       if (!existingUser) {

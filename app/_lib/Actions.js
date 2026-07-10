@@ -1,165 +1,127 @@
 "use server";
 
-import {
-  addManyCategories,
-  addManyErrorLog,
-  addManyTasks,
-  checkDatabaseHealth,
-  createInvitation,
-  createUser,
-  debugAuth,
-  deleteManyCategories,
-  deleteManyTasks,
-  getCategoryInvId,
-  getJoinedInvitations,
-  getOwnerInvitations,
-  getReleventCategories,
-  getReleventTasks,
-  getUserByEmail,
-  getUserById,
-  joinInvitation,
-  leaveInvitation,
-  removeUserFromInvitation,
-  setInvitationLimit,
-  stopSharingInvitation,
-  updateManyCategories,
-  updateManyTasks,
-} from "./data-services";
+import { createSupabaseServerClient } from "./supabase-server";
 
-//////////////////////////////////
-///////// User Actions //////////
-//////////////////////////////////
-
-// Creates a new user in the database
 export async function createUserAction(newUser) {
-  return await createUser(newUser);
+  const supabase = await createSupabaseServerClient(newUser);
+  const { data, error } = await supabase
+    .from("users")
+    .insert([newUser])
+    .select();
+  if (error) throw new Error(error.message || JSON.stringify(error));
+  return data;
 }
 
-// Retrieves a user by their unique ID
-export async function getUserByIdAction(userId) {
-  return await getUserById(userId);
-}
-
-// Retrieves a user by their email address
-export async function getUserByEmailAction(userEmail) {
-  return await getUserByEmail(userEmail);
-}
-
-//////////////////////////////////
-///////// Tasks Actions //////////
-//////////////////////////////////
-
-// Adds multiple tasks to the database
 export async function addManyTasksAction(tasksArr) {
-  return await addManyTasks(tasksArr);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("tasks").insert(tasksArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Deletes multiple tasks by their IDs
 export async function deleteManyTasksAction(tasksIdsArr) {
-  return await deleteManyTasks(tasksIdsArr);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("tasks")
+    .delete()
+    .in("task_id", tasksIdsArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Updates multiple tasks with new data
 export async function updateManyTasksAction(tasksArr, tasksIdsArr) {
-  return await updateManyTasks(tasksArr, tasksIdsArr);
+  const supabase = await createSupabaseServerClient();
+  const cleanedTasksArr = tasksArr.map(({ task_id, ...rest }) => rest);
+  const { error } = await supabase
+    .from("tasks")
+    .update(cleanedTasksArr)
+    .in("task_id", tasksIdsArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Retrieves relevant tasks for a user, including owned and shared tasks
-export async function getReleventTasksAction() {
-  return await getReleventTasks();
-}
-
-//////////////////////////////////
-//////// Category Actions ////////
-//////////////////////////////////
-
-// Adds multiple categories to the database
 export async function addManyCategoriesAction(categoriesArr) {
-  return await addManyCategories(categoriesArr);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.from("categories").insert(categoriesArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Deletes multiple categories by their IDs
 export async function deleteManyCategoriesAction(categoryIdsArr) {
-  return await deleteManyCategories(categoryIdsArr);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase
+    .from("categories")
+    .delete()
+    .in("category_id", categoryIdsArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Updates multiple categories with new data
 export async function updateManyCategoriesAction(
   categoriesArr,
   categoriesIdsArr,
 ) {
-  return await updateManyCategories(categoriesArr, categoriesIdsArr);
+  const supabase = await createSupabaseServerClient();
+  const cleanedCategoriesArr = categoriesArr.map(
+    ({ category_id, ...rest }) => rest,
+  );
+  const { error } = await supabase
+    .from("categories")
+    .update(cleanedCategoriesArr)
+    .in("category_id", categoriesIdsArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Retrieves relevant categories owned by a specific user
-export async function getReleventCategoriesAction() {
-  return await getReleventCategories();
-}
-
-// Retrieves the invitation ID associated with a specific category
-export async function getCategoryInvIdAction(categoryId) {
-  return await getCategoryInvId(categoryId);
-}
-
-//////////////////////////////////
-////// Invitation Actions ////////
-//////////////////////////////////
-
-// Creates a new invitation for a category
 export async function createInvitationAction(categoryId) {
-  return await createInvitation(categoryId);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc("invitation_create", {
+    param_category_id: categoryId,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
+  return data;
 }
 
-// Allows a user to join an existing invitation
 export async function joinInvitationAction(invitationId) {
-  return await joinInvitation(invitationId);
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.rpc("invitation_join", {
+    param_invitation_id: invitationId,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
+  return data;
 }
 
-// Allows a user to leave an invitation
-// LATER Currently not used
 export async function leaveInvitationAction(invitationId) {
-  return await leaveInvitation(invitationId);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("invitation_leave", {
+    p_invitation_id: invitationId,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Stops sharing an invitation, making it inactive
 export async function stopSharingInvitationAction(invitationId) {
-  return await stopSharingInvitation(invitationId);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("invitation_stop_sharing", {
+    param_invitation_id: invitationId,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Sets the access limit for an invitation
 export async function setInvitationLimitAction(invitationId, limitAccess) {
-  return await setInvitationLimit(invitationId, limitAccess);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("invitation_set_limit", {
+    param_invitation_id: invitationId,
+    param_limit_access: limitAccess,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Removes a user from an invitation by the owner
 export async function removeUserFromInvitationAction(invitationId, userId) {
-  return await removeUserFromInvitation(invitationId, userId);
+  const supabase = await createSupabaseServerClient();
+  const { error } = await supabase.rpc("invitation_remove_user", {
+    param_invitation_id: invitationId,
+    param_user_id: userId,
+  });
+  if (error) throw new Error(error.message || JSON.stringify(error));
 }
 
-// Retrieves invitations created by a specific user
-export async function getOwnerInvitationsAction() {
-  return await getOwnerInvitations();
-}
-
-// Retrieves invitations that a user has joined
-export async function getJoinedInvitationsAction() {
-  return await getJoinedInvitations();
-}
-
-//////////////////////////////////
-//// Errors //////////////////////
-//////////////////////////////////
-
-// Adds a new error log entry to the "errors_log" table
 export async function addManyErrorLogAction(errorLogArr) {
-  return await addManyErrorLog(errorLogArr);
-}
-
-//////////////////////////////////
-//// Conection health ////////////
-//////////////////////////////////
-
-// Checks the health status of the database
-export async function checkDatabaseHealthAction() {
-  return await checkDatabaseHealth();
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.from("errors_log").insert(errorLogArr);
+  if (error) throw new Error(error.message || JSON.stringify(error));
+  return data;
 }

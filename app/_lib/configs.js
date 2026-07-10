@@ -8,7 +8,7 @@
 export const HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS = 2000;
 
 // Minimum interval (ms) between two successful database health checks.
-// Skips redundant `checkDatabaseHealthAction` calls if a check was performed recently.
+// Skips redundant `checkDatabaseHealth` calls if a check was performed recently.
 export const HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS = 10_000;
 
 // ============================================================
