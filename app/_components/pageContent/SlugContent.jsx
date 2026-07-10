@@ -1,14 +1,13 @@
 "use client";
 
 import Spinner from "@/app/_components/_ui/Spinner";
-import NotFoundComponent from "@/app/_components/NotFoundComponent";
 import Template from "@/app/_components/Template";
 import { BG_COLORS } from "@/app/_lib/configs";
 import useTaskListPage from "@/app/_lib/useTaskListPage";
 import useCategoryStore from "@/app/_store/useCategoryStore";
 import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import useInvitationStore from "@/app/_store/useInvitationStore";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, notFound } from "next/navigation";
 import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -55,9 +54,9 @@ export default function SlugContent() {
     return <Spinner defaultBgColor={BG_COLORS["/default"]} />;
   }
 
-  // Category not found in the list
+  // Category not found → trigger the closest not-found page (app/tasks/[slug]/not-found.js)
   if (!theCategory) {
-    return <NotFoundComponent />;
+    notFound();
   }
 
   // Override listName with actual category title
