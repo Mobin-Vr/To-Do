@@ -12,11 +12,7 @@ export default function TaskSearch() {
 
   useEffect(() => {
     if (searchInput) {
-      router.push(
-        `/tasks/search?query=${encodeURIComponent(searchInput)}`,
-        undefined,
-        { shallow: true },
-      );
+      router.push(`/tasks/search?query=${encodeURIComponent(searchInput)}`);
     }
   }, [searchInput, router]);
 
