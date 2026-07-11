@@ -238,7 +238,7 @@ export const BG_COLORS = {
 // ============================================================
 
 // Feature flag to enable/disable AI-powered task parsing.
-export const AI_ENABLED = false;
+export const AI_ENABLED = true;
 
 // Only call the AI once the user has paused typing for this long (ms).
 export const AI_DEBOUNCE_MS = 1000;

@@ -8,6 +8,8 @@ import NoResults from "./NoResults";
 import NoTaskInMyDay from "./NoTaskInMyDay";
 import TaskInput from "./taskInputSection/TaskInput";
 import TasksList from "./TasksList";
+import useCategoryStore from "@/app/_store/useCategoryStore";
+import { useShallow } from "zustand/react/shallow";
 
 export default function Template({
   listRef,
@@ -20,7 +22,12 @@ export default function Template({
 }) {
   const [mustFocus, setMustFocus] = useState(false);
 
-  // Fix: cleanup body background on unmount
+  // Track initial data load – categoriesList is null until store is hydrated
+  const { categoriesList } = useCategoryStore(
+    useShallow((state) => ({ categoriesList: state.categoriesList })),
+  );
+
+  // Cleanup body background on unmount
   useEffect(() => {
     if (typeof document !== "undefined") {
       const originalBg = document.body.style.backgroundColor;
@@ -29,7 +36,7 @@ export default function Template({
         document.body.style.backgroundColor = originalBg;
       };
     }
-  }, [listConfig.bgColor.mainBackground]); // depend on actual color so it updates when list changes
+  }, [listConfig.bgColor.mainBackground]);
 
   function handleClick(e) {
     if (
@@ -41,12 +48,14 @@ export default function Template({
       setMustFocus(true);
   }
 
+  // While the initial data is still loading, render nothing to prevent flicker
+  if (categoriesList === null) return null;
+
   return (
     <div
       onClick={handleClick}
       className="relative flex h-full w-full overflow-hidden"
     >
-      {/* Delete warn modal */}
       <DeleteWarningModal />
 
       {!showSearch ? (
@@ -80,7 +89,6 @@ export default function Template({
 
           {showInput && (
             <TaskInput
-              // Adjust width to match the task list, which has a 6px scrollbar.
               className="task-input min-h-[5rem] w-[calc(100%-6px)] -translate-x-[3px] px-8 sm:px-10"
               bgColor={listConfig.bgColor}
               categoryId={theCategoryId}
@@ -91,7 +99,6 @@ export default function Template({
           )}
         </div>
       ) : (
-        // this is for search componnet
         <NoResults query={listConfig.query} bgColor={listConfig.bgColor} />
       )}
     </div>
