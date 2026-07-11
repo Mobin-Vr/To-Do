@@ -35,13 +35,6 @@ export default function DeleteWarningModal() {
     return () => document.removeEventListener("click", handleOverlayClick);
   }, [isDeleteModalOpen, hideDeleteModal]);
 
-  // New handler: execute the stored callback and, for category/leave,
-  // navigate to the main tasks page afterward.
-  const onConfirm = () => {
-    handleConfirmDelete(); // runs the async delete callback
-    router.push("/tasks");
-  };
-
   if (!isDeleteModalOpen) return null;
 
   return (
@@ -78,7 +71,7 @@ export default function DeleteWarningModal() {
 
         <div className="mt-10 flex justify-end gap-2 px-2">
           <OrdinaryBtn
-            onClick={onConfirm}
+            onClick={handleConfirmDelete}
             text={deletingType === "leave" ? "Leave" : "Delete"}
             mode="warn"
             className="confirm-delete w-full text-sm"
