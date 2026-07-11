@@ -8,23 +8,28 @@ import BoxTemplate from "./BoxTemplate";
 function AddNote({ updateTaskInStore, task }) {
   const textareaRef = useRef(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [note, setNote] = useState(task.task_note || "");
 
-  const [note, setNote] = useState(task.task_note || ""); // Local state to store the note
-
-  autosize(textareaRef.current);
-
+  // Apply autosize after the textarea is mounted (no longer called during render)
   useEffect(() => {
-    setNote(task.task_note || "");
+    if (textareaRef.current) {
+      autosize(textareaRef.current);
+    }
+  }, []);
+
+  // Sync local state when the task note changes externally, without synchronous setState
+  useEffect(() => {
+    queueMicrotask(() => setNote(task.task_note || ""));
   }, [task.task_note]);
 
-  // Using the autosize library to automatically adjust the height of the textarea
-
-  // Handle blur event (when the textarea loses focus)
   function handleBlur() {
     setIsTyping(false);
 
-    // Only send to the database if the note has changed
-    if (note.trim() !== task.task_note.trim()) {
+    // Safe comparison – task.task_note may be null
+    const currentNote = note.trim();
+    const originalNote = (task.task_note || "").trim();
+
+    if (currentNote !== originalNote) {
       updateTaskInStore(task.task_id, { task_note: note });
     }
   }

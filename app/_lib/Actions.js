@@ -1,6 +1,7 @@
 "use server";
 
 import { createSupabaseServerClient } from "./supabase-server";
+import { revalidateTag } from "next/cache";
 
 export async function createUserAction(newUser) {
   const supabase = await createSupabaseServerClient(newUser);
@@ -9,6 +10,8 @@ export async function createUserAction(newUser) {
     .insert([newUser])
     .select();
   if (error) throw new Error(error.message || JSON.stringify(error));
+  // Optional: revalidate user cache for the new user's email
+  // revalidateTag('user');
   return data;
 }
 
@@ -16,6 +19,7 @@ export async function addManyTasksAction(tasksArr) {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("tasks").insert(tasksArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("tasks");
 }
 
 export async function deleteManyTasksAction(tasksIdsArr) {
@@ -25,6 +29,7 @@ export async function deleteManyTasksAction(tasksIdsArr) {
     .delete()
     .in("task_id", tasksIdsArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("tasks");
 }
 
 export async function updateManyTasksAction(tasksArr, tasksIdsArr) {
@@ -35,12 +40,14 @@ export async function updateManyTasksAction(tasksArr, tasksIdsArr) {
     .update(cleanedTasksArr)
     .in("task_id", tasksIdsArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("tasks");
 }
 
 export async function addManyCategoriesAction(categoriesArr) {
   const supabase = await createSupabaseServerClient();
   const { error } = await supabase.from("categories").insert(categoriesArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("categories");
 }
 
 export async function deleteManyCategoriesAction(categoryIdsArr) {
@@ -50,6 +57,7 @@ export async function deleteManyCategoriesAction(categoryIdsArr) {
     .delete()
     .in("category_id", categoryIdsArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("categories");
 }
 
 export async function updateManyCategoriesAction(
@@ -65,6 +73,7 @@ export async function updateManyCategoriesAction(
     .update(cleanedCategoriesArr)
     .in("category_id", categoriesIdsArr);
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("categories");
 }
 
 export async function createInvitationAction(categoryId) {
@@ -73,6 +82,7 @@ export async function createInvitationAction(categoryId) {
     param_category_id: categoryId,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
   return data;
 }
 
@@ -82,6 +92,7 @@ export async function joinInvitationAction(invitationId) {
     param_invitation_id: invitationId,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
   return data;
 }
 
@@ -91,6 +102,7 @@ export async function leaveInvitationAction(invitationId) {
     p_invitation_id: invitationId,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
 }
 
 export async function stopSharingInvitationAction(invitationId) {
@@ -99,6 +111,7 @@ export async function stopSharingInvitationAction(invitationId) {
     param_invitation_id: invitationId,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
 }
 
 export async function setInvitationLimitAction(invitationId, limitAccess) {
@@ -108,6 +121,7 @@ export async function setInvitationLimitAction(invitationId, limitAccess) {
     param_limit_access: limitAccess,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
 }
 
 export async function removeUserFromInvitationAction(invitationId, userId) {
@@ -117,6 +131,7 @@ export async function removeUserFromInvitationAction(invitationId, userId) {
     param_user_id: userId,
   });
   if (error) throw new Error(error.message || JSON.stringify(error));
+  revalidateTag("invitations");
 }
 
 export async function addManyErrorLogAction(errorLogArr) {

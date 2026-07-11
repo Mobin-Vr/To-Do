@@ -244,7 +244,7 @@ const useTaskStore = create(
         );
       },
 
-      // # New helper: Set tasks list (for fetchDataOnMount)
+      // # 
       setTasksList: (tasks) => {
         set(
           produce((state) => {

@@ -16,51 +16,43 @@ export default function TaskRealTimeListener() {
   useEffect(() => {
     if (!supabase || !isTokenReady) return;
 
-    // Grab all needed actions once – their references are stable
-    const {
-      addTaskFromRealtime,
-      updateTaskFromRealtime,
-      deleteTaskFromRealtime,
-    } = useTaskStore.getState();
-    const { updateCategoryNameFromRealTime } = useCategoryStore.getState();
-    const { addUserFromRealtime, removeUserWhenNotOwner } =
-      useInvitationStore.getState();
-    const { getUserState } = useUserStore.getState();
-
     const channel = supabase
-      .channel("realtime-changes", {
-        config: { private: true },
-      })
+      .channel("realtime-changes", { config: { private: true } })
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "tasks" },
-        (payload) => addTaskFromRealtime(payload.new),
+        (payload) => useTaskStore.getState().addTaskFromRealtime(payload.new),
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "tasks" },
-        (payload) => updateTaskFromRealtime(payload.new),
+        (payload) =>
+          useTaskStore.getState().updateTaskFromRealtime(payload.new),
       )
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "tasks" },
-        (payload) => deleteTaskFromRealtime(payload.old),
+        (payload) =>
+          useTaskStore.getState().deleteTaskFromRealtime(payload.old),
       )
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "collaborators" },
         (payload) => {
-          const currentUserId = getUserState().user_id;
-          addUserFromRealtime(payload.new.invitation_id, payload.new);
+          useInvitationStore
+            .getState()
+            .addUserFromRealtime(payload.new.invitation_id, payload.new);
         },
       )
       .on(
         "postgres_changes",
         { event: "DELETE", schema: "public", table: "collaborators" },
         (payload) => {
-          const currentUserId = getUserState().user_id;
+          const currentUserId = useUserStore.getState().userState?.user_id;
           if (payload.old.user_id === currentUserId) {
-            removeUserWhenNotOwner(payload.old.invitation_id);
+            useInvitationStore
+              .getState()
+              .removeUserWhenNotOwner(payload.old.invitation_id);
             router.push("/tasks");
           }
         },
@@ -69,12 +61,14 @@ export default function TaskRealTimeListener() {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "categories" },
         (payload) => {
-          const currentUserId = getUserState().user_id;
+          const currentUserId = useUserStore.getState().userState?.user_id;
           if (payload.new.category_owner_id !== currentUserId) {
-            updateCategoryNameFromRealTime(
-              payload.new.category_id,
-              payload.new.category_title,
-            );
+            useCategoryStore
+              .getState()
+              .updateCategoryNameFromRealTime(
+                payload.new.category_id,
+                payload.new.category_title,
+              );
           }
         },
       )

@@ -231,11 +231,14 @@ export default function TaskInput({
     resetInputState();
   }
 
+  // Auto-focus the input when mustFocus is set to true,
+  // then reset the flag to prevent repeated focusing.
   useEffect(() => {
     if (mustFocus && inputRef.current) {
       inputRef.current.focus();
+      setMustFocus?.(false);
     }
-  }, [mustFocus]);
+  }, [mustFocus, setMustFocus]);
 
   const showAiGlow = AI_ENABLED && isAnalyzing;
 

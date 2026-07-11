@@ -5,6 +5,7 @@ import { CopyIcon, SuccessIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import { useState } from "react";
 import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
+import useUserStore from "@/app/_store/useUserStore";
 
 export default function LinkCreatedView({
   onMoreOptions,
@@ -15,16 +16,20 @@ export default function LinkCreatedView({
 }) {
   const [isCopied, setIsCopied] = useState(false);
 
+  // Get the current user's id (which is the owner of this invitation)
+  const ownerId = useUserStore((state) => state.userState?.user_id);
+
+  // Enable the button only if there is at least one member who is not the owner
+  const hasMembers =
+    Array.isArray(invitationUsers) &&
+    invitationUsers.some((user) => user.user_id !== ownerId);
+
   async function copyToClipboard() {
-    const textToCopy = link;
-
-    await navigator.clipboard.writeText(textToCopy);
+    await navigator.clipboard.writeText(link);
     setIsCopied(true);
-
-    setTimeout(() => {
-      setIsCopied(false);
-    }, 1500);
+    setTimeout(() => setIsCopied(false), 1500);
   }
+
   return (
     <div className="flex h-full flex-col justify-between text-sm font-light text-black">
       <p className="mb-2 w-full border-b border-b-gray-300 px-2 py-3 text-center font-normal">
@@ -48,7 +53,6 @@ export default function LinkCreatedView({
                 value={link}
                 className="inputRef h-full w-[calc(100%-28px)] overflow-hidden text-nowrap rounded-l-md bg-gray-200 px-2 py-1.5 outline-none"
               />
-
               <button
                 onClick={copyToClipboard}
                 title="Copy link"
@@ -77,8 +81,8 @@ export default function LinkCreatedView({
             text="Manage members"
             mode="secondary"
             className="w-full xs:w-fit xs:flex-grow"
-            disabled={invitationUsers.length > 0 ? false : true}
-            title={invitationUsers.length > 0 ? "" : "No one has joined yet!"}
+            disabled={!hasMembers}
+            title={!hasMembers ? "No one has joined yet!" : ""}
           />
         </div>
       </div>

@@ -27,6 +27,12 @@ export default function Template({
     useShallow((state) => ({ categoriesList: state.categoriesList })),
   );
 
+  // Auto-focus the task input on page load so the user can start typing immediately.
+  useEffect(() => {
+    const timer = setTimeout(() => setMustFocus(true), 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   // Cleanup body background on unmount
   useEffect(() => {
     if (typeof document !== "undefined") {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { createSupabaseBrowserClient } from "./supabase-browser";
 
@@ -9,17 +9,21 @@ const TOKEN_REFRESH_INTERVAL_MS = 45_000;
 
 export function useSupabaseRealtimeToken() {
   const { getToken, isSignedIn } = useAuth();
-  const supabaseRef = useRef(createSupabaseBrowserClient());
+
+  // A stable Supabase client created once – lazy initializer ensures
+  // it never changes across renders, and it's safe to return directly.
+  const [supabase] = useState(() => createSupabaseBrowserClient());
+
   const [isTokenReady, setIsTokenReady] = useState(false);
 
   useEffect(() => {
     if (!isSignedIn) {
-      setIsTokenReady(false);
+      // Defer state update to avoid React 19 synchronous setState warning
+      queueMicrotask(() => setIsTokenReady(false));
       return;
     }
 
     let cancelled = false;
-    const supabase = supabaseRef.current;
 
     async function refreshToken() {
       try {
@@ -40,7 +44,7 @@ export function useSupabaseRealtimeToken() {
       cancelled = true;
       clearInterval(intervalId);
     };
-  }, [isSignedIn, getToken]);
+  }, [isSignedIn, getToken, supabase]);
 
-  return { supabase: supabaseRef.current, isTokenReady };
+  return { supabase, isTokenReady };
 }

@@ -6,8 +6,10 @@ import Overlay from "./Overlay";
 import OrdinaryBtn from "./OrdinaryBtn";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DeleteWarningModal() {
+  const router = useRouter();
   const {
     isDeleteModalOpen,
     deletingType,
@@ -27,15 +29,18 @@ export default function DeleteWarningModal() {
   useEffect(() => {
     function handleOverlayClick(e) {
       const modal = document.getElementById("delete-modal");
-
       if (modal && !modal.contains(e.target)) hideDeleteModal();
     }
-
     document.addEventListener("click", handleOverlayClick);
-
-    // Cleanup listener on component unmount or when modal is closed
     return () => document.removeEventListener("click", handleOverlayClick);
   }, [isDeleteModalOpen, hideDeleteModal]);
+
+  // New handler: execute the stored callback and, for category/leave,
+  // navigate to the main tasks page afterward.
+  const onConfirm = () => {
+    handleConfirmDelete(); // runs the async delete callback
+    router.push("/tasks");
+  };
 
   if (!isDeleteModalOpen) return null;
 
@@ -73,13 +78,12 @@ export default function DeleteWarningModal() {
 
         <div className="mt-10 flex justify-end gap-2 px-2">
           <OrdinaryBtn
-            onClick={handleConfirmDelete}
+            onClick={onConfirm}
             text={deletingType === "leave" ? "Leave" : "Delete"}
             mode="warn"
             className="confirm-delete w-full text-sm"
           />
 
-          {/* "cancel-delete" class is for handle close sidebar */}
           <OrdinaryBtn
             onClick={hideDeleteModal}
             text="Cancel"

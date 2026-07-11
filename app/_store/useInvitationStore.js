@@ -293,7 +293,7 @@ const useInvitationStore = create(
         }
       },
 
-      // # New helper: Set invitations list (for fetchDataOnMount)
+      // #
       setInvitations: (invitations) => {
         set(
           produce((state) => {
@@ -302,7 +302,7 @@ const useInvitationStore = create(
         );
       },
 
-      // # New helper: Set sharedWithMe list (for fetchDataOnMount)
+      // #
       setSharedWithMe: (sharedWithMe) => {
         set(
           produce((state) => {

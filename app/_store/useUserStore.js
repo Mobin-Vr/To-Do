@@ -18,8 +18,6 @@ const useUserStore = create(
               state.userState = userState;
             }),
           );
-          // Initial data fetching is now handled by the server‑side layout.
-          // No need to call fetchDataOnMount here.
         },
 
         getUserState: () => {

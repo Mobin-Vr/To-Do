@@ -4,6 +4,7 @@ import { ArrowIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
 import InvitationUsersList from "./InvitationUsersList";
 import useInvitationStore from "@/app/_store/useInvitationStore";
+import useUserStore from "@/app/_store/useUserStore";
 import { useShallow } from "zustand/react/shallow";
 
 export default function ManageMembers({
@@ -17,6 +18,12 @@ export default function ManageMembers({
       removeUserFromInvitationStore: state.removeUserFromInvitationStore,
     })),
   );
+
+  // Get current user's ID to filter out the owner from the member list
+  const ownerId = useUserStore((state) => state.userState?.user_id);
+
+  // Only show members who are not the owner
+  const members = invitationUsers.filter((user) => user.user_id !== ownerId);
 
   return (
     <div className="flex h-full flex-col justify-between text-sm font-light text-black">
@@ -32,11 +39,17 @@ export default function ManageMembers({
       </div>
 
       <div className="flex flex-1 flex-col justify-between overflow-y-scroll border-b border-b-gray-300 p-3">
-        <InvitationUsersList
-          invitationUsers={invitationUsers}
-          onRemoveUser={removeUserFromInvitationStore}
-          invitationId={invitationId}
-        />
+        {members.length > 0 ? (
+          <InvitationUsersList
+            invitationUsers={members}
+            onRemoveUser={removeUserFromInvitationStore}
+            invitationId={invitationId}
+          />
+        ) : (
+          <p className="py-4 text-center text-gray-400">
+            No other members yet.
+          </p>
+        )}
       </div>
 
       <div className="ml-auto px-3 py-3">

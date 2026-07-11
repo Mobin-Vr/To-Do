@@ -25,9 +25,9 @@ async function withRetry(fn, retries = 2, delayMs = 500) {
 
 // ========== User Reads ==========
 export async function getUserByEmail(userEmail, supabaseToken) {
-  // "use cache";
-  // cacheLife("hours");
-  // cacheTag("user", `email-${userEmail}`);
+  "use cache";
+  cacheLife("hours");
+  cacheTag("user", `email-${userEmail}`);
 
   return withRetry(async () => {
     const supabase = createSupabaseClientWithToken(supabaseToken);
@@ -43,9 +43,9 @@ export async function getUserByEmail(userEmail, supabaseToken) {
 
 // ========== Tasks Reads ==========
 export async function getReleventTasks(supabaseToken) {
-  // "use cache";
-  // cacheLife("minutes");
-  // cacheTag("tasks");
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("tasks");
 
   return withRetry(async () => {
     const supabase = createSupabaseClientWithToken(supabaseToken);
@@ -57,9 +57,9 @@ export async function getReleventTasks(supabaseToken) {
 
 // ========== Categories Reads ==========
 export async function getReleventCategories(supabaseToken) {
-  // "use cache";
-  // cacheLife("minutes");
-  // cacheTag("categories");
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("categories");
 
   return withRetry(async () => {
     const supabase = createSupabaseClientWithToken(supabaseToken);
@@ -69,25 +69,25 @@ export async function getReleventCategories(supabaseToken) {
   });
 }
 
-// ========== Single Category Read ==========
-export async function getCategoryById(categoryId, supabaseToken) {
-  return withRetry(async () => {
-    const supabase = createSupabaseClientWithToken(supabaseToken);
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("category_id", categoryId)
-      .single();
-    if (error) return null;
-    return data;
-  });
-}
+// // ========== Single Category Read ==========
+// export async function getCategoryById(categoryId, supabaseToken) {
+//   return withRetry(async () => {
+//     const supabase = createSupabaseClientWithToken(supabaseToken);
+//     const { data, error } = await supabase
+//       .from("categories")
+//       .select("*")
+//       .eq("category_id", categoryId)
+//       .single();
+//     if (error) return null;
+//     return data;
+//   });
+// }
 
 // ========== Invitation Reads ==========
 export async function getOwnerInvitations(supabaseToken) {
-  // "use cache";
-  // cacheLife("minutes");
-  // cacheTag("invitations", "owner");
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("invitations", "owner");
 
   return withRetry(async () => {
     const supabase = createSupabaseClientWithToken(supabaseToken);
@@ -98,9 +98,9 @@ export async function getOwnerInvitations(supabaseToken) {
 }
 
 export async function getJoinedInvitations(supabaseToken) {
-  // "use cache";
-  // cacheLife("minutes");
-  // cacheTag("invitations", "joined");
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("invitations", "joined");
 
   return withRetry(async () => {
     const supabase = createSupabaseClientWithToken(supabaseToken);
