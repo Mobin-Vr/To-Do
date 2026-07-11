@@ -231,3 +231,21 @@ export const BG_COLORS = {
     primaryText: "#586570",
   },
 };
+
+// ============================================================
+//  AI Task Parsing Configuration
+//  (Used in TaskInput component and parse-task API route)
+// ============================================================
+
+// Feature flag to enable/disable AI-powered task parsing.
+export const AI_ENABLED = false;
+
+// Only call the AI once the user has paused typing for this long (ms).
+export const AI_DEBOUNCE_MS = 1000;
+
+// Minimum text length required before sending a request to the AI.
+export const MIN_TEXT_LENGTH_FOR_AI = 5;
+
+// Maximum number of task steps the AI is allowed to return.
+// Used in the parse-task route handler.
+export const MAX_TASK_STEPS = 10;
