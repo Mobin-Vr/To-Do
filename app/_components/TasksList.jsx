@@ -1,9 +1,9 @@
 "use client";
 
 import { useShallow } from "zustand/react/shallow";
-import { defaultCategoryId } from "../_lib/configs";
-import useUiStore from "../_store/useUiStore";
-import useCategoryStore from "../_store/useCategoryStore";
+import { defaultCategoryId } from "@/app/_lib/configs";
+import useUiStore from "@/app/_store/useUiStore";
+import useCategoryStore from "@/app/_store/useCategoryStore";
 import AllMinimizer from "./minimizerSection/AllMinimizer";
 import DefaultMinimizer from "./minimizerSection/DefaultMinimizer";
 import PlannedMinimizer from "./minimizerSection/PlannedMinimizer";
@@ -20,11 +20,6 @@ export default function TasksList({
     useShallow((state) => ({
       sortMethod: state.sortMethod,
       sortMethodForShared: state.sortMethodForShared,
-    })),
-  );
-  const { categoriesList } = useCategoryStore(
-    useShallow((state) => ({
-      categoriesList: state.categoriesList,
     })),
   );
 

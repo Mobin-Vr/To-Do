@@ -5,7 +5,7 @@ import {
   CompletedIcon,
   TickCircleIcon,
 } from "@/public/icons/icons";
-import useTaskStore from "../../_store/useTaskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import { getDateNowIso } from "@/app/_lib/utils";
 import { useShallow } from "zustand/react/shallow";
 

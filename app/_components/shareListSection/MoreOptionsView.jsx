@@ -3,8 +3,8 @@
 import useInvitationStore from "@/app/_store/useInvitationStore";
 import { ArrowIcon } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
-import OrdinaryBtn from "../_ui/OrdinaryBtn";
-import { Switch } from "../_ui/switch";
+import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
+import { Switch } from "@/app/_components/_ui/switch";
 
 export default function MoreOptionsView({
   onBackToLinkCreated,

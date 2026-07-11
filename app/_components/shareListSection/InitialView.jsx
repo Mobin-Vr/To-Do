@@ -1,7 +1,7 @@
 import illsturation from "@/public/icons/email.svg";
 import Image from "next/image";
-import OrdinaryBtn from "../_ui/OrdinaryBtn";
-import SpinnerMini from "../_ui/SpinnerMini";
+import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
+import SpinnerMini from "@/app/_components/_ui/SpinnerMini";
 
 export default function InitialView({ onCreateLink, toggleModal, isPending }) {
   return (

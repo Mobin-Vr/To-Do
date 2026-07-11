@@ -10,20 +10,16 @@ const useUserStore = create(
   devtools(
     persist(
       (set, get) => ({
-        // State
         userState: initialState.userState,
 
-        // Actions
         setUserState: (userState) => {
           set(
             produce((state) => {
               state.userState = userState;
             }),
           );
-          // NOTE: The original internal call to fetchDataOnMount() is REMOVED
-          // to avoid circular imports. Call sites must now call:
-          //   useUserStore.getState().setUserState(user);
-          //   useSyncStore.getState().fetchDataOnMount();
+          // Initial data fetching is now handled by the server‑side layout.
+          // No need to call fetchDataOnMount here.
         },
 
         getUserState: () => {

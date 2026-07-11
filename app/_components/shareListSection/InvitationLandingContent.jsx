@@ -6,8 +6,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTransition, useState, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import SpinnerMini from "../_ui/SpinnerMini";
-import Spinner from "../_ui/Spinner";
+import SpinnerMini from "@/app/_components/_ui/SpinnerMini";
+import Spinner from "@/app/_components/_ui/Spinner";
 import illsturation from "@/public/icons/team.svg";
 
 export default function InvitationLandingContent({ token }) {

@@ -6,14 +6,14 @@ import {
   addManyCategoriesAction,
   deleteManyCategoriesAction,
   updateManyCategoriesAction,
-} from "../_lib/Actions";
-import { TASK_SYNC_FAIL_TOAST_MSG } from "../_lib/configs";
-import { logger } from "../_lib/logger";
+} from "@/app/_lib/Actions";
+import { TASK_SYNC_FAIL_TOAST_MSG } from "@/app/_lib/configs";
+import { logger } from "@/app/_lib/logger";
 import useSyncStore from "./useSyncStore";
 import useTaskStore from "./useTaskStore";
 
 const initialState = {
-  categoriesList: null,
+  categoriesList: null, // changed from []
 };
 
 const useCategoryStore = create(
@@ -27,9 +27,9 @@ const useCategoryStore = create(
         try {
           set(
             produce((state) => {
-              const existingNames = state.categoriesList.map(
-                (cat) => cat.category_title,
-              );
+              if (!state.categoriesList) state.categoriesList = []; // initialise if null
+              const list = state.categoriesList;
+              const existingNames = list.map((cat) => cat.category_title);
               const untitledRegex = /^Untitled list(?: \((\d+)\))?$/;
               const usedNumbers = existingNames
                 .map((name) => {
@@ -49,7 +49,7 @@ const useCategoryStore = create(
                   : `Untitled list (${nextNumber})`;
 
               category.category_title = newName;
-              state.categoriesList.push(category);
+              list.push(category);
             }),
           );
 
@@ -78,16 +78,16 @@ const useCategoryStore = create(
       // # Delete category
       deleteCategoryFromStore: async (id) => {
         try {
-          // Capture category before deletion
-          const category = get().categoriesList.find(
-            (cat) => cat.category_id === id,
-          );
+          const list = get().categoriesList ?? [];
+          const category = list.find((cat) => cat.category_id === id);
 
           set(
             produce((state) => {
-              state.categoriesList = state.categoriesList.filter(
-                (cat) => cat.category_id !== id,
-              );
+              if (state.categoriesList) {
+                state.categoriesList = state.categoriesList.filter(
+                  (cat) => cat.category_id !== id,
+                );
+              }
             }),
           );
 
@@ -116,6 +116,7 @@ const useCategoryStore = create(
         try {
           set(
             produce((state) => {
+              if (!state.categoriesList) return;
               const category = state.categoriesList.find(
                 (cat) => cat.category_id === id,
               );
@@ -125,20 +126,18 @@ const useCategoryStore = create(
             }),
           );
 
+          const list = get().categoriesList ?? [];
+          const category = list.find((cat) => cat.category_id === id);
+          if (!category) return; // safety check
+
           const { offlineLogMode, conectionStatus } = useSyncStore.getState();
           if (offlineLogMode) {
-            const category = get().categoriesList.find(
-              (cat) => cat.category_id === id,
-            );
             useSyncStore
               .getState()
               .logCategoryChange("update-category", id, category);
           }
 
           if (conectionStatus.isOnline) {
-            const category = get().categoriesList.find(
-              (cat) => cat.category_id === id,
-            );
             await updateManyCategoriesAction(
               [category],
               [category.category_id],
@@ -157,6 +156,7 @@ const useCategoryStore = create(
       updateCategoryNameFromRealTime: (categoryId, newName) => {
         set(
           produce((state) => {
+            if (!state.categoriesList) return;
             const category = state.categoriesList.find(
               (cat) => cat.category_id === categoryId,
             );
@@ -165,15 +165,11 @@ const useCategoryStore = create(
         );
       },
 
-      // # Get categories list
-      getCategoriesList: () => {
-        return get().categoriesList;
-      },
-
       // # New helper: Set category invitation flag
       setCategoryInvitationFlag: (categoryId, bool) => {
         set(
           produce((state) => {
+            if (!state.categoriesList) return;
             const theCat = state.categoriesList.find(
               (cat) => cat.category_id === categoryId,
             );
@@ -186,6 +182,7 @@ const useCategoryStore = create(
       addCategoryToList: (category) => {
         set(
           produce((state) => {
+            if (!state.categoriesList) state.categoriesList = [];
             state.categoriesList.push(category);
           }),
         );
@@ -195,6 +192,7 @@ const useCategoryStore = create(
       removeCategoryById: (categoryId) => {
         set(
           produce((state) => {
+            if (!state.categoriesList) return;
             state.categoriesList = state.categoriesList.filter(
               (cat) => cat.category_id !== categoryId,
             );
@@ -202,13 +200,18 @@ const useCategoryStore = create(
         );
       },
 
-      // # New helper: Set categories list (for fetchDataOnMount)
+      // # New helper: Set categories list
       setCategoriesList: (categories) => {
         set(
           produce((state) => {
             state.categoriesList = categories;
           }),
         );
+      },
+
+      // #
+      getCategoriesList: () => {
+        return get().categoriesList ?? [];
       },
 
       resetStore: () => set(initialState),

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ListToggler from "../ListToggler";
-import TaskGroup from "../TaskGroup";
+import ListToggler from "@/app/_components/ListToggler";
+import TaskGroup from "@/app/_components/TaskGroup";
 
 export default function TasksMinimizer({
   tasks,

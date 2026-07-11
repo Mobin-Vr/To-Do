@@ -9,9 +9,9 @@ import {
   stopSharingInvitationAction,
   joinInvitationAction,
   leaveInvitationAction,
-} from "../_lib/Actions";
-import { TASK_SYNC_FAIL_TOAST_MSG } from "../_lib/configs";
-import { logger } from "../_lib/logger";
+} from "@/app/_lib/Actions";
+import { TASK_SYNC_FAIL_TOAST_MSG } from "@/app/_lib/configs";
+import { logger } from "@/app/_lib/logger";
 import useTaskStore from "./useTaskStore";
 import useCategoryStore from "./useCategoryStore";
 import useSyncStore from "./useSyncStore";
@@ -44,12 +44,16 @@ const useInvitationStore = create(
             }),
           );
 
-          useCategoryStore.getState().setCategoryInvitationFlag(categoryId, true);
+          useCategoryStore
+            .getState()
+            .setCategoryInvitationFlag(categoryId, true);
           return true;
         } catch (error) {
           logger.error("Error creating invitation: ", error);
           toast.error(error.message);
-          await useSyncStore.getState().pushErrorLog("createInvitationInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("createInvitationInStore", error.message);
           return false;
         }
       },
@@ -74,7 +78,9 @@ const useInvitationStore = create(
         } catch (error) {
           logger.error("Error removing user from invitation: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("removeUserFromInvitationStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("removeUserFromInvitationStore", error.message);
         }
       },
 
@@ -88,7 +94,10 @@ const useInvitationStore = create(
             (inv) => inv.invitation_category_id === categoryId,
           );
 
-          await setInvitationLimitAction(invitation_id, !invitation_limit_access);
+          await setInvitationLimitAction(
+            invitation_id,
+            !invitation_limit_access,
+          );
 
           set(
             produce((state) => {
@@ -103,7 +112,9 @@ const useInvitationStore = create(
         } catch (error) {
           logger.error("Error setting limit access for invitation: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("setInvitationAccessLimitInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("setInvitationAccessLimitInStore", error.message);
         }
       },
 
@@ -124,11 +135,15 @@ const useInvitationStore = create(
             }),
           );
 
-          useCategoryStore.getState().setCategoryInvitationFlag(categoryId, false);
+          useCategoryStore
+            .getState()
+            .setCategoryInvitationFlag(categoryId, false);
         } catch (error) {
           logger.error("Error stop sharing invitation: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("stopSharingInvitationInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("stopSharingInvitationInStore", error.message);
         }
       },
 
@@ -166,7 +181,9 @@ const useInvitationStore = create(
         } catch (error) {
           logger.error("Error joining the invitation: ", error);
           toast.error(error.message);
-          await useSyncStore.getState().pushErrorLog("joinInvitationInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("joinInvitationInStore", error.message);
           return { status: false, categoryId: null };
         }
       },
@@ -174,9 +191,10 @@ const useInvitationStore = create(
       // # Leave invitation
       leaveInvitationFromStore: async (categoryId) => {
         try {
-          const { invitation_id } = get().sharedWithMe.find(
-            (inv) => inv.invitation_category_id === categoryId,
-          ) || {};
+          const { invitation_id } =
+            get().sharedWithMe.find(
+              (inv) => inv.invitation_category_id === categoryId,
+            ) || {};
 
           if (invitation_id) {
             await leaveInvitationAction(invitation_id);
@@ -197,7 +215,9 @@ const useInvitationStore = create(
         } catch (error) {
           logger.error("Error leaving the invitation: ", error);
           toast.error(error.message);
-          await useSyncStore.getState().pushErrorLog("leaveInvitationInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("leaveInvitationInStore", error.message);
           return { status: false };
         }
       },
@@ -264,12 +284,12 @@ const useInvitationStore = create(
         );
 
         if (theSharedCat) {
-          useTaskStore.getState().removeTasksByCategoryId(
-            theSharedCat.invitation_category_id,
-          );
-          useCategoryStore.getState().removeCategoryById(
-            theSharedCat.invitation_category_id,
-          );
+          useTaskStore
+            .getState()
+            .removeTasksByCategoryId(theSharedCat.invitation_category_id);
+          useCategoryStore
+            .getState()
+            .removeCategoryById(theSharedCat.invitation_category_id);
         }
       },
 

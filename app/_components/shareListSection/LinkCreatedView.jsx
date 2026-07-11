@@ -4,7 +4,7 @@ import illsturation from "@/public/icons/cat.svg";
 import { CopyIcon, SuccessIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import { useState } from "react";
-import OrdinaryBtn from "../_ui/OrdinaryBtn";
+import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
 
 export default function LinkCreatedView({
   onMoreOptions,

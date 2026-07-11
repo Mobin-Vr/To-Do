@@ -2,10 +2,10 @@
 
 import { StarIcon } from "@/public/icons/icons";
 import { BG_COLORS } from "@/app/_lib/configs";
-import Template from "../Template";
+import Template from "@/app/_components/Template";
 import useTaskListPage from "@/app/_lib/useTaskListPage";
 
-export default function ImportantContent() {
+export default function Page() {
   const bgColor = BG_COLORS["/important"];
 
   const { listRef, listConfig } = useTaskListPage({

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import useSyncStore from "../_store/useSyncStore";
+import useSyncStore from "@/app/_store/useSyncStore";
 
 function UnsavedChangesWarning() {
   useEffect(() => {

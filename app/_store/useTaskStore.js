@@ -6,10 +6,10 @@ import {
   addManyTasksAction,
   deleteManyTasksAction,
   updateManyTasksAction,
-} from "../_lib/Actions";
-import { TASK_SYNC_FAIL_TOAST_MSG } from "../_lib/configs";
-import { logger } from "../_lib/logger";
-import { getDateNowIso } from "../_lib/utils";
+} from "@/app/_lib/Actions";
+import { TASK_SYNC_FAIL_TOAST_MSG } from "@/app/_lib/configs";
+import { logger } from "@/app/_lib/logger";
+import { getDateNowIso } from "@/app/_lib/utils";
 import useSyncStore from "./useSyncStore";
 
 const initialState = {
@@ -37,14 +37,18 @@ const useTaskStore = create(
 
           const { offlineLogMode, conectionStatus } = useSyncStore.getState();
           if (offlineLogMode) {
-            useSyncStore.getState().logTaskChange("add-task", task.task_id, task);
+            useSyncStore
+              .getState()
+              .logTaskChange("add-task", task.task_id, task);
           }
 
           if (conectionStatus.isOnline) await addManyTasksAction([task]);
         } catch (error) {
           logger.error("Error adding task: ", error.message);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("addTaskToStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("addTaskToStore", error.message);
         }
       },
 
@@ -54,9 +58,7 @@ const useTaskStore = create(
           const task = get().tasksList.find((t) => t.task_id === id);
           set(
             produce((state) => {
-              state.tasksList = state.tasksList.filter(
-                (t) => t.task_id !== id,
-              );
+              state.tasksList = state.tasksList.filter((t) => t.task_id !== id);
             }),
           );
 
@@ -69,7 +71,9 @@ const useTaskStore = create(
         } catch (error) {
           logger.error("Error deleting task: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("deleteTaskFromStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("deleteTaskFromStore", error.message);
         }
       },
 
@@ -89,9 +93,7 @@ const useTaskStore = create(
             }),
           );
 
-          const task = get().tasksList.find(
-            (task) => task.task_id === taskId,
-          );
+          const task = get().tasksList.find((task) => task.task_id === taskId);
           const { offlineLogMode, conectionStatus } = useSyncStore.getState();
           if (offlineLogMode) {
             useSyncStore.getState().logTaskChange("update-task", taskId, task);
@@ -102,7 +104,9 @@ const useTaskStore = create(
         } catch (error) {
           logger.error("Error updating task: ", error);
           toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-          await useSyncStore.getState().pushErrorLog("updateTaskInStore", error.message);
+          await useSyncStore
+            .getState()
+            .pushErrorLog("updateTaskInStore", error.message);
         }
       },
 

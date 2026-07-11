@@ -4,9 +4,9 @@ import { getWeekendForWeekdays, isWeekday } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
-import BoxBtn from "../BoxBtn";
-import AddRepeatModal from "../reminderBoxModals/AddRepeatModal";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
+import BoxBtn from "@/app/_components/editSidebarSection/BoxBtn";
+import AddRepeatModal from "@/app/_components/editSidebarSection/reminderBoxModals/AddRepeatModal";
 
 export default function AddRepeat({ task }) {
   const repeatRef = useRef(null);

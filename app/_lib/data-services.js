@@ -43,6 +43,19 @@ export async function getReleventCategories(supabaseToken) {
   return data;
 }
 
+// ========== Single Category Read ==========
+export async function getCategoryById(categoryId, supabaseToken) {
+  const supabase = createSupabaseClientWithToken(supabaseToken);
+  const { data, error } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("category_id", categoryId)
+    .single();
+
+  if (error) return null;
+  return data;
+}
+
 // ========== Invitation Reads ==========
 export async function getOwnerInvitations(supabaseToken) {
   // "use cache";

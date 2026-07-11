@@ -8,13 +8,13 @@ import {
 import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { useShallow } from "zustand/react/shallow";
-import useTaskStore from "../_store/useTaskStore";
+import useTaskStore from "@/app/_store/useTaskStore";
 import AlarmToast from "./AlarmToast";
 import {
   calculateNextDate,
   checkIfToday,
   isDateBeforeToday,
-} from "../_lib/utils";
+} from "@/app/_lib/utils";
 
 export default function ReminderHandler() {
   const { getTaskList, updateTaskInStore } = useTaskStore(

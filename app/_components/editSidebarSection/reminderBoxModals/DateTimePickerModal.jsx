@@ -3,9 +3,9 @@
 import { getHourMinString, replaceTimeInIsoDate } from "@/app/_lib/utils";
 import { useRef, useState } from "react";
 
-import CancelSaveBtn from "../../_ui/CancelSaveBtn";
-import DatePicker from "../../_ui/DatePicker";
-import TimePicker from "../../_ui/TimePicker";
+import CancelSaveBtn from "@/app/_components/_ui/CancelSaveBtn";
+import DatePicker from "@/app/_components/_ui/DatePicker";
+import TimePicker from "@/app/_components/_ui/TimePicker";
 
 export default function DateTimePickerModal({
   task,

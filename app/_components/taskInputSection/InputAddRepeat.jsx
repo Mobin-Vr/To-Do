@@ -2,9 +2,9 @@
 
 import { SyncIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import InputBtnTempl from "../_ui/InputBtnTempl";
-import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
-import AddRepeatModal from "../editSidebarSection/reminderBoxModals/AddRepeatModal";
+import InputBtnTempl from "@/app/_components/_ui/InputBtnTempl";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
+import AddRepeatModal from "@/app/_components/editSidebarSection/reminderBoxModals/AddRepeatModal";
 
 export default function InputAddRepeat({
   setTaskRepeat,

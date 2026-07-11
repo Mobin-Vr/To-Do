@@ -1,6 +1,6 @@
 import { BellIcon, TickCircleIcon } from "@/public/icons/icons";
 import OrdinaryBtn from "./_ui/OrdinaryBtn";
-import { getDateNowIso } from "../_lib/utils";
+import { getDateNowIso } from "@/app/_lib/utils";
 
 export default function AlarmToast({
   task,

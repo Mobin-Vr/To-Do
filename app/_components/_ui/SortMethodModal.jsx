@@ -4,7 +4,7 @@ import {
   SortIcon,
   StarIcon,
 } from "@/public/icons/icons";
-import { ModalActionButton } from "../editSidebarSection/reminderBoxModals/ModalActionBtn";
+import { ModalActionButton } from "@/app/_components/editSidebarSection/reminderBoxModals/ModalActionBtn";
 
 export default function SortMethodModal({ setSortMethod }) {
   // update store (id, dueDate)

@@ -4,7 +4,7 @@ import useCategoryStore from "@/app/_store/useCategoryStore";
 import useUiStore from "@/app/_store/useUiStore";
 import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { MAX_INPUT_CAT_TITLE } from "../_lib/configs";
+import { MAX_INPUT_CAT_TITLE } from "@/app/_lib/configs";
 import autosize from "autosize";
 
 export default function CategoryTitleEditor({ theCategory, className }) {

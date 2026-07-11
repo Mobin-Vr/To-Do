@@ -1,5 +1,5 @@
-import CompleteBtn from "../_ui/CompleteBtn";
-import StarBtn from "../_ui/StarBtn";
+import CompleteBtn from "@/app/_components/_ui/CompleteBtn";
+import StarBtn from "@/app/_components/_ui/StarBtn";
 import BoxTemplate from "./BoxTemplate";
 import Steps from "./stepSection/Steps";
 import TaskTitleEditor from "./TaskTitleEditor";

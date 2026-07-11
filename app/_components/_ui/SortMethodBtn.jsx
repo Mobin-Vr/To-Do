@@ -2,7 +2,7 @@
 
 import { SortIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import useUiStore from "../../_store/useUiStore";
+import useUiStore from "@/app/_store/useUiStore";
 import ModalTemplateCloseAble from "./ModalTemplateCloseAble";
 import SortMethodModal from "./SortMethodModal";
 import { useShallow } from "zustand/react/shallow";

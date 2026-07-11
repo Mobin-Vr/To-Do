@@ -3,7 +3,7 @@
 import { ClerkLoaded, UserButton } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import Overlay from "../_ui/Overlay";
+import Overlay from "@/app/_components/_ui/Overlay";
 import ProfileModal from "./ProfileModal";
 import UserStatus from "./UserStatus";
 

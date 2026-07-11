@@ -2,19 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { checkDatabaseHealth } from "../_lib/read-actions";
-import useCustomToast from "../_lib/useCustomeToast";
-import { getDateNowIso } from "../_lib/utils";
-import useSyncStore from "../_store/useSyncStore";
+import useCustomToast from "@/app/_lib/useCustomeToast";
+import { getDateNowIso } from "@/app/_lib/utils";
+import useSyncStore from "@/app/_store/useSyncStore";
 import {
   HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS,
   HEALTH_STATUS_SYNC_ONLINE_DEBOUNCE_MS,
-} from "../_lib/configs";
+} from "@/app/_lib/configs";
 
 export default function HealthStatusSync() {
   const showToast = useCustomToast();
 
-  // Fix: initialize isConnected lazily to avoid setState in useEffect
   const [isConnected, setIsConnected] = useState(
     () => typeof window !== "undefined" && navigator.onLine,
   );
@@ -30,21 +28,16 @@ export default function HealthStatusSync() {
       })),
     );
 
-  // Ref for online event debounce timeout
   const onlineDebounceRef = useRef(null);
-  // Timestamp of the last successful database health check (cooldown mechanism)
   const lastHealthCheckRef = useRef(0);
 
-  // ✅ FIX H-3: syncData now uses getState() to avoid stale closures / recreating listeners
   const syncData = useCallback(async () => {
     const { isSyncing, changeLog, syncChangeLog } = useSyncStore.getState();
     if (isSyncing || !changeLog.length) return;
     syncChangeLog();
-  }, []); // empty deps → stable reference
+  }, []);
 
-  // Core logic to handle online/offline status and database health
   const handleConnectionStatus = useCallback(async () => {
-    // Offline path
     if (!navigator.onLine) {
       setIsConnected(false);
       setIsOnline(false);
@@ -52,44 +45,39 @@ export default function HealthStatusSync() {
       return;
     }
 
-    // Online path
     setIsConnected(true);
 
-    // Cooldown: skip health check if the last successful check was < HEALTH_CHECK_COOLDOWN_MS ago
     const now = Date.now();
     if (
       now - lastHealthCheckRef.current <
       HEALTH_STATUS_SYNC_DB_CHECK_COOLDOWN_MS
     ) {
-      return; // Keep previous isOnline state; no redundant DB call
+      return;
     }
 
-    const result = await checkDatabaseHealth();
+    const res = await fetch("/api/health");
+    const result = await res.json();
     setIsOnline(result.online);
 
     if (result.online) {
-      lastHealthCheckRef.current = Date.now(); // Update cooldown timestamp
+      lastHealthCheckRef.current = Date.now();
       setLastOnline(getDateNowIso());
 
-      // Show "back online" toast only if we were previously offline
       if (getConectionStatus().lastOnline) {
         showToast("You're back online! Syncing data...");
       }
-      await syncData(); // Sync any pending offline changes
+      await syncData();
     }
   }, [syncData, getConectionStatus, showToast]);
 
-  // Keep the global store in sync with local connection state
   useEffect(() => {
     updateConnectionStatus({ isConnected, isOnline, lastOnline });
   }, [isConnected, isOnline, lastOnline, updateConnectionStatus]);
 
-  // Toggle offline logging mode when online status changes
   useEffect(() => {
     toggleOfflineLogMode(!isOnline);
   }, [isOnline, toggleOfflineLogMode]);
 
-  // Register browser online/offline event listeners
   useEffect(() => {
     const debouncedOnlineHandler = () => {
       if (onlineDebounceRef.current) clearTimeout(onlineDebounceRef.current);
@@ -108,15 +96,12 @@ export default function HealthStatusSync() {
     };
   }, [handleConnectionStatus]);
 
-  // Initial health check on mount (without debounce)
   useEffect(() => {
-    // Wrap in setTimeout to avoid synchronous setState inside effect (React 19 strict mode)
     const timeoutId = setTimeout(() => {
       handleConnectionStatus();
     }, 0);
 
     return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

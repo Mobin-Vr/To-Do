@@ -16,7 +16,6 @@ export default function SearchContent() {
     bgColor,
     iconElement: "",
     extraListConfig: { query },
-    scrollDeps: [tasks.length],
   });
 
   return (

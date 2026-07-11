@@ -1,6 +1,6 @@
 import { ClerkLoaded, ClerkLoading } from "@clerk/nextjs";
 import InvitationLandingContent from "./InvitationLandingContent";
-import Spinner from "../_ui/Spinner";
+import Spinner from "@/app/_components/_ui/Spinner";
 
 export default function InvitationLanding({ token }) {
   return (

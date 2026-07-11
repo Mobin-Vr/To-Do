@@ -2,7 +2,7 @@
 
 import { DotIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
 import StepActionModal from "./StepActionModal";
 import StepCompleteBtn from "./StepCompleteBtn";
 import StepTitleEditor from "./StepTitleEditor";

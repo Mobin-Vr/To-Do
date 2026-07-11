@@ -11,7 +11,7 @@ import {
   TrashIcon,
 } from "@/public/icons/icons";
 import { useShallow } from "zustand/react/shallow";
-import { ModalActionButton } from "../reminderBoxModals/ModalActionBtn";
+import { ModalActionButton } from "@/app/_components/editSidebarSection/reminderBoxModals/ModalActionBtn";
 
 export default function StepActionModal({ task, step }) {
   const { updateTaskInStore, addTaskToStore } = useTaskStore(

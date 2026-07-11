@@ -1,15 +1,15 @@
 "use client";
 
+import BoxBtn from "@/app/_components/editSidebarSection/BoxBtn";
+import AddReminderModal from "@/app/_components/editSidebarSection/reminderBoxModals/AddReminderModal";
+import DateTimePickerModal from "@/app/_components/editSidebarSection/reminderBoxModals/DateTimePickerModal";
 import { getRelativeDay } from "@/app/_lib/utils";
 import useTaskStore from "@/app/_store/useTaskStore";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "@/app/_components/_ui/ModalTemplatePrimary";
 import { format } from "date-fns";
 import { useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import ModalTemplateCloseAble from "../../_ui/ModalTemplateCloseAble";
-import ModalTemplatePrimary from "../../_ui/ModalTemplatePrimary";
-import BoxBtn from "../BoxBtn";
-import AddReminderModal from "../reminderBoxModals/AddReminderModal";
-import DateTimePickerModal from "../reminderBoxModals/DateTimePickerModal";
 
 export default function AddReminder({ task }) {
   const AddReminder = useRef(null);

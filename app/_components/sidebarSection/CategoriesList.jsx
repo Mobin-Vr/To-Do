@@ -2,7 +2,7 @@ import { defaultCategoryId } from "@/app/_lib/configs";
 import CategoryItem from "./CategoryItem";
 
 export default function CategoriesList({ categoriesList, toggleSidebar }) {
-  const list = categoriesList.filter(
+  const list = (categoriesList ?? []).filter(
     (cat) => cat.category_id !== defaultCategoryId,
   );
 

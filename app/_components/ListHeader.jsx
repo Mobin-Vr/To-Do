@@ -1,9 +1,9 @@
 "use client";
 
 import { useShallow } from "zustand/react/shallow";
-import { defaultCategoryId } from "../_lib/configs";
-import { getFormattedDate } from "../_lib/utils";
-import useUserStore from "../_store/useUserStore";
+import { defaultCategoryId } from "@/app/_lib/configs";
+import { getFormattedDate } from "@/app/_lib/utils";
+import useUserStore from "@/app/_store/useUserStore";
 import DeleteBtn from "./_ui/DeleteBtn";
 import MenuBtn from "./_ui/MenuBtn";
 import SortMethodBtn from "./_ui/SortMethodBtn";

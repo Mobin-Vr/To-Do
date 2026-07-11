@@ -17,7 +17,6 @@ export default function Template({
   theCategoryId = defaultCategoryId,
   showInput = true,
   showSearch = false,
-  showSpinner = false,
 }) {
   const [mustFocus, setMustFocus] = useState(false);
 
@@ -75,8 +74,7 @@ export default function Template({
                 setMustFocus={setMustFocus}
               />
             ) : (
-              listConfig.listName === "My Day" &&
-              !showSpinner && <NoTaskInMyDay />
+              listConfig.listName === "My Day" && <NoTaskInMyDay />
             )}
           </div>
 

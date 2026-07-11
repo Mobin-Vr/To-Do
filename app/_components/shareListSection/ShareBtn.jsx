@@ -2,9 +2,9 @@
 
 import { ShareIcon } from "@/public/icons/icons";
 import { useState } from "react";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
+import ModalTemplatePrimary from "@/app/_components/_ui/ModalTemplatePrimary";
 import SharedListModal from "./ShareListModal";
-import Overlay from "../_ui/Overlay";
+import Overlay from "@/app/_components/_ui/Overlay";
 
 export default function ShareBtn({ theCategoryId, bgColor }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

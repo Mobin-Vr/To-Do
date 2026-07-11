@@ -1,60 +1,47 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { useCallback, useEffect } from "react";
-
+import { useEffect } from "react";
 import useUserStore from "@/app/_store/useUserStore";
-import useSyncStore from "@/app/_store/useSyncStore";
 import { useShallow } from "zustand/react/shallow";
 import { createUserAction } from "@/app/_lib/Actions";
-import { getUserByEmail } from "@/app/_lib/read-actions";
 
 export default function UserSignupHandler() {
   const { user } = useUser();
-
   const { setUserState } = useUserStore(
-    useShallow((state) => ({
-      setUserState: state.setUserState,
-    })),
-  );
-
-  // Use useCallback to prevent unnecessary re-renders
-  const memoized_setUserState = useCallback(
-    (userState) => {
-      setUserState(userState);
-      useSyncStore.getState().fetchDataOnMount();
-    },
-    [setUserState],
+    useShallow((state) => ({ setUserState: state.setUserState })),
   );
 
   useEffect(() => {
     async function handleSignIn() {
-      // If no user is logged in, do nothing
       if (!user) return;
-
       const email = user.emailAddresses[0].emailAddress;
 
-      const existingUser = await getUserByEmail(email);
+      const res = await fetch(`/api/user?email=${encodeURIComponent(email)}`);
+      let existingUser = null;
+      if (res.ok) {
+        existingUser = await res.json();
+      }
 
-      // If the user doesn't exist, create a new user and store their data in the store
+      let userState;
       if (!existingUser) {
         const newUser = await createUserAction({
           user_fullname: user.fullName,
           user_email: email,
           user_clerk_id: user.id,
         });
-
-        memoized_setUserState(newUser[0]);
+        userState = newUser[0];
+      } else {
+        userState = existingUser;
       }
 
-      if (existingUser) memoized_setUserState(existingUser);
+      setUserState(userState);
     }
 
-    // Call the sign-in handler and catch any errors
     handleSignIn().catch((error) => {
       console.error("Error creating user record in DB:", error);
     });
-  }, [user, memoized_setUserState]);
+  }, [user, setUserState]);
 
   return null;
 }

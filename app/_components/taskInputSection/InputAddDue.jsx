@@ -2,11 +2,11 @@
 
 import { CalendarIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import InputBtnTempl from "../_ui/InputBtnTempl";
-import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
-import AddDueModal from "../editSidebarSection/reminderBoxModals/AddDueModal";
-import DatePickerModal from "../editSidebarSection/reminderBoxModals/DatePickerModal";
+import InputBtnTempl from "@/app/_components/_ui/InputBtnTempl";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "@/app/_components/_ui/ModalTemplatePrimary";
+import AddDueModal from "@/app/_components/editSidebarSection/reminderBoxModals/AddDueModal";
+import DatePickerModal from "@/app/_components/editSidebarSection/reminderBoxModals/DatePickerModal";
 
 export default function InputAddDue({
   setTaskDueDate,

@@ -5,7 +5,6 @@ import { devtools } from "zustand/middleware";
 const initialState = {
   sortMethod: "importance",
   sortMethodForShared: "creationDate",
-  showSpinner: true,
   isSidebarOpen: false,
   editTitleWhileCreating: false,
 };
@@ -16,7 +15,6 @@ const useUiStore = create(
       // State
       sortMethod: initialState.sortMethod,
       sortMethodForShared: initialState.sortMethodForShared,
-      showSpinner: initialState.showSpinner,
       isSidebarOpen: initialState.isSidebarOpen,
       editTitleWhileCreating: initialState.editTitleWhileCreating,
 
@@ -26,14 +24,6 @@ const useUiStore = create(
           produce((state) => {
             state.sortMethod = sortMethod;
             state.sortMethodForShared = sortMethod;
-          }),
-        );
-      },
-
-      setShowpinner: (bool) => {
-        set(
-          produce((state) => {
-            state.showSpinner = bool;
           }),
         );
       },

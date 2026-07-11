@@ -2,11 +2,11 @@
 
 import { BellIcon } from "@/public/icons/icons";
 import { useRef, useState } from "react";
-import InputBtnTempl from "../_ui/InputBtnTempl";
-import ModalTemplateCloseAble from "../_ui/ModalTemplateCloseAble";
-import ModalTemplatePrimary from "../_ui/ModalTemplatePrimary";
-import AddReminderModal from "../editSidebarSection/reminderBoxModals/AddReminderModal";
-import DateTimePickerModal from "../editSidebarSection/reminderBoxModals/DateTimePickerModal";
+import InputBtnTempl from "@/app/_components/_ui/InputBtnTempl";
+import ModalTemplateCloseAble from "@/app/_components/_ui/ModalTemplateCloseAble";
+import ModalTemplatePrimary from "@/app/_components/_ui/ModalTemplatePrimary";
+import AddReminderModal from "@/app/_components/editSidebarSection/reminderBoxModals/AddReminderModal";
+import DateTimePickerModal from "@/app/_components/editSidebarSection/reminderBoxModals/DateTimePickerModal";
 
 export default function InputAddReminder({
   setTaskReminder,

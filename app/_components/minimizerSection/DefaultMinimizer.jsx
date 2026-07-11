@@ -1,7 +1,7 @@
 import { useMemo } from "react";
-import { sortTasks } from "../../_lib/utils";
-import TaskGroup from "../TaskGroup";
-import TasksMinimizer from "./TasksMinimizer";
+import { sortTasks } from "@/app/_lib/utils";
+import TaskGroup from "@/app/_components/TaskGroup";
+import TasksMinimizer from "@/app/_components/minimizerSection/TasksMinimizer";
 
 export default function DefaultMinimizer({
   tasks,

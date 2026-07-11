@@ -11,9 +11,8 @@ export default function useTaskListPage({
   listName,
   bgColor,
   iconElement,
-  categoryId = defaultCategoryId,
+  initialCategory = undefined,
   extraListConfig = {},
-  scrollDeps,
 }) {
   const listRef = useRef(null);
 
@@ -24,9 +23,13 @@ export default function useTaskListPage({
     useShallow((state) => ({ categoriesList: state.categoriesList })),
   );
 
-  const theCategory = categoriesList?.find(
-    (cat) => cat.category_id === categoryId,
-  );
+  // Determine categoryId from initialCategory or fallback to default
+  const categoryId = initialCategory?.category_id ?? defaultCategoryId;
+
+  // Use the provided category if available; otherwise search the store
+  const theCategory =
+    initialCategory ??
+    categoriesList?.find((cat) => cat.category_id === categoryId);
 
   const tasks = tasksList.filter(filterFn) || [];
 
@@ -39,15 +42,11 @@ export default function useTaskListPage({
     ...extraListConfig,
   };
 
-  useEffect(
-    () => {
-      if (listRef.current) {
-        listRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    scrollDeps ?? [tasks.length],
-  );
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [tasks.length]);
 
   return { listRef, listConfig, tasks, theCategory };
 }

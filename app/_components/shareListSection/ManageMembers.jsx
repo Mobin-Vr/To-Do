@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowIcon } from "@/public/icons/icons";
-import OrdinaryBtn from "../_ui/OrdinaryBtn";
+import OrdinaryBtn from "@/app/_components/_ui/OrdinaryBtn";
 import InvitationUsersList from "./InvitationUsersList";
 import useInvitationStore from "@/app/_store/useInvitationStore";
 import { useShallow } from "zustand/react/shallow";

@@ -2,10 +2,10 @@
 
 import { HomeIcon } from "@/public/icons/icons";
 import { BG_COLORS, defaultCategoryId } from "@/app/_lib/configs";
-import Template from "../Template";
+import Template from "@/app/_components/Template";
 import useTaskListPage from "@/app/_lib/useTaskListPage";
 
-export default function TasksPageContent() {
+export default function Page() {
   const bgColor = BG_COLORS["/tasks"];
 
   const { listRef, listConfig } = useTaskListPage({

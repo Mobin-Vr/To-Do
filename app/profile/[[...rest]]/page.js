@@ -1,6 +1,6 @@
 import { UserProfile } from "@clerk/nextjs";
-import MenuBtn from "../../_components/_ui/MenuBtn";
-import { BG_COLORS } from "../../_lib/configs";
+import MenuBtn from "@/app/_components/_ui/MenuBtn";
+import { BG_COLORS } from "@/app/_lib/configs";
 
 export default function Page() {
   const bgColor = BG_COLORS["/my-day"];

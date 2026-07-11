@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import CancelSaveBtn from "../../_ui/CancelSaveBtn";
-import DatePicker from "../../_ui/DatePicker";
+import CancelSaveBtn from "@/app/_components/_ui/CancelSaveBtn";
+import DatePicker from "@/app/_components/_ui/DatePicker";
 
 export default function DatePickerModal({
   task,

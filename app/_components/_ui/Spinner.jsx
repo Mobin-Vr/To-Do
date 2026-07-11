@@ -1,11 +1,9 @@
 "use client";
 
 import { BG_COLORS, DONT_SHOW_SPINNER_IN_THIS_PAGES } from "@/app/_lib/configs";
-import useUiStore from "@/app/_store/useUiStore";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { validate } from "uuid";
-import { useShallow } from "zustand/react/shallow";
 
 export default function Spinner({
   bgColorRoute = "default",
@@ -13,11 +11,6 @@ export default function Spinner({
 }) {
   const pathname = usePathname();
   const [isClient, setIsClient] = useState(false); // Track if component has mounted on client
-  const { showSpinner } = useUiStore(
-    useShallow((state) => ({
-      showSpinner: state.showSpinner,
-    })),
-  );
 
   // Set isClient asynchronously to avoid synchronous setState in effect (React 19)
   useEffect(() => {
@@ -37,7 +30,7 @@ export default function Spinner({
 
   // Always render the default spinner unless variant="transparent"
   const shouldRenderDefault = variant !== "transparent";
-  const shouldRenderTransparent = variant === "transparent" && showSpinner;
+  const shouldRenderTransparent = variant === "transparent";
 
   // If pathname is in the exclusion list and we only need transparent spinner, bail out
   if (

@@ -1,8 +1,8 @@
-import Border from "../../_ui/Border";
-import BoxTemplate from "../BoxTemplate";
-import AddDue from "./AddDue";
-import AddReminder from "./AddReminder";
-import AddRepeat from "./AddRepeat";
+import Border from "@/app/_components/_ui/Border";
+import BoxTemplate from "@/app/_components/editSidebarSection/BoxTemplate";
+import AddDue from "@/app/_components/editSidebarSection/reminderBoxSection/AddDue";
+import AddReminder from "@/app/_components/editSidebarSection/reminderBoxSection/AddReminder";
+import AddRepeat from "@/app/_components/editSidebarSection/reminderBoxSection/AddRepeat";
 
 export default function ReminderBox({ task }) {
   return (

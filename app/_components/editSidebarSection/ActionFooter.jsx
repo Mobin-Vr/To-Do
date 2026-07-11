@@ -1,5 +1,5 @@
 import { getTimeAgo } from "@/app/_lib/utils";
-import DeleteBtn from "../_ui/DeleteBtn";
+import DeleteBtn from "@/app/_components/_ui/DeleteBtn";
 
 export default function ActionFooter({
   task,

@@ -5,13 +5,13 @@ import {
   SunIcon,
   SyncIcon,
 } from "@/public/icons/icons";
-import { defaultCategoryId } from "../_lib/configs";
+import { defaultCategoryId } from "@/app/_lib/configs";
 import {
   checkIfToday,
   checkIfTomorrow,
   getShortFormattedDate,
   hasDatePassed,
-} from "../_lib/utils";
+} from "@/app/_lib/utils";
 
 function TaskDetails({ task, listName, className }) {
   let text = "";

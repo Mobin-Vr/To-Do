@@ -2,10 +2,10 @@
 
 import { TodayCalendarIcon } from "@/public/icons/icons";
 import { BG_COLORS } from "@/app/_lib/configs";
-import Template from "../Template";
+import Template from "@/app/_components/Template";
 import useTaskListPage from "@/app/_lib/useTaskListPage";
 
-export default function PlannedContent() {
+export default function Page() {
   const bgColor = BG_COLORS["/planned"];
 
   const { listRef, listConfig } = useTaskListPage({

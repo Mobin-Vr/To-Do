@@ -11,22 +11,10 @@ import {
   deleteManyCategoriesAction,
   updateManyCategoriesAction,
   addManyErrorLogAction,
-} from "../_lib/Actions";
+} from "@/app/_lib/Actions";
 
-import {
-  getReleventTasks,
-  getReleventCategories,
-  getOwnerInvitations,
-  getJoinedInvitations,
-} from "../_lib/read-actions";
-
-import { TASK_SYNC_FAIL_TOAST_MSG } from "../_lib/configs";
-import { logger } from "../_lib/logger";
-import useCategoryStore from "./useCategoryStore";
-import useInvitationStore from "./useInvitationStore";
-import useTaskStore from "./useTaskStore";
-import useUiStore from "./useUiStore";
-import useUserStore from "./useUserStore";
+import { TASK_SYNC_FAIL_TOAST_MSG } from "@/app/_lib/configs";
+import { logger } from "@/app/_lib/logger";
 
 const initialState = {
   isSyncing: false,
@@ -97,23 +85,15 @@ const useSyncStore = create(
                 return;
               }
 
-              // For delete-task and update-task: check if an "add-task" entry exists
               const isAlreadyAddTaskInChangeLog = state.changeLog.some(
                 (log) => log.id === id && log.type === "add-task",
               );
 
               if (isAlreadyAddTaskInChangeLog) {
-                // Remove existing entries for this id
                 state.changeLog = state.changeLog.filter(
                   (log) => log.id !== id,
                 );
-                // If it was only local (add-task), deleting means we just remove the log entry
-                if (type === "delete-task") {
-                  // No need to add a delete-task entry; just removing the add-task is enough
-                } else {
-                  // update-task on a locally-added task: re-add as add-task
-                  state.changeLog.push({ type: "add-task", id, task });
-                }
+                // No need to re‑log delete‑task – it cancels the local add
               } else {
                 // Task exists in DB, so we log the actual operation
                 state.changeLog = state.changeLog.filter(
@@ -125,7 +105,7 @@ const useSyncStore = create(
           );
         },
 
-        // # Log a category change (coalescing logic from original store)
+        // # Log a category change (coalescing logic)
         logCategoryChange: (type, id, category) => {
           set(
             produce((state) => {
@@ -142,11 +122,6 @@ const useSyncStore = create(
                 state.changeLog = state.changeLog.filter(
                   (log) => log.id !== id,
                 );
-                if (type === "delete-category") {
-                  // Just remove the add-category entry, no need to add delete
-                } else {
-                  state.changeLog.push({ type: "add-category", id, category });
-                }
               } else {
                 state.changeLog = state.changeLog.filter(
                   (log) => log.id !== id,
@@ -198,37 +173,29 @@ const useSyncStore = create(
           try {
             get().toggleIsSyncing(true);
 
-            if (groupedChanges["add-task"].length) {
+            if (groupedChanges["add-task"].length)
               await addManyTasksAction(groupedChanges["add-task"]);
-            }
-            if (groupedChanges["update-task"].length) {
+            if (groupedChanges["update-task"].length)
               await updateManyTasksAction(
                 groupedChanges["update-task"],
                 groupedChanges["update-task"].map((task) => task.task_id),
               );
-            }
-            if (groupedChanges["delete-task"].length) {
+            if (groupedChanges["delete-task"].length)
               await deleteManyTasksAction(
                 groupedChanges["delete-task"].map((task) => task.task_id),
               );
-            }
-            if (groupedChanges["add-category"].length) {
+            if (groupedChanges["add-category"].length)
               await addManyCategoriesAction(groupedChanges["add-category"]);
-            }
-            if (groupedChanges["update-category"].length) {
+            if (groupedChanges["update-category"].length)
               await updateManyCategoriesAction(
                 groupedChanges["update-category"],
                 groupedChanges["update-category"].map((cat) => cat.category_id),
               );
-            }
-            if (groupedChanges["delete-category"].length) {
+            if (groupedChanges["delete-category"].length)
               await deleteManyCategoriesAction(
                 groupedChanges["delete-category"].map((cat) => cat.category_id),
               );
-            }
-            if (errorLog.length) {
-              await addManyErrorLogAction(errorLog);
-            }
+            if (errorLog.length) await addManyErrorLogAction(errorLog);
 
             get().clearLog();
           } catch (error) {
@@ -237,128 +204,6 @@ const useSyncStore = create(
             await get().pushErrorLog("syncChangeLog", error.message);
           } finally {
             get().toggleIsSyncing(false);
-          }
-        },
-
-        // # Fetch data on mount
-        fetchDataOnMount: async () => {
-          try {
-            const userId = useUserStore.getState().userState?.user_id;
-            if (!userId) return;
-
-            const [
-              fetchedTasks,
-              fetchedCategories,
-              fetchedOwnerInvs,
-              fetchedJoinedInvs,
-            ] = await Promise.all([
-              getReleventTasks(),
-              getReleventCategories(),
-              getOwnerInvitations(),
-              getJoinedInvitations(),
-            ]);
-
-            // Remove duplicates
-            const seenTaskIds = new Set();
-            const uniqueTasks = fetchedTasks.filter((task) => {
-              if (!seenTaskIds.has(task.task_id)) {
-                seenTaskIds.add(task.task_id);
-                return true;
-              }
-              return false;
-            });
-
-            const seenCategoryIds = new Set();
-            const uniqueCategories = fetchedCategories.filter((category) => {
-              if (!seenCategoryIds.has(category.category_id)) {
-                seenCategoryIds.add(category.category_id);
-                return true;
-              }
-              return false;
-            });
-
-            const seenOwnerInvIds = new Set();
-            const uniqueOwnerInvs = fetchedOwnerInvs.filter((inv) => {
-              if (!seenOwnerInvIds.has(inv.invitation_id)) {
-                seenOwnerInvIds.add(inv.invitation_id);
-                return true;
-              }
-              return false;
-            });
-
-            const seenJoinedInvIds = new Set();
-            const uniqueJoinedInvs = fetchedJoinedInvs.filter((inv) => {
-              if (!seenJoinedInvIds.has(inv.invitation_id)) {
-                seenJoinedInvIds.add(inv.invitation_id);
-                return true;
-              }
-              return false;
-            });
-
-            // Filter out duplicates with existing data
-            const currentTasks = useTaskStore.getState().tasksList || [];
-            const currentCategories =
-              useCategoryStore.getState().categoriesList || [];
-            const currentInvitations =
-              useInvitationStore.getState().invitations || [];
-            const currentSharedWithMe =
-              useInvitationStore.getState().sharedWithMe || [];
-
-            const nonDuplicateTasks = currentTasks.filter(
-              (task) => !uniqueTasks.some((t) => t.task_id === task.task_id),
-            );
-            const nonDuplicateCategories = currentCategories.filter(
-              (category) =>
-                !uniqueCategories.some(
-                  (c) => c.category_id === category.category_id,
-                ),
-            );
-            const nonDuplicateOwnerInvs = currentInvitations.filter(
-              (inv) =>
-                !uniqueOwnerInvs.some(
-                  (i) => i.invitation_id === inv.invitation_id,
-                ),
-            );
-            const nonDuplicateJoinedInvs = currentSharedWithMe.filter(
-              (inv) =>
-                !uniqueJoinedInvs.some(
-                  (i) => i.invitation_id === inv.invitation_id,
-                ),
-            );
-
-            // Remove owner from sharedWith
-            const updatedOwnerInvs = uniqueOwnerInvs.map((invitation) => ({
-              ...invitation,
-              sharedWith: invitation.sharedWith.filter(
-                (user) => user.user_id !== userId,
-              ),
-            }));
-
-            // Set data in respective stores
-            useTaskStore
-              .getState()
-              .setTasksList([...nonDuplicateTasks, ...uniqueTasks]);
-            useCategoryStore
-              .getState()
-              .setCategoriesList([
-                ...nonDuplicateCategories,
-                ...uniqueCategories,
-              ]);
-            useInvitationStore
-              .getState()
-              .setInvitations([...nonDuplicateOwnerInvs, ...updatedOwnerInvs]);
-            useInvitationStore
-              .getState()
-              .setSharedWithMe([
-                ...nonDuplicateJoinedInvs,
-                ...uniqueJoinedInvs,
-              ]);
-
-            useUiStore.getState().setShowpinner(false);
-          } catch (error) {
-            logger.error("Error syncing and getting data from server:", error);
-            toast.error(TASK_SYNC_FAIL_TOAST_MSG);
-            await get().pushErrorLog("fetchDataOnMount", error.message);
           }
         },
 

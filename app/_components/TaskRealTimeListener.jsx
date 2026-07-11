@@ -2,11 +2,11 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { useSupabaseRealtimeToken } from "../_lib/useSupabaseRealtimeToken";
-import useTaskStore from "../_store/useTaskStore";
-import useCategoryStore from "../_store/useCategoryStore";
-import useInvitationStore from "../_store/useInvitationStore";
-import useUserStore from "../_store/useUserStore";
+import { useSupabaseRealtimeToken } from "@/app/_lib/useSupabaseRealtimeToken";
+import useTaskStore from "@/app/_store/useTaskStore";
+import useCategoryStore from "@/app/_store/useCategoryStore";
+import useInvitationStore from "@/app/_store/useInvitationStore";
+import useUserStore from "@/app/_store/useUserStore";
 
 export default function TaskRealTimeListener() {
   const { supabase, isTokenReady } = useSupabaseRealtimeToken();

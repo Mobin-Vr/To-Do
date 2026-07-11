@@ -2,7 +2,7 @@
 
 import { MenuIcon } from "@/public/icons/icons";
 import React, { useState } from "react";
-import useUiStore from "../../_store/useUiStore";
+import useUiStore from "@/app/_store/useUiStore";
 import { useShallow } from "zustand/react/shallow";
 
 function MenuBtn({ menuButtonRef, className, bgColor }) {

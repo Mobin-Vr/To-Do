@@ -1,4 +1,4 @@
-import { categorizePlannedTasks } from "../../_lib/utils";
+import { categorizePlannedTasks } from "@/app/_lib/utils";
 import TasksMinimizer from "./TasksMinimizer";
 
 export default function PlannedMinimizer({
