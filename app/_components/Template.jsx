@@ -22,18 +22,17 @@ export default function Template({
 }) {
   const [mustFocus, setMustFocus] = useState(false);
 
-  // Track initial data load – categoriesList is null until store is hydrated
   const { categoriesList } = useCategoryStore(
     useShallow((state) => ({ categoriesList: state.categoriesList })),
   );
 
-  // Auto-focus the task input on page load so the user can start typing immediately.
+  // Auto-focus task input on page load
   useEffect(() => {
     const timer = setTimeout(() => setMustFocus(true), 0);
     return () => clearTimeout(timer);
   }, []);
 
-  // Cleanup body background on unmount
+  // Match body background to current list color
   useEffect(() => {
     if (typeof document !== "undefined") {
       const originalBg = document.body.style.backgroundColor;
@@ -54,7 +53,6 @@ export default function Template({
       setMustFocus(true);
   }
 
-  // While the initial data is still loading, render nothing to prevent flicker
   if (categoriesList === null) return null;
 
   return (

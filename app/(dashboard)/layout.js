@@ -24,7 +24,9 @@ export default async function DashboardLayout({ children }) {
     return children;
   }
 
-  if (!token) return children;
+  if (!token) {
+    throw new Error("Authentication failed. Please try again.");
+  }
 
   const results = await Promise.allSettled([
     getReleventTasks(token),

@@ -10,14 +10,12 @@ function AddNote({ updateTaskInStore, task }) {
   const [isTyping, setIsTyping] = useState(false);
   const [note, setNote] = useState(task.task_note || "");
 
-  // Apply autosize after the textarea is mounted (no longer called during render)
   useEffect(() => {
     if (textareaRef.current) {
       autosize(textareaRef.current);
     }
   }, []);
 
-  // Sync local state when the task note changes externally, without synchronous setState
   useEffect(() => {
     queueMicrotask(() => setNote(task.task_note || ""));
   }, [task.task_note]);
@@ -25,7 +23,6 @@ function AddNote({ updateTaskInStore, task }) {
   function handleBlur() {
     setIsTyping(false);
 
-    // Safe comparison – task.task_note may be null
     const currentNote = note.trim();
     const originalNote = (task.task_note || "").trim();
 

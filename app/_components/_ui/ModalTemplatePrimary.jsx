@@ -13,7 +13,6 @@ export default function ModalTemplatePrimary({
   const modalRef = useRef(null);
   const [shouldRender, setShouldRender] = useState(isModalOpen);
 
-  // Defer setShouldRender to avoid React 19 synchronous setState warning
   useEffect(() => {
     if (isModalOpen) {
       queueMicrotask(() => setShouldRender(true));

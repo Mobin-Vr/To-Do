@@ -39,15 +39,15 @@ export default function TaskInput({
 
   const inputRef = useRef(null);
   const debounceRef = useRef(null);
-  // Cancels the in-flight AI request when a newer one starts, or on unmount
+  // Abort in-flight AI request when new one starts or on unmount
   const abortControllerRef = useRef(null);
-  // Tracks which fields the user changed by hand, so an AI result can never overwrite them
+  // Track manual edits so AI results don't overwrite user changes
   const manualEditsRef = useRef({
     dueDate: false,
     reminder: false,
     repeat: false,
   });
-  // Guards against setState firing after the component has unmounted
+  // Prevent setState after unmount during async AI calls
   const isMountedRef = useRef(true);
 
   const [taskInput, setTaskInput] = useState("");
@@ -65,10 +65,8 @@ export default function TaskInput({
     setMustFocus(false);
   };
 
-  // Runs synchronously as a direct response to the keystroke, not inside an effect.
-  // Clearing the input is a discrete user action, not "external state to sync with",
-  // so it belongs in the event handler - this also drops any pending AI work with
-  // zero delay, rather than waiting for the debounce effect to notice on next render.
+  // Clear input is a direct user action — cancel AI immediately here,
+  // don't wait for the debounce effect to pick it up on next render
   const handleInputChange = (e) => {
     const value = e.target.value;
     setTaskInput(value);
@@ -81,9 +79,7 @@ export default function TaskInput({
     }
   };
 
-  // Wrapped setters passed to the manual date/reminder/repeat pickers. Any manual
-  // change "locks" that field so a later AI result can't override it. These are
-  // harmless no-ops in normal mode, since aiResult is never set there.
+  // Any manual field change locks that field against future AI overwrites
   const handleManualDueDateChange = useCallback((value) => {
     manualEditsRef.current.dueDate = true;
     setTaskDueDate(value);
@@ -99,8 +95,7 @@ export default function TaskInput({
     setTaskRepeat(value);
   }, []);
 
-  // Debounced AI analysis. Cancels any request still in flight before starting a new
-  // one, so a slow older response can never land after a newer one.
+  // Debounced AI analysis — cancels previous request before firing new one
   const analyzeText = useCallback(async (text) => {
     if (!AI_ENABLED) return;
     if (!text || text.trim().length < MIN_TEXT_LENGTH_FOR_AI) return;
@@ -125,28 +120,22 @@ export default function TaskInput({
         const data = await res.json();
         if (isMountedRef.current) setAiResult(data);
       } else {
-        // Server already logged the details - fail quietly so typing isn't interrupted
         console.error("AI parse request failed:", res.status);
       }
     } catch (error) {
-      // AbortError fires whenever a newer keystroke (or a clear/unmount) cancels
-      // this request - it's expected control flow, not a real error.
+      // AbortError is expected when a newer request cancels this one
       if (error.name !== "AbortError") {
         console.error("AI analysis failed", error);
       }
     } finally {
-      // Only clear the spinner if this request is still the latest one AND the
-      // component is still mounted. Otherwise an old, superseded request could
-      // turn off a newer request's spinner, or set state after unmount.
+      // Only clear spinner if this is still the latest request and component is mounted
       if (abortControllerRef.current === controller && isMountedRef.current) {
         setIsAnalyzing(false);
       }
     }
   }, []);
 
-  // Schedule debounced analysis whenever there's non-empty input to analyze (AI mode
-  // only). The empty-input case is handled synchronously in handleInputChange above,
-  // so this effect only ever subscribes a timer - it never calls setState itself.
+  // Schedule debounced analysis on input change
   useEffect(() => {
     if (!AI_ENABLED) return;
     if (taskInput.trim().length === 0) return;
@@ -159,8 +148,7 @@ export default function TaskInput({
     return () => clearTimeout(timeoutId);
   }, [taskInput, analyzeText]);
 
-  // Track mount state and cancel any in-flight request if the component unmounts
-  // mid-analysis (e.g. the user navigates away while a fetch is pending).
+  // Cleanup on unmount
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -169,9 +157,7 @@ export default function TaskInput({
     };
   }, []);
 
-  // When an AI result arrives, fill only the fields the user hasn't touched by hand.
-  // This never overwrites the visible taskInput text - only the structured fields.
-  // In normal mode aiResult is never set, so this effect simply never fires.
+  // Apply AI result only to fields the user hasn't manually edited
   useEffect(() => {
     if (!aiResult) return;
     queueMicrotask(() => {
@@ -200,15 +186,14 @@ export default function TaskInput({
 
     const catTitleCond = categoryId === defaultCategoryId ? "Tasks" : listName;
 
+    // Task goes into My Day if due/reminder is today or we're in My Day list
     const myDayCond =
       checkIfToday(taskDueDate) ||
       checkIfToday(taskReminder) ||
       listName === "My Day" ||
       (listName === "Planned" && !taskDueDate && !taskReminder);
 
-    // Only these six AI fields are ever allowed to shape the saved task. The raw
-    // text the user typed is always the fallback for the title - the AI's polished
-    // task_title is only used when it's actually available.
+    // AI's task_title is preferred, but fall back to raw user input
     const newItem = {
       task_id: generateNewUuid(),
       task_owner_id: getUserState().user_id,
@@ -231,8 +216,7 @@ export default function TaskInput({
     resetInputState();
   }
 
-  // Auto-focus the input when mustFocus is set to true,
-  // then reset the flag to prevent repeated focusing.
+  // Auto-focus when triggered externally, then reset flag
   useEffect(() => {
     if (mustFocus && inputRef.current) {
       inputRef.current.focus();
@@ -256,9 +240,7 @@ export default function TaskInput({
         {isTyping || taskInput.length > 0 ? <CircleIcon /> : <PlusIcon />}
       </button>
 
-      {/* This wrapper is what the glow renders around. It has NO overflow-hidden,
-          so the ::before ring and ::after halo can extend past the box edges
-          instead of being clipped like they were when the glow lived on <form>. */}
+      {/* Glow wrapper — no overflow-hidden so the ring/halo extend past the box */}
       <div
         className={`ai-input-glow relative z-10 h-[2.9rem] w-full rounded-md ${
           showAiGlow ? "ai-input-glow-active" : ""
@@ -335,7 +317,7 @@ export default function TaskInput({
           isolation: isolate;
         }
 
-        /* Thin rotating ring hugging the box edge, Siri-style color sweep */
+        /* Rotating gradient ring */
         .ai-input-glow::before {
           content: "";
           position: absolute;
@@ -363,7 +345,7 @@ export default function TaskInput({
           z-index: 1;
         }
 
-        /* Soft blurred halo hugging the box edge, thin and subtle */
+        /* Blurred glow behind the ring */
         .ai-input-glow::after {
           content: "";
           position: absolute;

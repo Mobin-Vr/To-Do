@@ -47,9 +47,7 @@ export default function StepActionModal({ task, step }) {
   }
 
   function handleRemove() {
-    // 1. Show warn modal
     showDeleteModal("step", step.step_title, async () => {
-      // 2. Remove the step
       updateTaskInStore(task.task_id, {
         task_steps: task.task_steps.filter((s) => s.step_id !== step.step_id),
       });
@@ -76,10 +74,8 @@ export default function StepActionModal({ task, step }) {
       is_task_in_myday: false,
     };
 
-    // Add the promoted step in tasksList
     addTaskToStore(promotedStep);
 
-    // Remove the step
     updateTaskInStore(task.task_id, {
       task_steps: task.task_steps.filter((s) => s.step_id !== step.step_id),
     });

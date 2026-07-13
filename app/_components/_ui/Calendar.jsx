@@ -13,14 +13,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
-
-        // مهم: یک context مشخص برای absolute ها
         month_caption: "relative flex items-center justify-center pt-1",
-
-        // مهم: لیبل زیر دکمه‌ها بماند
         caption_label: "relative z-0 text-sm font-medium",
-
-        // nav خودش هم روی caption سوار است
         nav: "pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between",
 
         month_grid: "w-full border-collapse space-y-1",

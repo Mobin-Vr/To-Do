@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export default function Overlay({
   isOpen,
-  onClick = () => {}, // Nothing to do by default
+  onClick = () => {},
   className,
   children = null,
   zIndex = 40,
@@ -21,7 +21,6 @@ export default function Overlay({
       }`}
       onClick={onClick}
     >
-      {/* Render children if any */}
       {children}
     </motion.div>
   );

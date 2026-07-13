@@ -29,7 +29,6 @@ export default function ReminderHandler() {
 
   const processedRemindersRef = useRef(new Set());
 
-  // Define triggerReminder before it is used in the effect
   function triggerReminder(task) {
     const alarmSound = alarmSoundRef.current;
     if (!alarmSound) return;
@@ -39,7 +38,7 @@ export default function ReminderHandler() {
       .play()
       .catch((error) => console.error("Audio play failed:", error));
 
-    // Set a timeout to stop the alarm after some time
+    // Auto-stop alarm after timeout
     const autoStopTimeout = setTimeout(() => {
       alarmSound.loop = false;
       alarmSound.pause();
@@ -63,7 +62,7 @@ export default function ReminderHandler() {
     if (Notification.permission === "granted") {
       new Notification(`Reminder!`, {
         body: task.task_title,
-        icon: "/icon.png", // Fix L-8: use absolute path instead of alias
+        icon: "/icon.png",
       });
     }
   }
@@ -71,7 +70,7 @@ export default function ReminderHandler() {
   useEffect(() => {
     Notification.requestPermission();
 
-    // Detect user interaction to initialize Audio
+    // Wait for user interaction before initializing Audio (browser policy)
     const handleUserInteraction = () => {
       alarmSoundRef.current = new Audio("/sounds/alarm.mp3");
       setIsUserInteracted(true);
@@ -92,7 +91,7 @@ export default function ReminderHandler() {
       );
 
       tasksWithDates.forEach((task) => {
-        // Set is_task_in_myday if reminder or due date is today, but only once
+        // Set is_task_in_myday if reminder or due date is today
         if (
           !task.is_task_in_myday &&
           task.task_reminder &&
@@ -117,7 +116,7 @@ export default function ReminderHandler() {
           processedRemindersRef.current.add(task.task_id);
         }
 
-        // Handle repeat tasks whose due date has passed
+        // Advance repeat tasks whose due date has passed
         if (
           task.task_repeat &&
           task.task_due_date &&

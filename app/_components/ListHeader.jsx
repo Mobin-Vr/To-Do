@@ -19,7 +19,6 @@ export default function ListHeader({
 }) {
   const { bgColor, listName, listIcon, theCategory, query = "" } = listConfig;
 
-  // FIX L-5: Subscribe only to userId, not the whole getUserState function
   const { userId } = useUserStore(
     useShallow((state) => ({
       userId: state.userState?.user_id,

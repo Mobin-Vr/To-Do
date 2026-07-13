@@ -2,14 +2,12 @@
 
 import useDeleteModalStore from "@/app/_store/useDeleteModalStore";
 import { motion } from "framer-motion";
-import Overlay from "./Overlay";
-import OrdinaryBtn from "./OrdinaryBtn";
-import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useShallow } from "zustand/react/shallow";
+import OrdinaryBtn from "./OrdinaryBtn";
+import Overlay from "./Overlay";
 
 export default function DeleteWarningModal() {
-  const router = useRouter();
   const {
     isDeleteModalOpen,
     deletingType,

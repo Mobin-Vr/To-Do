@@ -41,16 +41,14 @@ export default function EditSidebar() {
     })),
   );
 
-  // FIX L-6: Only get showDeleteModal from store; we will read deletingType on demand
   const { showDeleteModal } = useDeleteModalStore(
     useShallow((state) => ({
       showDeleteModal: state.showDeleteModal,
     })),
   );
 
-  // Refer to the comment "1"
+  // Keep activeTask in sync with tasksList
   useEffect(() => {
-    // Only update activeTask when it has changed and exists in tasksList
     if (activeTask) {
       const updatedTask = tasksList.find(
         (task) => task.task_id === activeTask.task_id,
@@ -61,10 +59,9 @@ export default function EditSidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasksList, activeTask?.task_id]);
 
-  // Handle outside clicks
+  // Close sidebar on outside click, unless a delete confirmation is open
   useEffect(() => {
     async function handleClickOutside(e) {
-      // Read deletingType directly from the store when needed – avoids unnecessary re-renders
       const { deletingType } = useDeleteModalStore.getState();
 
       if (
@@ -79,7 +76,7 @@ export default function EditSidebar() {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [toggleEditSidebar, isEditSidebarOpen]); // deletingType dependency removed
+  }, [toggleEditSidebar, isEditSidebarOpen]);
 
   if (!activeTask) return;
 

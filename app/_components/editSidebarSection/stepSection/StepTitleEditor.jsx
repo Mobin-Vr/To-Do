@@ -2,7 +2,7 @@
 
 import useTaskStore from "@/app/_store/useTaskStore";
 import autosize from "autosize";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 export default function StepTitleEditor({ step, task, className }) {
@@ -14,27 +14,24 @@ export default function StepTitleEditor({ step, task, className }) {
     })),
   );
   const [isTyping, setIsTyping] = useState(false);
-  // Current value for display
   const [currentTitle, setCurrentTitle] = useState(step.step_title);
-  // Store the previous title value
   const [previousTitle, setPreviousTitle] = useState(step.title);
 
-  autosize(textareaRef.current);
+  useEffect(() => {
+    if (textareaRef.current) {
+      autosize(textareaRef.current);
+    }
+  }, []);
 
-  // 1. Save the current value when input is focused (onFocus)
   function handleFocus() {
     setPreviousTitle(currentTitle);
     setIsTyping(true);
   }
 
-  // 2. Update the current title while typing (onChange)
   function handleUpdateTitle(e) {
     setCurrentTitle(e.target.value);
-
-    autosize(textareaRef.current);
   }
 
-  // 3. Store the title if it's not empty, otherwise restore the previous one (onBlur)
   function handleBlur() {
     setIsTyping(false);
     if (currentTitle.trim()) {

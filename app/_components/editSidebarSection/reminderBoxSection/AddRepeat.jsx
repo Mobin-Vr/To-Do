@@ -26,6 +26,7 @@ export default function AddRepeat({ task }) {
     updateTaskInStore(task.task_id, { task_repeat: null });
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
+  // When repeat is set to Weekdays, push due date to nearest Friday if it falls on weekend
   useEffect(() => {
     if (task.task_repeat === "Weekdays" && !isWeekday(task.task_due_date)) {
       const nearestFridy = getWeekendForWeekdays(task.task_due_date);
